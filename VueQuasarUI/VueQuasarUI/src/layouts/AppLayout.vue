@@ -32,7 +32,7 @@
       >
         <q-list padding style="font-size:">
           <q-item-label header>Transaction</q-item-label>
-          <q-item active clickable v-ripple>
+          <q-item clickable v-ripple :to="{ name: 'bookingindex' }">
             <q-item-section avatar>
               <q-icon name="shopping_cart" />
             </q-item-section>
@@ -40,44 +40,39 @@
           </q-item>
           <q-item-label header>Configuration</q-item-label>
           <q-expansion-item icon="assignment" label="Master" :content-inset-level="0.3">
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple :to="{ name: 'productindex' }">
               <q-item-section avatar>
                 <q-icon name="inventory" />
               </q-item-section>
               <q-item-section> Product </q-item-section>
             </q-item>
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple :to="{ name: 'categoryindex' }">
               <q-item-section avatar>
                 <q-icon name="category" />
               </q-item-section>
               <q-item-section> Category </q-item-section>
             </q-item>
           </q-expansion-item>
-          <q-expansion-item
-            icon="settings"
-            label="Configuration"
-            default-opened
-            :content-inset-level="0.3"
-          >
-            <q-item clickable v-ripple>
+          <q-expansion-item icon="settings" label="Configuration" :content-inset-level="0.3">
+            <q-item clickable v-ripple :to="{ name: 'userindex' }">
               <q-item-section avatar>
                 <q-icon name="group" />
               </q-item-section>
               <q-item-section> User </q-item-section>
             </q-item>
-            <q-item active clickable v-ripple>
+            <q-item clickable v-ripple :to="{ name: 'roleindex' }">
               <q-item-section avatar>
                 <q-icon name="key" />
               </q-item-section>
               <q-item-section> Role </q-item-section>
             </q-item>
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple :to="{ name: 'systemconfigurationindex' }">
               <q-item-section avatar>
                 <q-icon name="manufacturing" />
               </q-item-section>
               <q-item-section> System Configuration </q-item-section>
             </q-item>
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple :to="{ name: 'smtpsettingindex' }">
               <q-item-section avatar>
                 <q-icon name="mail_lock" />
               </q-item-section>
@@ -98,9 +93,15 @@
             <img src="../assets/avatar.webp" />
           </q-avatar>
           <div class="text-weight-bold" style="font-size: larger">Razvan Stoenescu</div>
-          <div style="font-size: x-small">17-03-2024 12:19</div>
+          <div style="font-size: x-small">{{ newDate }}</div>
+          <!-- 17-03-2024 12:19 -->
           <div style="font-size: smaller; margin-top: 5px">
-            <a href="#" style="color: white; text-decoration: none">MyProfile</a> |
+            <router-link
+              :to="{ name: 'myprofileindex' }"
+              style="color: white; text-decoration: none"
+              >My Profile</router-link
+            >
+            |
             <a href="#" style="color: white; text-decoration: none">Logout</a>
           </div>
         </div>
@@ -110,11 +111,11 @@
     <q-page-container>
       <q-page padding>
         <router-view></router-view>
-        <p v-for="n in 15" :key="n">
+        <!-- <p v-for="n in 15" :key="n">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit nihil praesentium molestias
           a adipisci, dolore vitae odit, quidem consequatur optio voluptates asperiores pariatur eos
           numquam rerum delectus commodi perferendis voluptate?
-        </p>
+        </p> -->
       </q-page>
     </q-page-container>
   </q-layout>
@@ -126,6 +127,7 @@ import { AppFullscreen } from 'quasar'
 
 const drawer = ref(false)
 const fullscreen = ref(false)
+const newDate = ref(new Date())
 
 function fullScreenToggle() {
   if (this.fullscreen) {
