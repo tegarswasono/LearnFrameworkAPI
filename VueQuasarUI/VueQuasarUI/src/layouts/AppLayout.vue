@@ -32,53 +32,58 @@
       >
         <q-list padding style="font-size:">
           <q-item-label header>Transaction</q-item-label>
-          <q-item clickable v-ripple>
-            <q-item-section avatar>
-              <q-icon name="inbox" />
-            </q-item-section>
-
-            <q-item-section> Inbox </q-item-section>
-          </q-item>
-
           <q-item active clickable v-ripple>
             <q-item-section avatar>
-              <q-icon name="star" />
+              <q-icon name="shopping_cart" />
             </q-item-section>
-
-            <q-item-section style="font-size:"> Start</q-item-section>
+            <q-item-section style="font-size:"> Booking</q-item-section>
           </q-item>
-
-          <q-item clickable v-ripple>
-            <q-item-section avatar>
-              <q-icon name="send" />
-            </q-item-section>
-
-            <q-item-section> Send </q-item-section>
-          </q-item>
-
-          <q-item clickable v-ripple>
-            <q-item-section avatar>
-              <q-icon name="drafts" />
-            </q-item-section>
-
-            <q-item-section> Drafts </q-item-section>
-          </q-item>
-
           <q-item-label header>Configuration</q-item-label>
-          <q-item clickable v-ripple>
-            <q-item-section avatar>
-              <q-icon name="assignment" />
-            </q-item-section>
-
-            <q-item-section> Master </q-item-section>
-          </q-item>
-          <q-item clickable v-ripple>
-            <q-item-section avatar>
-              <q-icon name="settings" />
-            </q-item-section>
-
-            <q-item-section> Configuration </q-item-section>
-          </q-item>
+          <q-expansion-item icon="assignment" label="Master" :content-inset-level="0.3">
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="inventory" />
+              </q-item-section>
+              <q-item-section> Product </q-item-section>
+            </q-item>
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="category" />
+              </q-item-section>
+              <q-item-section> Category </q-item-section>
+            </q-item>
+          </q-expansion-item>
+          <q-expansion-item
+            icon="settings"
+            label="Configuration"
+            default-opened
+            :content-inset-level="0.3"
+          >
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="group" />
+              </q-item-section>
+              <q-item-section> User </q-item-section>
+            </q-item>
+            <q-item active clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="key" />
+              </q-item-section>
+              <q-item-section> Role </q-item-section>
+            </q-item>
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="manufacturing" />
+              </q-item-section>
+              <q-item-section> System Configuration </q-item-section>
+            </q-item>
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="mail_lock" />
+              </q-item-section>
+              <q-item-section> SMTP Setting </q-item-section>
+            </q-item>
+          </q-expansion-item>
         </q-list>
       </q-scroll-area>
 
