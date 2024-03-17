@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>This is an about page 99</h1>
+    <h6>This is an about page 99</h6>
     <div class="q-pa-md q-gutter-sm">
       <q-btn color="white" text-color="black" label="Standard" />
       <q-btn color="primary" label="Primary" />
@@ -15,11 +15,11 @@
 </template>
 
 <style>
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) {
   .about {
     min-height: 100vh;
     display: flex;
     align-items: center;
   }
-}
+} */
 </style>
