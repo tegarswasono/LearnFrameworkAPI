@@ -2,19 +2,20 @@
   "name": "vuequasarui",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
-    "preview": "vite preview",
     "test:unit": "vitest",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "format": "prettier --write src/"
+    "build-only": "vite build",
+    "dev": "vite",
+    "format": "prettier --write src/",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
+    "@quasar/extras": "^1.0.0",
     "pinia": "^2.1.7",
+    "quasar": "^2.0.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
@@ -37,6 +38,8 @@
     "typescript": "~5.4.0",
     "vite": "^5.1.5",
     "vitest": "^1.3.1",
+    "vue-cli-plugin-quasar": "~5.0.2",
     "vue-tsc": "^2.0.6"
-  }
+  },
+  "type": "module"
 }
