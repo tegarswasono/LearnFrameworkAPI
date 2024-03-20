@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AppLayout from '../layouts/AppLayout.vue'
 import PublicLayout from '../layouts/PublicLayout.vue'
 
+//Login
+import LoginIndexView from '../views/system/login/login-index.vue'
+
 //Booking
 import BookingIndexView from '../views/transaction/booking/booking-index.vue'
 
@@ -19,6 +22,11 @@ import MyProfileIndexView from '../views/configuration/my-profile/my-profile-ind
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/',
+      name: 'loginindex',
+      component: LoginIndexView
+    },
     {
       path: '/',
       component: AppLayout,

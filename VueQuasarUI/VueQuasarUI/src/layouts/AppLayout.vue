@@ -93,8 +93,10 @@
             <img src="../assets/avatar.webp" />
           </q-avatar>
           <div class="text-weight-bold" style="font-size: larger">Razvan Stoenescu</div>
-          <div style="font-size: x-small">{{ newDate }}</div>
-          <!-- 17-03-2024 12:19 -->
+          <div style="font-size: x-small">
+            {{ moment(currentTime).format('DD-MM-YYYY HH:mm:ss') }}
+          </div>
+          <!-- <div style="font-size: x-small">17-03-2024 12:19</div> -->
           <div style="font-size: smaller; margin-top: 5px">
             <router-link
               :to="{ name: 'myprofileindex' }"
@@ -102,7 +104,9 @@
               >My Profile</router-link
             >
             |
-            <a href="#" style="color: white; text-decoration: none">Logout</a>
+            <router-link :to="{ name: 'loginindex' }" style="color: white; text-decoration: none"
+              >Logout</router-link
+            >
           </div>
         </div>
       </q-img>
@@ -122,12 +126,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { AppFullscreen } from 'quasar'
+import moment from 'moment'
 
 const drawer = ref(false)
 const fullscreen = ref(false)
-const newDate = ref(new Date())
+const currentTime = ref('')
+
+const updateTime = () => {
+  currentTime.value = new Date()
+}
+
+onMounted(() => {
+  setInterval(updateTime, 1000)
+  updateTime()
+})
 
 function fullScreenToggle() {
   if (this.fullscreen) {
