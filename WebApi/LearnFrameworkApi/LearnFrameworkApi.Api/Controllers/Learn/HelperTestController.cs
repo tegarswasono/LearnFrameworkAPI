@@ -1,5 +1,5 @@
 ﻿using LearnFrameworkApi.Api.Helpers;
-using LearnFrameworkApi.Module.Helpers;
+using LearnFrameworkApi.Module.Helpers.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
