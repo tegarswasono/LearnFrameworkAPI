@@ -27,9 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Configuration\" />
     <Folder Include="Controllers\Master\" />
     <Folder Include="Controllers\Transaction\" />
+    <Folder Include="Helpers\CustomAttribute\" />
   </ItemGroup>
 
 </Project>
