@@ -1,10 +1,12 @@
-import { useAuthStore } from '../store/auth'
+// services/authService.js
+
+import { useAuthStore } from '../stores/auth'
 
 export async function login(credentials) {
   try {
     // Panggil API untuk autentikasi, misalnya dengan axios atau fetch
     // Di sini, Anda akan mendapatkan token JWT setelah login berhasil
-    const response = await fetch('https://example.com/login', {
+    const response = await fetch('http://localhost:45841/api/users/authenticate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
