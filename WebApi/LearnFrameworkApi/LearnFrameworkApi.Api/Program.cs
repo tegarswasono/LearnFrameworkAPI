@@ -5,31 +5,14 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
 using System.Data;
 using System.Globalization;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-var logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .Enrich.FromLogContext()
-    .CreateLogger();
-builder.Logging.ClearProviders();
-builder.Logging.AddSerilog(logger);
-
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddIdentity<AppUser, AppRole>(x =>
-{
-    x.Password.RequireUppercase = false;
-    x.Password.RequireDigit = false;
-    x.Password.RequiredLength = 5;
-    x.Password.RequireNonAlphanumeric = false;
-    x.Password.RequireLowercase = false;
-})
-.AddEntityFrameworkStores<AppDbContext>()
-.AddDefaultTokenProviders();
+SetupService(builder);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -52,3 +35,46 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static void SetupService(WebApplicationBuilder? builder)
+{
+    //Serilog
+    builder!.Host.UseSerilog();
+    Log.Logger = new LoggerConfiguration()
+        .MinimumLevel.Information()
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+        .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+        .MinimumLevel.Override("System", LogEventLevel.Warning)
+        .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+        .Enrich.FromLogContext()
+        .WriteTo.Logger(x =>
+            x.WriteTo.File(
+                Path.Combine(builder.Environment.ContentRootPath, "logs", "learnApiFramework-.txt"),
+                rollingInterval: RollingInterval.Day,
+                shared: true,
+                flushToDiskInterval: TimeSpan.FromSeconds(5)
+            )
+            .WriteTo.File(
+                Path.Combine(builder.Environment.ContentRootPath, "logs", "learnApiFrameworkError-.txt"),
+                rollingInterval: RollingInterval.Day,
+                shared: true,
+                flushToDiskInterval: TimeSpan.FromSeconds(5),
+                restrictedToMinimumLevel : LogEventLevel.Error
+            )
+            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Code)
+        )
+        .CreateLogger();
+
+    //DbContext
+    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    builder.Services.AddIdentity<AppUser, AppRole>(x =>
+    {
+        x.Password.RequireUppercase = false;
+        x.Password.RequireDigit = false;
+        x.Password.RequiredLength = 5;
+        x.Password.RequireNonAlphanumeric = false;
+        x.Password.RequireLowercase = false;
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+}
