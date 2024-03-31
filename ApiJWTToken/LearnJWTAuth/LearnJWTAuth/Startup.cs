@@ -31,6 +31,8 @@ namespace LearnJWTAuth
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddPolicy(name: "MyAllowSpecificOrigins", policy => { policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod(); }));
+
             services.AddAuthentication(x=> 
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -101,7 +103,9 @@ namespace LearnJWTAuth
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LearnJWTAuth v1"));
             }
 
+            app.UseCors("MyAllowSpecificOrigins");
             app.UseRouting();
+
 
             app.UseAuthentication();
             app.UseAuthorization();
