@@ -11,7 +11,6 @@ namespace LearnFrameworkApi.Module.Services.Configuration
     {
         string CurrentUsername { get; }
         string CurrentAppRole { get; }
-        string CurrentActionRole { get; }
         AppUser? CurrentAppUser { get; }
     }
 }

@@ -26,4 +26,10 @@
     <ProjectReference Include="..\LearnFrameworkApi.Module\LearnFrameworkApi.Module.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Configuration\" />
+    <Folder Include="Controllers\Master\" />
+    <Folder Include="Controllers\Transaction\" />
+  </ItemGroup>
+
 </Project>

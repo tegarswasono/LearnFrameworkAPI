@@ -16,3 +16,32 @@
 2024-03-31 22:44:58.048 +07:00 [INF] Content root path: C:\Users\tegar\source\repos\LearnFrameworkAPI\WebApi\LearnFrameworkApi\LearnFrameworkApi.Api
 2024-03-31 22:45:22.860 +07:00 [INF] Halo 1
 2024-03-31 22:45:22.863 +07:00 [ERR] Halo 2
+2024-03-31 23:06:03.149 +07:00 [INF] Now listening on: https://localhost:7174
+2024-03-31 23:06:03.201 +07:00 [INF] Now listening on: http://localhost:5120
+2024-03-31 23:06:03.203 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-03-31 23:06:03.204 +07:00 [INF] Hosting environment: Development
+2024-03-31 23:06:03.204 +07:00 [INF] Content root path: C:\Users\tegar\source\repos\LearnFrameworkAPI\WebApi\LearnFrameworkApi\LearnFrameworkApi.Api
+2024-03-31 23:09:06.343 +07:00 [INF] Now listening on: https://localhost:7174
+2024-03-31 23:09:06.397 +07:00 [INF] Now listening on: http://localhost:5120
+2024-03-31 23:09:06.400 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-03-31 23:09:06.400 +07:00 [INF] Hosting environment: Development
+2024-03-31 23:09:06.400 +07:00 [INF] Content root path: C:\Users\tegar\source\repos\LearnFrameworkAPI\WebApi\LearnFrameworkApi\LearnFrameworkApi.Api
+2024-03-31 23:12:11.682 +07:00 [INF] Now listening on: https://localhost:7174
+2024-03-31 23:12:11.724 +07:00 [INF] Now listening on: http://localhost:5120
+2024-03-31 23:12:11.727 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-03-31 23:12:11.727 +07:00 [INF] Hosting environment: Development
+2024-03-31 23:12:11.727 +07:00 [INF] Content root path: C:\Users\tegar\source\repos\LearnFrameworkAPI\WebApi\LearnFrameworkApi\LearnFrameworkApi.Api
+2024-03-31 23:12:24.022 +07:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2024-03-31 23:12:24.603 +07:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2024-03-31 23:17:51.395 +07:00 [INF] Now listening on: https://localhost:7174
+2024-03-31 23:17:51.445 +07:00 [INF] Now listening on: http://localhost:5120
+2024-03-31 23:17:51.448 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-03-31 23:17:51.448 +07:00 [INF] Hosting environment: Development
+2024-03-31 23:17:51.449 +07:00 [INF] Content root path: C:\Users\tegar\source\repos\LearnFrameworkAPI\WebApi\LearnFrameworkApi\LearnFrameworkApi.Api
+2024-03-31 23:27:57.888 +07:00 [INF] Now listening on: https://localhost:7174
+2024-03-31 23:27:57.936 +07:00 [INF] Now listening on: http://localhost:5120
+2024-03-31 23:27:57.939 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-03-31 23:27:57.940 +07:00 [INF] Hosting environment: Development
+2024-03-31 23:27:57.941 +07:00 [INF] Content root path: C:\Users\tegar\source\repos\LearnFrameworkAPI\WebApi\LearnFrameworkApi\LearnFrameworkApi.Api
+2024-03-31 23:28:29.067 +07:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2024-03-31 23:28:29.546 +07:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.

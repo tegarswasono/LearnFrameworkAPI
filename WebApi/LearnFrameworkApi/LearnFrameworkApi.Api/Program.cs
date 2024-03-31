@@ -1,5 +1,7 @@
+using LearnFrameworkApi.Api.Helpers;
 using LearnFrameworkApi.Module.Datas;
 using LearnFrameworkApi.Module.Datas.Entities.Configuration;
+using LearnFrameworkApi.Module.Services.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -77,4 +79,7 @@ static void SetupService(WebApplicationBuilder? builder)
     })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+    //service
+    builder.Services.AddScoped<ICurrentUserResolver, CurrentUserResolver>();
 }
