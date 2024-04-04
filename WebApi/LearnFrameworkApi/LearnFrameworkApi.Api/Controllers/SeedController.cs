@@ -3,6 +3,7 @@ using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Models.Common;
 using LearnFrameworkMvc.Module;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,17 +14,20 @@ namespace LearnFrameworkApi.Api.Controllers
     public class SeedController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public SeedController(AppDbContext context) 
+        private readonly RoleManager<AppRole> _roleManager;
+        public SeedController(AppDbContext context, RoleManager<AppRole> roleManager) 
         { 
             _context = context;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
-        public ActionResult<GeneralResponseMessage> Index()
+        public async Task<ActionResult<GeneralResponseMessage>> Index()
         {
             InitSMTPSystemConfiguration();
             RefreshModuleFunction();
             RefreshMenu();
+            await InitAppRole();
 
             _context.SaveChanges();
             return Ok(GeneralResponseMessage.ProcessSuccessfully());
@@ -262,6 +266,24 @@ namespace LearnFrameworkApi.Api.Controllers
             _context.Menus.Add(menu1);_context.Menus.Add(menu2); _context.Menus.Add(menu3); _context.Menus.Add(menu4); _context.Menus.Add(menu5);
             _context.Menus.Add(menu6);_context.Menus.Add(menu7); _context.Menus.Add(menu8); _context.Menus.Add(menu9); _context.Menus.Add(menu10);
             _context.Menus.Add(menu11);
+        }
+        private async Task InitAppRole()
+        {
+            var appRole1 = new AppRole()
+            {
+                Name = "Administrator",
+            };
+            var appRole2 = new AppRole()
+            {
+                Name = "Buyer",
+            };
+            var appRole3 = new AppRole()
+            {
+                Name = "Shop Owner",
+            };
+            await _roleManager.CreateAsync(appRole1);
+            await _roleManager.CreateAsync(appRole2);
+            await _roleManager.CreateAsync(appRole3);
         }
     }
 }
