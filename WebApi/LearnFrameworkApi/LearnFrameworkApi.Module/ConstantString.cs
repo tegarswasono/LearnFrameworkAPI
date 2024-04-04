@@ -1,4 +1,6 @@
-﻿namespace LearnFrameworkApi.Module
+﻿using System.ComponentModel;
+
+namespace LearnFrameworkApi.Module
 {
     public static class ConstantString
     {
@@ -10,6 +12,11 @@
         public const string DeleteSuccessfully = "Delete Successfully";
         public const string ThisDataIsUsedInOtherTransaction = "This data is used in other transactions";
 
-        
+        //CustomAttribute Validation Message
+        public const string ShouldBeBiggerThan0 = "should be bigger than 0";
+        public const string ShouldBeBiggerThanOrEqualsTo0 = "should be bigger than or equals to 0";
+        public const string ShouldBeLowerThanOrEqualsTo0 = "should be lower than or equals to 0";
+        public const string ShouldBeNotContainHtmlTag = "should be not contain html tag";
+
     }
 }
