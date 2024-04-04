@@ -16,5 +16,6 @@ namespace LearnFrameworkApi.Module.Datas.Entities.Configuration
         [MaxLength(100)]
         public string UpdatedBy { get; set; } = string.Empty;
         public DateTime? UpdatedAt { get; set; }
+        public ICollection<RoleFunction> RoleFunctions { get; set; } = new List<RoleFunction>();
     }
 }
