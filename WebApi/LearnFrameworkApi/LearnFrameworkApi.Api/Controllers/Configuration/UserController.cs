@@ -4,6 +4,7 @@ using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Models.Common;
 using LearnFrameworkApi.Module.Models.Configuration;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -14,9 +15,11 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
     public class UserController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public UserController(AppDbContext context)
+        private readonly UserManager<AppUser> _userManager;
+        public UserController(AppDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -42,12 +45,19 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet("{id}")]
-        public ActionResult<RoleModel> GetById(Guid id)
+        public ActionResult<UserModel> GetById(Guid id)
         {
             try
             {
-                var roles = _context.Roles.Select(x => new RoleModel() { Id = x.Id, Name = x.Name }).FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
-                return Ok(roles);
+                var user = _context.Users.Select(x => new UserModel() 
+                {
+                    Id = x.Id,
+                    Username = x.UserName,
+                    Email = x.Email,
+                    FullName = x.FullName,
+                    IsActive = x.IsActive
+                }).FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
+                return Ok(user);
             }
             catch (Exception ex)
             {
@@ -57,22 +67,28 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPost("Create")]
-        public ActionResult<GeneralResponseMessage> Create(RoleCreateModel model)
+        public async Task<ActionResult<GeneralResponseMessage>> Create(UserCreateModel1 model)
         {
             try
             {
-                var exist = _context.Roles.FirstOrDefault(x => x.Name == model.Name);
+                var exist = _context.Users.FirstOrDefault(x => x.Email == model.Email);
                 if (exist != null)
                 {
-                    throw new InvalidOperationException(string.Format(ConstantString.DataAlreadyExist, model.Name));
+                    throw new InvalidOperationException(string.Format(ConstantString.DataAlreadyExist, model.Email));
                 }
 
-                var role = new AppRole()
+                var user = new AppUser()
                 {
-                    Name = model.Name
+                    Email = model.Email,
+                    NormalizedEmail = model.Email.ToUpper(),
+                    UserName = model.Email,
+                    NormalizedUserName = model.Email.ToUpper(),
+
+                    FullName = model.FullName,
+                    IsActive = model.IsActive,
                 };
-                _context.Roles.Add(role);
-                _context.SaveChanges();
+
+                await _userManager.CreateAsync(user, model.Password);
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());
             }
             catch (Exception ex)
@@ -83,19 +99,26 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPost("Update")]
-        public ActionResult<GeneralResponseMessage> Update(RoleUpdateModel model)
+        public ActionResult<GeneralResponseMessage> Update(UserUpdateModel model)
         {
             try
             {
-                var role = _context.Roles.FirstOrDefault(x => x.Id == model.Id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
-                var exist = _context.Roles.FirstOrDefault(x => x.Id != model.Id && x.Name == model.Name);
+                var user = _context.Users.FirstOrDefault(x => x.Id == model.Id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
+                var exist = _context.Users.FirstOrDefault(x => x.Id != model.Id && x.Email == model.Email);
+
                 if (exist != null)
                 {
-                    throw new InvalidOperationException(string.Format(ConstantString.DataAlreadyExist, model.Name));
+                    throw new InvalidOperationException(string.Format(ConstantString.DataAlreadyExist, model.Email));
                 }
 
-                role.Name = model.Name;
-                _context.Roles.Update(role);
+                user.Email = model.Email;
+                user.NormalizedEmail = model.Email.ToUpper();
+                user.UserName = model.Email;
+                user.NormalizedUserName = model.Email.ToUpper();
+
+                user.FullName = model.FullName;
+                user.IsActive = model.IsActive;
+                _context.Users.Update(user);
                 _context.SaveChanges();
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());
             }
@@ -111,9 +134,9 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         {
             try
             {
-                var role = _context.Roles.FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
+                var user = _context.Users.FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
 
-                _context.Roles.Remove(role);
+                _context.Users.Remove(user);
                 _context.SaveChanges();
                 return Ok(GeneralResponseMessage.DeleteSuccessfully());
             }

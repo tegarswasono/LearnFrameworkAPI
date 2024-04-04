@@ -19,11 +19,21 @@ namespace LearnFrameworkApi.Module.Models.Configuration
     public class UserCreateModel
     {
         [Required]
-        public string Name { get; set; } = string.Empty;
+        [MaxLength(512)]
+        public string Email { get; set; } = string.Empty;
+        [Required]
+        [MaxLength(50)]
+        public string FullName { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
     }
     public class UserUpdateModel : UserCreateModel
     {
         [RequiredGuid]
         public Guid Id { get; set; }
+    }
+    public class UserCreateModel1 : UserCreateModel
+    {
+        [Required]
+        public string Password { get; set; } = string.Empty;
     }
 }

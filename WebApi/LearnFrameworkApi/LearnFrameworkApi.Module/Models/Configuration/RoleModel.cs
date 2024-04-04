@@ -16,6 +16,7 @@ namespace LearnFrameworkApi.Module.Models.Configuration
     public class RoleCreateModel
     {
         [Required]
+        [MaxLength(512)]
         public string Name { get; set; } = string.Empty;
     }
     public class RoleUpdateModel : RoleCreateModel

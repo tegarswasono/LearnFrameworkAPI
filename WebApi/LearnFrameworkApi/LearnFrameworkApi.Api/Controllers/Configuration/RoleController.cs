@@ -39,8 +39,8 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         {
             try
             {
-                var roles = _context.Roles.Select(x => new RoleModel() { Id = x.Id, Name = x.Name }).FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
-                return Ok(roles);
+                var role = _context.Roles.Select(x => new RoleModel() { Id = x.Id, Name = x.Name }).FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
+                return Ok(role);
             }
             catch (Exception ex)
             {
