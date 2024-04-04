@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Master\" />
     <Folder Include="Controllers\Transaction\" />
   </ItemGroup>
 

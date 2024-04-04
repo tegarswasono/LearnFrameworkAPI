@@ -62,7 +62,8 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
 
                 var role = new AppRole()
                 {
-                    Name = model.Name
+                    Name = model.Name,
+                    NormalizedName = model.Name.ToUpper()
                 };
                 _context.Roles.Add(role);
                 _context.SaveChanges();
@@ -88,6 +89,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                 }
 
                 role.Name = model.Name;
+                role.NormalizedName = model.Name.ToUpper();
                 _context.Roles.Update(role);
                 _context.SaveChanges();
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());

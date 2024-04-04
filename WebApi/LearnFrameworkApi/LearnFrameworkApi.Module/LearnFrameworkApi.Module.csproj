@@ -10,7 +10,6 @@
     <Folder Include="Datas\Entities\Transaction\" />
     <Folder Include="Enums\" />
     <Folder Include="BusinessLogic\" />
-    <Folder Include="Models\Master\" />
     <Folder Include="Models\Transaction\" />
     <Folder Include="Services\Master\" />
     <Folder Include="Services\Transaction\" />
