@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace LearnFrameworkApi.Module.Datas.Entities.Configuration
 {
+    [Index(nameof(OrderIndex))]
+    //[Index("FirstColumn", "SecondColumn", IsUnique = true, Name = "My_Unique_Index")] //Constraint multiple column
     public class Menu : BaseEntity
     {
         public Guid? ParentId { get; set; }
