@@ -13,7 +13,7 @@ namespace LearnFrameworkApi.Module.Datas.Entities.Configuration
         public string ExampleSetting { get; set; } = string.Empty;
         public static SystemConfiguration GetInstance(AppDbContext context)
         {
-            return context.SystemConfigurations.FirstOrDefault()!;
+            return context.SystemConfigurations.OrderBy(x => x.CreatedAt).FirstOrDefault()!;
         }
     }
 }

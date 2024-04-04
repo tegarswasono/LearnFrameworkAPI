@@ -19,7 +19,7 @@ namespace LearnFrameworkApi.Module.Datas.Entities.Configuration
         public bool SmtpIsUseSsl { get; set; }
         public static SmtpSetting GetInstance(AppDbContext context)
         {
-            return context.SmtpSettings.FirstOrDefault()!;
+            return context.SmtpSettings.OrderBy(x => x.CreatedAt).FirstOrDefault()!;
         }
     }
 }
