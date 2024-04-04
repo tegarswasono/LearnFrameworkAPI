@@ -4,6 +4,7 @@ using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Models.Common;
 using LearnFrameworkApi.Module.Models.Configuration;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -14,9 +15,11 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
     public class RoleController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public RoleController(AppDbContext context)
+        private readonly RoleManager<AppRole> _roleManager;
+        public RoleController(AppDbContext context, RoleManager<AppRole> roleManager)
         {
             _context = context;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -50,7 +53,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPost("Create")]
-        public ActionResult<GeneralResponseMessage> Create(RoleCreateModel model)
+        public async Task<ActionResult<GeneralResponseMessage>> Create(RoleCreateModel model)
         {
             try
             {
@@ -65,8 +68,8 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                     Name = model.Name,
                     NormalizedName = model.Name.ToUpper()
                 };
-                _context.Roles.Add(role);
-                _context.SaveChanges();
+                
+                await _roleManager.CreateAsync(role);
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());
             }
             catch (Exception ex)
@@ -77,11 +80,11 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPost("Update")]
-        public ActionResult<GeneralResponseMessage> Update(RoleUpdateModel model)
+        public async Task<ActionResult<GeneralResponseMessage>> Update(RoleUpdateModel model)
         {
             try
             {
-                var role = _context.Roles.FirstOrDefault(x => x.Id == model.Id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
+                var role = await _roleManager.FindByIdAsync(model.Id.ToString()) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
                 var exist = _context.Roles.FirstOrDefault(x => x.Id != model.Id && x.Name == model.Name);
                 if (exist != null)
                 {
@@ -90,8 +93,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
 
                 role.Name = model.Name;
                 role.NormalizedName = model.Name.ToUpper();
-                _context.Roles.Update(role);
-                _context.SaveChanges();
+                await _roleManager.UpdateAsync(role);
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());
             }
             catch (Exception ex)
@@ -102,14 +104,12 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<GeneralResponseMessage> Delete(Guid id)
+        public async Task<ActionResult<GeneralResponseMessage>> Delete(Guid id)
         {
             try
             {
-                var role = _context.Roles.FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
-
-                _context.Roles.Remove(role);
-                _context.SaveChanges();
+                var role = await _roleManager.FindByIdAsync(id.ToString()) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
+                await _roleManager.DeleteAsync(role);
                 return Ok(GeneralResponseMessage.DeleteSuccessfully());
             }
             catch (Exception ex)

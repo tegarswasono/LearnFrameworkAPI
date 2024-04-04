@@ -80,9 +80,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                 var user = new AppUser()
                 {
                     Email = model.Email,
-                    NormalizedEmail = model.Email.ToUpper(),
                     UserName = model.Email,
-                    NormalizedUserName = model.Email.ToUpper(),
 
                     FullName = model.FullName,
                     IsActive = model.IsActive,
@@ -99,11 +97,11 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPost("Update")]
-        public ActionResult<GeneralResponseMessage> Update(UserUpdateModel model)
+        public async Task<ActionResult<GeneralResponseMessage>> Update(UserUpdateModel model)
         {
             try
             {
-                var user = _context.Users.FirstOrDefault(x => x.Id == model.Id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
+                var user = await _userManager.FindByIdAsync(model.Id.ToString()) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
                 var exist = _context.Users.FirstOrDefault(x => x.Id != model.Id && x.Email == model.Email);
 
                 if (exist != null)
@@ -112,14 +110,11 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                 }
 
                 user.Email = model.Email;
-                user.NormalizedEmail = model.Email.ToUpper();
                 user.UserName = model.Email;
-                user.NormalizedUserName = model.Email.ToUpper();
-
                 user.FullName = model.FullName;
                 user.IsActive = model.IsActive;
-                _context.Users.Update(user);
-                _context.SaveChanges();
+
+                await _userManager.UpdateAsync(user);
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());
             }
             catch (Exception ex)
@@ -130,14 +125,12 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<GeneralResponseMessage> Delete(Guid id)
+        public async Task<ActionResult<GeneralResponseMessage>> Delete(Guid id)
         {
             try
             {
-                var user = _context.Users.FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
-
-                _context.Users.Remove(user);
-                _context.SaveChanges();
+                var user = await _userManager.FindByIdAsync(id.ToString()) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
+                await _userManager.DeleteAsync(user);
                 return Ok(GeneralResponseMessage.DeleteSuccessfully());
             }
             catch (Exception ex)
