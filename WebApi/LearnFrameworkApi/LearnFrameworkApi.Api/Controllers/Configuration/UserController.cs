@@ -11,25 +11,32 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
     [Route("api/configuration/[controller]")]
     [ApiController]
-    public class RoleController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public RoleController(AppDbContext context)
+        public UserController(AppDbContext context)
         {
             _context = context;
         }
 
         [HttpGet]
-        public ActionResult<List<RoleModel>> Index()
+        public ActionResult<List<UserModel>> Index()
         {
             try
             {
-                var roles = _context.Roles.Select(x => new RoleModel() { Id = x.Id, Name = x.Name }).ToList();
-                return Ok(roles);
+                var users = _context.Users.Select(x => new UserModel()
+                {
+                    Id = x.Id,
+                    Username = x.UserName,
+                    Email = x.Email,
+                    FullName = x.FullName,
+                    IsActive = x.IsActive
+                }).ToList();
+                return Ok(users);
             }
             catch (Exception ex)
             {
-                Log.Error($"RoleController.Index | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                Log.Error($"UserController.Index | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
             }
         }
@@ -44,7 +51,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             }
             catch (Exception ex)
             {
-                Log.Error($"RoleController.GetById | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                Log.Error($"UserController.GetById | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
             }
         }
@@ -70,7 +77,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             }
             catch (Exception ex)
             {
-                Log.Error($"RoleController.Create | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                Log.Error($"UserController.Create | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
             }
         }
@@ -94,7 +101,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             }
             catch (Exception ex)
             {
-                Log.Error($"RoleController.Update | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                Log.Error($"UserController.Update | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
             }
         }
@@ -112,7 +119,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             }
             catch (Exception ex)
             {
-                Log.Error($"RoleController.Delete | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                Log.Error($"UserController.Delete | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
             }
         }

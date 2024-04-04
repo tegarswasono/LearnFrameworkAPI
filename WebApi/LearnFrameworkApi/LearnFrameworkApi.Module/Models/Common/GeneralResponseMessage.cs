@@ -17,5 +17,9 @@ namespace LearnFrameworkApi.Module.Models.Common
         {
             return new GeneralResponseMessage { Message = "Process Successfully" };
         }
+        public static GeneralResponseMessage DeleteSuccessfully()
+        {
+            return new GeneralResponseMessage { Message = "Delete Successfully" };
+        }
     }
 }
