@@ -19,17 +19,16 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet]
-        public ActionResult<SmtpSettingModel> Index()
+        public ActionResult<UserModel> Index()
         {
             try
             {
-                var smtpSetting = SmtpSetting.GetInstance(_context);
-                var result = SmtpSettingModel.Dto(smtpSetting);
-                return Ok(result);
+                var user = _context.Users.OrderBy(x => x.Email).FirstOrDefault();
+                return Ok(user);
             }
             catch (Exception ex)
             {
-                Log.Error($"SmtpSettingController.Index | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                Log.Error($"MyProfileController.Index | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
             }
         }
