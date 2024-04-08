@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearnFrameworkApi.Api", "LearnFrameworkApi.Api\LearnFrameworkApi.Api.csproj", "{819DE0D7-D32D-41DE-AE02-1395893D01E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearnFrameworkApi.Api", "LearnFrameworkApi.Api\LearnFrameworkApi.Api.csproj", "{819DE0D7-D32D-41DE-AE02-1395893D01E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearnFrameworkApi.Module", "LearnFrameworkApi.Module\LearnFrameworkApi.Module.csproj", "{B3F89766-A088-48E8-AE9F-8BF3179D4DA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearnFrameworkApi.Module", "LearnFrameworkApi.Module\LearnFrameworkApi.Module.csproj", "{B3F89766-A088-48E8-AE9F-8BF3179D4DA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearnFrameworkApi.CreateCert", "LearnFrameworkApi.CreateCert\LearnFrameworkApi.CreateCert.csproj", "{9E7FDAA3-51C1-48E9-882E-30F21E199E8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearnFrameworkApi.Ids", "LearnFrameworkApi.Ids\LearnFrameworkApi.Ids.csproj", "{9DDA36F6-EA1C-40CA-AB84-962D9D51357D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{B3F89766-A088-48E8-AE9F-8BF3179D4DA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3F89766-A088-48E8-AE9F-8BF3179D4DA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3F89766-A088-48E8-AE9F-8BF3179D4DA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E7FDAA3-51C1-48E9-882E-30F21E199E8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E7FDAA3-51C1-48E9-882E-30F21E199E8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E7FDAA3-51C1-48E9-882E-30F21E199E8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E7FDAA3-51C1-48E9-882E-30F21E199E8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DDA36F6-EA1C-40CA-AB84-962D9D51357D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DDA36F6-EA1C-40CA-AB84-962D9D51357D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DDA36F6-EA1C-40CA-AB84-962D9D51357D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DDA36F6-EA1C-40CA-AB84-962D9D51357D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
