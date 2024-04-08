@@ -48,6 +48,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+RunMigration(app.Services);
+
 app.Run();
 
 
@@ -163,4 +165,12 @@ static void ConfigureServices(IServiceCollection services, ConfigurationManager 
 
     services.AddHttpContextAccessor();
     services.AddScoped<ICurrentUserResolver, CurrentUserResolver>();
+}
+static void RunMigration(IServiceProvider service)
+{
+    using (var scope = service.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetService<AppDbContext>();
+        context.Database.Migrate();
+    }
 }

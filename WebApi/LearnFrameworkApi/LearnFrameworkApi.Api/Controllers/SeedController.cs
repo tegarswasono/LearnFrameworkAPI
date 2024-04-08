@@ -15,10 +15,12 @@ namespace LearnFrameworkApi.Api.Controllers
     {
         private readonly AppDbContext _context;
         private readonly RoleManager<AppRole> _roleManager;
-        public SeedController(AppDbContext context, RoleManager<AppRole> roleManager) 
-        { 
+        private readonly UserManager<AppUser> _userManager;
+        public SeedController(AppDbContext context, RoleManager<AppRole> roleManager, UserManager<AppUser> userManager)
+        {
             _context = context;
             _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -28,6 +30,7 @@ namespace LearnFrameworkApi.Api.Controllers
             RefreshModuleFunction();
             RefreshMenu();
             await InitAppRole();
+            await InitAppUser();
 
             _context.SaveChanges();
             return Ok(GeneralResponseMessage.ProcessSuccessfully());
@@ -269,21 +272,59 @@ namespace LearnFrameworkApi.Api.Controllers
         }
         private async Task InitAppRole()
         {
-            var appRole1 = new AppRole()
+            if (!_context.Roles.Any())
             {
-                Name = "Administrator",
-            };
-            var appRole2 = new AppRole()
+                var appRole1 = new AppRole()
+                {
+                    Name = "Administrator",
+                };
+                var appRole2 = new AppRole()
+                {
+                    Name = "Buyer",
+                };
+                var appRole3 = new AppRole()
+                {
+                    Name = "Shop Owner",
+                };
+                await _roleManager.CreateAsync(appRole1);
+                await _roleManager.CreateAsync(appRole2);
+                await _roleManager.CreateAsync(appRole3);
+            }
+        }
+        private async Task InitAppUser()
+        {
+            if (!_context.Users.Any())
             {
-                Name = "Buyer",
-            };
-            var appRole3 = new AppRole()
-            {
-                Name = "Shop Owner",
-            };
-            await _roleManager.CreateAsync(appRole1);
-            await _roleManager.CreateAsync(appRole2);
-            await _roleManager.CreateAsync(appRole3);
+                var appUser1 = new AppUser()
+                {
+                    Email = "tegar.s@weefer.co.id",
+                    UserName = "tegar.s@weefer.co.id",
+                    FullName = "Administrator",
+                    IsActive = true,
+                };
+                var appUser2 = new AppUser()
+                {
+                    Email = "buyer@gmail.com",
+                    UserName = "buyer@gmail.com",
+                    FullName = "Buyer",
+                    IsActive = true,
+                };
+                var appUser3 = new AppUser()
+                {
+                    Email = "shopOwner@gmail.com",
+                    UserName = "shopOwner@gmail.com",
+                    FullName = "Shop Owner",
+                    IsActive = true,
+                };
+
+                await _userManager.CreateAsync(appUser1, "Admin1234!");
+                await _userManager.CreateAsync(appUser2, "Admin1234!");
+                await _userManager.CreateAsync(appUser3, "Admin1234!");
+
+                await _userManager.AddToRoleAsync(appUser1, "Administrator");
+                await _userManager.AddToRoleAsync(appUser2, "Buyer");
+                await _userManager.AddToRoleAsync(appUser3, "Shop Owner");
+            }
         }
     }
 }
