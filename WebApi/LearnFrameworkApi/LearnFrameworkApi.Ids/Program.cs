@@ -85,14 +85,13 @@ static void SetupService(WebApplicationBuilder? builder)
     .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
     .AddDefaultTokenProviders();
 
+    //OpenIdDict
     builder.Services.Configure<IdentityOptions>(options =>
     {
         options.ClaimsIdentity.UserNameClaimType = Claims.Name;
         options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
         options.ClaimsIdentity.RoleClaimType = Claims.Role;
     });
-
-    //OpenIdDict
     builder.Services.AddOpenIddict()
 
         // Register the OpenIddict core components.
