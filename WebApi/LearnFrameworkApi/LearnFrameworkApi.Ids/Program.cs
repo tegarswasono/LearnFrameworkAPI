@@ -14,16 +14,10 @@ using LearnFrameworkApi.Ids;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
+SetupService(builder);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-builder.Host.UseSerilog();
-
-ConfigureServices(builder.Services, builder.Configuration, builder.Environment);
-
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 var app = builder.Build();
-
-SetupLogger(app.Environment);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -31,19 +25,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
-
 app.UseRouting();
-
-//app.UseForwardedHeaders(new ForwardedHeadersOptions
-//{
-//    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-//});
-
-//app.UseCors("Default");
-//app.UseAuthentication();
-
 app.UseAuthorization();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -53,43 +36,44 @@ RunMigration(app.Services);
 app.Run();
 
 
-static void SetupLogger(IWebHostEnvironment env)
+
+static void SetupService(WebApplicationBuilder? builder)
 {
+    //Serilog
+    builder!.Host.UseSerilog();
     Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Information()
-                    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                    .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
-                    .MinimumLevel.Override("System", LogEventLevel.Warning)
-                    .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
-                    .Enrich.FromLogContext()
-                    .WriteTo.Logger(x =>
-                        x.WriteTo.File(
-                            Path.Combine(env.ContentRootPath, "logs", "nc_ids.txt"),
-                            rollingInterval: RollingInterval.Day,
-                            shared: true,
-                            flushToDiskInterval: TimeSpan.FromSeconds(5)
-                        )
-                        .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Code)
-                    )
-                    .CreateLogger();
-}
+        .MinimumLevel.Information()
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+        .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+        .MinimumLevel.Override("System", LogEventLevel.Warning)
+        .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+        .Enrich.FromLogContext()
+        .WriteTo.Logger(x =>
+            x.WriteTo.File(
+                Path.Combine(builder.Environment.ContentRootPath, "logs", "nc_ids.txt"),
+                rollingInterval: RollingInterval.Day,
+                shared: true,
+                flushToDiskInterval: TimeSpan.FromSeconds(5)
+            )
+            .WriteTo.File(
+                Path.Combine(builder.Environment.ContentRootPath, "logs", "learnApiFrameworkError-.txt"),
+                rollingInterval: RollingInterval.Day,
+                shared: true,
+                flushToDiskInterval: TimeSpan.FromSeconds(5),
+                restrictedToMinimumLevel: LogEventLevel.Error
+            )
+            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Code)
+        )
+        .CreateLogger();
 
-static void ConfigureServices(IServiceCollection services, ConfigurationManager configuration, IWebHostEnvironment env)
-{
-    var connString = configuration.GetConnectionString("DefaultConnection");
-
-    // Add services to the container.
-    services
-        .AddControllersWithViews()
-        .AddRazorRuntimeCompilation();
-
-    services.AddDbContext<AppDbContext>(options =>
+    //DbContext
+    var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Services.AddDbContext<AppDbContext>(options =>
     {
         options.UseSqlServer(connString);
         options.UseOpenIddict();
     });
-
-    services.AddIdentity<AppUser, AppRole>(x =>
+    builder.Services.AddIdentity<AppUser, AppRole>(x =>
     {
         x.Password.RequireUppercase = false;
         x.Password.RequireDigit = false;
@@ -97,18 +81,19 @@ static void ConfigureServices(IServiceCollection services, ConfigurationManager 
         x.Password.RequireNonAlphanumeric = false;
         x.Password.RequireLowercase = false;
     })
-        .AddEntityFrameworkStores<AppDbContext>()
-        .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
-        .AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
+    .AddDefaultTokenProviders();
 
-    services.Configure<IdentityOptions>(options =>
+    builder.Services.Configure<IdentityOptions>(options =>
     {
         options.ClaimsIdentity.UserNameClaimType = Claims.Name;
         options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
         options.ClaimsIdentity.RoleClaimType = Claims.Role;
     });
 
-    services.AddOpenIddict()
+    //OpenIdDict
+    builder.Services.AddOpenIddict()
 
         // Register the OpenIddict core components.
         .AddCore(options =>
@@ -144,7 +129,7 @@ static void ConfigureServices(IServiceCollection services, ConfigurationManager 
                    .EnableStatusCodePagesIntegration()
                    .DisableTransportSecurityRequirement();
 
-            byte[] certificateBytes = File.ReadAllBytes(Path.Combine(env.ContentRootPath, "Certs", "newcenturyids.pfx"));
+            byte[] certificateBytes = File.ReadAllBytes(Path.Combine(builder.Environment.ContentRootPath, "Certs", "newcenturyids.pfx"));
             X509Certificate2 certificate = new X509Certificate2(certificateBytes, "WFR@indonesia123");
 
             options.AddSigningCertificate(certificate);
@@ -154,17 +139,17 @@ static void ConfigureServices(IServiceCollection services, ConfigurationManager 
             options.SetAccessTokenLifetime(TimeSpan.FromMinutes(300));
         });
 
-    services.AddCors(opt =>
+    builder.Services.AddCors(opt =>
     {
         opt.AddPolicy("Default", policy =>
         {
-            policy.WithOrigins(configuration.GetSection("AllowedOrigins").Get<string[]>()!);
+            policy.WithOrigins(builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()!);
             policy.AllowAnyHeader().AllowAnyMethod();
         });
     });
 
-    services.AddHttpContextAccessor();
-    services.AddScoped<ICurrentUserResolver, CurrentUserResolver>();
+    builder.Services.AddHttpContextAccessor();
+    builder.Services.AddScoped<ICurrentUserResolver, CurrentUserResolver>();
 }
 static void RunMigration(IServiceProvider service)
 {

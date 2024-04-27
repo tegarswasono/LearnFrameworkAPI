@@ -6,12 +6,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System.Data;
 using System.Globalization;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 var builder = WebApplication.CreateBuilder(args);
 SetupService(builder);
@@ -79,6 +82,40 @@ static void SetupService(WebApplicationBuilder? builder)
     })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+    //OpenIddict
+    builder.Services.Configure<IdentityOptions>(options =>
+    {
+        options.ClaimsIdentity.UserNameClaimType = Claims.Name;
+        options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
+        options.ClaimsIdentity.RoleClaimType = Claims.Role;
+    });
+    builder.Services.AddOpenIddict()
+        // Register the OpenIddict server components.
+        .AddValidation(options =>
+        {
+            options.UseAspNetCore();
+            options.UseSystemNetHttp();
+
+            options.SetIssuer(builder.Configuration.GetSection("AuthIssuer").Value!);
+
+            byte[] certificateBytes = System.IO.File.ReadAllBytes(Path.Combine(builder.Environment.ContentRootPath, "Certs", "newcenturyids.pfx"));
+            X509Certificate2 certificate = new X509Certificate2(certificateBytes, "WFR@indonesia123");
+            options.AddEncryptionKey(new SymmetricSecurityKey(Convert.FromBase64String("5L6Pf+hgOecJKnbqbpSIsfgobBB58CP0quZk6sV1L3s=")));
+            //options.AddEventHandler(CustomProcessRequestContext.Descriptor);
+        });
+
+    //Cors
+    builder.Services.AddCors(opt =>
+    {
+        opt.AddPolicy("Default", policy =>
+        {
+            policy.AllowCredentials();
+            policy.WithOrigins(builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()!);
+            policy.AllowAnyHeader().AllowAnyMethod();
+        });
+    });
+
 
     //service
     builder.Services.AddScoped<ICurrentUserResolver, CurrentUserResolver>();
