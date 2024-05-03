@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System.Collections.Generic;
+using System.Linq.Dynamic.Core;
 
 namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
@@ -23,12 +25,25 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet]
-        public ActionResult<List<UserModel>> Index()
+        public ActionResult<GeneralDatatableResponseModel<UserModel>> Index([FromQuery]GeneralDatatableRequestModel model)
         {
             try
             {
-                var users = _context.Users.Select(x => UserModel.Dto(x)).ToList();
-                return Ok(users);
+                var orderType = model.Descending ? "desc" : "asc";
+                string OrderBy = "Email " + orderType;
+                if (!string.IsNullOrEmpty(model.SortBy) && model.SortBy != "null")
+                {
+                    OrderBy = $"{model.SortBy} {orderType}";
+                }
+                int usersTotal = _context.Users.Count();
+                var users = _context.Users
+                    .OrderBy(OrderBy)
+                    .Skip((model.Page - 1) * model.RowsPerPage).Take(model.RowsPerPage)
+                    .Select(x => UserModel.Dto(x))
+                    .ToList();
+
+                var result = GeneralDatatableResponseModel<UserModel>.Dto(users, model, usersTotal);
+                return Ok(result);
             }
             catch (Exception ex)
             {

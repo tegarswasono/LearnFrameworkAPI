@@ -7,7 +7,8 @@ import type {
   IGeneralSuccessResponse,
   IUsersResetPasswordInput,
   IPagination,
-  IGetUserByIdOutput
+  IGetUserByIdOutput,
+  IGetUserList
 } from '../apiModel'
 import type { IGeneralDatasourceOutput } from '../datasource/IGeneralDatasourceOutput'
 
@@ -19,8 +20,23 @@ export default class UsersApi {
     this.apiHelper = inject('$apiHelper') as ApiHelper
   }
 
-  public async getAll(): Promise<any> {
-    const output = await this.apiHelper.callApi(this.endpoint, 'GET')
+  public async getAll(
+    sortBy: string,
+    descending: boolean,
+    page: number,
+    rowsPerPage: number
+  ): Promise<IGetUserList> {
+    const url =
+      this.endpoint +
+      '?sortBy=' +
+      sortBy +
+      '&descending=' +
+      descending +
+      '&page=' +
+      page +
+      '&rowsPerPage=' +
+      rowsPerPage
+    const output = await this.apiHelper.callApi(url, 'GET')
     return output
   }
 

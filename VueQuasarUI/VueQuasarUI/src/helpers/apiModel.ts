@@ -5,6 +5,17 @@ interface IBaseEntity {
   updateBy?: string
   updateAt?: Date
 }
+interface IBaseListEntity {
+  id: string
+  sortBy: string
+  descending: boolean
+  page: number
+  rowsPerPage: number
+
+  rowsNumber: number
+  createAt: Date
+  updateAt?: Date
+}
 
 interface IPagination<T> {
   total: number
@@ -101,6 +112,10 @@ interface IGetUserByIdOutput extends IBaseEntity {
   attachmentUrl: string | null
 }
 
+interface IGetUserList extends IBaseListEntity {
+  result: IUsersOutput[]
+}
+
 export type {
   IProfileChangeFullnameInput,
   IProfileChangePasswordInput,
@@ -116,5 +131,6 @@ export type {
   IGeneralIdInput,
   IGeneralSuccessResponse,
   IProfileUserOutput,
-  IGetUserByIdOutput
+  IGetUserByIdOutput,
+  IGetUserList
 }
