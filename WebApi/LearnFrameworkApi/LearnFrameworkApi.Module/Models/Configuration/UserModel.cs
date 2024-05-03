@@ -1,4 +1,5 @@
-﻿using LearnFrameworkApi.Module.Helpers.CustomAttribute;
+﻿using LearnFrameworkApi.Module.Datas.Entities.Configuration;
+using LearnFrameworkApi.Module.Helpers.CustomAttribute;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,6 +16,21 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public string? Email { get; set; }
         public string FullName { get; set; } = string.Empty;
         public bool IsActive { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public static UserModel Dto(AppUser data)
+        {
+            return new UserModel
+            {
+                Id = data.Id,
+                Username = data.UserName,
+                Email = data.Email,
+                FullName = data.FullName,
+                IsActive = data.IsActive,
+                CreatedAt = data.CreatedAt,
+                UpdatedAt = data.UpdatedAt
+            };
+        }
     }
     public class UserCreateModel
     {

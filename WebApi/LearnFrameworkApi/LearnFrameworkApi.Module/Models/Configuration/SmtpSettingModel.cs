@@ -15,6 +15,8 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public string SmtpUser { get; set; } = string.Empty;
         public string SmtpPassword { get; set; } = string.Empty;
         public bool SmtpIsUseSsl { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public static SmtpSettingModel Dto(SmtpSetting model)
         {
             return new SmtpSettingModel()

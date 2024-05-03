@@ -18,11 +18,15 @@ onMounted(async () => {
   await getData()
 })
 
+//table
 const columns = [
   { name: 'email', label: 'Email', field: 'email', sortable: true, align: 'left' },
   { name: 'fullname', label: 'Fullname', field: 'fullName', sortable: true, align: 'left' },
   { name: 'active', label: 'Active', field: 'isActive', sortable: true, align: 'left' }
 ]
+const initialPagination = {
+  rowsPerPage: 20
+}
 </script>
 
 <template>
@@ -31,16 +35,19 @@ const columns = [
     <q-breadcrumbs-el label="Configuration" icon="widgets" />
     <q-breadcrumbs-el label="User" />
   </q-breadcrumbs>
-  <q-table title="User" :rows="users" :columns="columns" row-key="name">
-    <template v-slot:top>
-      <q-btn
-        color="primary"
-        icon="add"
-        size="sm"
-        label="Add"
-        @click="addRow"
-        style="padding-top: 7px"
-      />
-    </template>
-  </q-table>
+  <div>
+    <q-table
+      title="User"
+      :rows="users"
+      :columns="columns"
+      row-key="name"
+      separator="cell"
+      :pagination="initialPagination"
+      dense
+    >
+      <template v-slot:top>
+        <q-btn color="primary" icon="add" size="sm" label="Add" @click="addRow" />
+      </template>
+    </q-table>
+  </div>
 </template>

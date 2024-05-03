@@ -19,11 +19,7 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public decimal Price { get; set; }
         public Guid CategoryId { get; set; }
         public CategoryModel Category { get; set; } = null!;
-
-        //audit
-        public string CreatedBy { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
-        public string UpdatedBy { get; set; } = string.Empty;
         public DateTime? UpdatedAt { get; set; }
 
         public static ProductModel Dto(Product model)
@@ -37,10 +33,7 @@ namespace LearnFrameworkApi.Module.Models.Configuration
                 Price = model.Price,
                 CategoryId = model.CategoryId,
                 Category = CategoryModel.Dto(model.Category),
-
-                CreatedBy = model.CreatedBy,
                 CreatedAt = model.CreatedAt,
-                UpdatedBy = model.UpdatedBy,
                 UpdatedAt = model.UpdatedAt,
             };
         }

@@ -27,14 +27,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         {
             try
             {
-                var users = _context.Users.Select(x => new UserModel()
-                {
-                    Id = x.Id,
-                    Username = x.UserName,
-                    Email = x.Email,
-                    FullName = x.FullName,
-                    IsActive = x.IsActive
-                }).ToList();
+                var users = _context.Users.Select(x => UserModel.Dto(x)).ToList();
                 return Ok(users);
             }
             catch (Exception ex)
@@ -49,14 +42,9 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         {
             try
             {
-                var user = _context.Users.Select(x => new UserModel() 
-                {
-                    Id = x.Id,
-                    Username = x.UserName,
-                    Email = x.Email,
-                    FullName = x.FullName,
-                    IsActive = x.IsActive
-                }).FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
+                var user = _context.Users
+                    .Select(x => UserModel.Dto(x))
+                    .FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
                 return Ok(user);
             }
             catch (Exception ex)

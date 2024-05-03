@@ -11,6 +11,8 @@ namespace LearnFrameworkApi.Module.Models.Configuration
     public class SystemConfigurationModel
     {
         public string ExampleSetting { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public static SystemConfigurationModel Dto(SystemConfiguration entity)
         {
             return new SystemConfigurationModel()
