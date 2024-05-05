@@ -25,7 +25,9 @@ namespace LearnFrameworkApi.Module.Models.Configuration
                 SmtpPort = model.SmtpPort,
                 SmtpUser = model.SmtpUser,
                 SmtpPassword = model.SmtpPassword,
-                SmtpIsUseSsl = model.SmtpIsUseSsl
+                SmtpIsUseSsl = model.SmtpIsUseSsl,
+                CreatedAt = model.CreatedAt,
+                UpdatedAt = model.UpdatedAt
             };
         }
     }

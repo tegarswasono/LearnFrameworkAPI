@@ -20,17 +20,17 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public string ActiveInString { get { return Active.ActiveToString(); } }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public static UserModel Dto(AppUser data)
+        public static UserModel Dto(AppUser model)
         {
             return new UserModel
             {
-                Id = data.Id,
-                Username = data.UserName,
-                Email = data.Email,
-                FullName = data.FullName,
-                Active = data.Active,
-                CreatedAt = data.CreatedAt,
-                UpdatedAt = data.UpdatedAt
+                Id = model.Id,
+                Username = model.UserName,
+                Email = model.Email,
+                FullName = model.FullName,
+                Active = model.Active,
+                CreatedAt = model.CreatedAt,
+                UpdatedAt = model.UpdatedAt
             };
         }
     }

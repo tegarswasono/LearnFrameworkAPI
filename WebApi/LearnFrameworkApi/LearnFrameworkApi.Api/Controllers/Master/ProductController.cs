@@ -89,7 +89,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             }
         }
 
-        [HttpPost("Update")]
+        [HttpPut("Update")]
         public ActionResult<GeneralResponseMessage> Update(ProductUpdateModel model)
         {
             try

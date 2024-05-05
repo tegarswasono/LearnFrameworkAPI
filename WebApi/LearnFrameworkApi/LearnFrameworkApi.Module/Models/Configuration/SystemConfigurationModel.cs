@@ -13,11 +13,13 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public string ExampleSetting { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public static SystemConfigurationModel Dto(SystemConfiguration entity)
+        public static SystemConfigurationModel Dto(SystemConfiguration model)
         {
             return new SystemConfigurationModel()
             {
-                ExampleSetting = entity.ExampleSetting
+                ExampleSetting = model.ExampleSetting,
+                CreatedAt = model.CreatedAt,
+                UpdatedAt = model.UpdatedAt,
             };
         }
     }
