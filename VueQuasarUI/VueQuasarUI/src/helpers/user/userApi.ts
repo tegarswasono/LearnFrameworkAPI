@@ -1,18 +1,9 @@
 import { inject } from 'vue'
 import ApiHelper from '../apiHelper'
-import type {
-  ICreateUsersInput,
-  IUsersOutput,
-  IUpdateUsersInput,
-  IGeneralSuccessResponse,
-  IUsersResetPasswordInput,
-  IPagination,
-  IGetUserByIdOutput,
-  IGetUserList
-} from '../apiModel'
-import type { IGeneralDatasourceOutput } from '../datasource/IGeneralDatasourceOutput'
+import type { IPagination, IGeneralSuccessResponse } from '../apiModel'
+import type { IUserModel, IUserModelCreateOrUpdate } from '../user/userModel'
 
-export default class UsersApi {
+export class UserApi {
   private apiHelper: ApiHelper
   private endpoint: string = 'configuration/User'
 
@@ -25,7 +16,7 @@ export default class UsersApi {
     descending: boolean,
     page: number,
     rowsPerPage: number
-  ): Promise<IGetUserList> {
+  ): Promise<IPagination<IUserModel>> {
     const url =
       this.endpoint +
       '?sortBy=' +
@@ -40,17 +31,17 @@ export default class UsersApi {
     return output
   }
 
-  public async getById(id: string): Promise<IGetUserByIdOutput> {
+  public async getById(id: string): Promise<IUserModel> {
     const output = await this.apiHelper.callApi(this.endpoint + '/' + id, 'GET')
     return output
   }
 
-  public async create(input: ICreateUsersInput): Promise<IGeneralSuccessResponse> {
+  public async create(input: IUserModelCreateOrUpdate): Promise<IGeneralSuccessResponse> {
     const output = await this.apiHelper.callApi(this.endpoint + '/Create', 'POST', input)
     return output
   }
 
-  public async update(input: IUpdateUsersInput): Promise<IGeneralSuccessResponse> {
+  public async update(input: IUserModelCreateOrUpdate): Promise<IGeneralSuccessResponse> {
     const output = await this.apiHelper.callApi(this.endpoint + '/Update', 'PUT', input)
     return output
   }

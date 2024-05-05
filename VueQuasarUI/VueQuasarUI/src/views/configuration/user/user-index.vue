@@ -1,21 +1,18 @@
-<script setup>
-import { onMounted, ref } from 'vue'
-import UsersApi from '@/helpers/user/userApi'
+<script setup lang="ts">
+import { onMounted, ref, type Ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
+import { UserApi } from '@/helpers/user/userApi'
+//import { IPagination } from '@/helpers/apiModel'
+import type { IUserModel, IUserModelCreateOrUpdate } from '@/helpers/user/userModel'
 
 const $q = useQuasar()
 const router = useRouter()
-const usersApi = new UsersApi()
+const userApi = new UserApi()
 
-const users = ref([])
+//listview
+const users = ref()
 const user = ref()
-
-onMounted(async () => {
-  await getData()
-})
-
-//table
 const columns = [
   { name: 'actions', label: '', align: 'left', style: 'width:50px;' },
   { name: 'email', label: 'Email', field: 'email', sortable: true, align: 'left' },
@@ -32,7 +29,7 @@ const pagination = ref({
 })
 const getData = async () => {
   loading.value = true
-  var response = await usersApi.getAll(
+  var response = await userApi.getAll(
     pagination.value.sortBy,
     pagination.value.descending,
     pagination.value.page,
@@ -42,7 +39,7 @@ const getData = async () => {
   pagination.value.rowsNumber = response.rowsNumber
   loading.value = false
 }
-const OnRequest = async (props) => {
+const OnRequest = async (props: any) => {
   const { page, rowsPerPage, sortBy, descending } = props.pagination
   pagination.value.sortBy = sortBy
   pagination.value.descending = descending
@@ -51,8 +48,55 @@ const OnRequest = async (props) => {
   await getData()
 }
 
-//AddEdit
+//Add, Edit, Delete
 const dialog = ref(false)
+const dialogTitle = ref('Add User')
+const emptyModel = {
+  id: '',
+  email: '',
+  fullName: '',
+  isActive: true
+}
+const model: Ref<IUserModelCreateOrUpdate> = ref(emptyModel)
+const onAdd = () => {
+  dialog.value = true
+  dialogTitle.value = 'Add User'
+  model.value = emptyModel
+}
+const onView = async (row: any) => {
+  dialogTitle.value = 'View User'
+  dialog.value = true
+  model.value = row
+}
+const onEdit = async (row: any) => {
+  dialogTitle.value = 'Edit User'
+  dialog.value = true
+  model.value = row
+}
+const onDelete = async (id: string) => {
+  $q.dialog({
+    title: '',
+    message: 'Are you sure want to delete this data?',
+    cancel: true,
+    color: 'dark'
+  })
+    .onOk(async () => {
+      let output = await userApi.delete(id)
+      if (output) {
+        $q.notify({
+          type: 'positive',
+          message: output.message,
+          position: 'bottom-right'
+        })
+      }
+    })
+    .onCancel(() => {})
+}
+
+//onMounted
+onMounted(async () => {
+  await getData()
+})
 </script>
 
 <template>
@@ -76,53 +120,69 @@ const dialog = ref(false)
       @request="OnRequest"
     >
       <template v-slot:top>
-        <q-btn icon="add" size="sm" label="Add" color="primary" @click="dialog = true" />
+        <q-btn icon="add" size="sm" label="Add" color="primary" @click="onAdd" />
       </template>
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn dense round flat color="grey" size="xs" icon="visibility"></q-btn>
-          <q-btn dense round flat color="grey" size="xs" icon="edit"></q-btn>
-          <q-btn dense round flat color="grey" size="xs" icon="delete"></q-btn>
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            size="xs"
+            icon="visibility"
+            @click="onView(props.row)"
+          ></q-btn>
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            size="xs"
+            icon="edit"
+            @click="onEdit(props.row)"
+          ></q-btn>
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            size="xs"
+            icon="delete"
+            @click="onDelete(props.row.id)"
+          ></q-btn>
         </q-td>
       </template>
     </q-table>
   </div>
   <!-- dialog -->
-  <q-dialog v-model="dialog" persistent backdrop-filter="blur(4px) saturate(150%)">
+  <q-dialog v-model="dialog" backdrop-filter="blur(4px) saturate(150%)">
     <q-card style="width: 700px; max-width: 80vw">
       <q-card-section>
-        <div class="text-h6">Add User</div>
+        <div class="text-h6">{{ dialogTitle }}</div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+        <q-form @submit="onSubmit" class="q-gutter-md">
           <q-input
             filled
-            v-model="name"
-            label="Your name *"
-            hint="Name and surname"
+            v-model="model.email"
+            label="Email *"
             lazy-rules
-            :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+            dense
+            maxlength="512"
+            :rules="[(val) => (val && val.length > 0) || 'Email is required']"
           />
-
           <q-input
             filled
-            type="number"
-            v-model="age"
-            label="Your age *"
+            v-model="model.fullName"
+            label="FullName *"
             lazy-rules
-            :rules="[
-              (val) => (val !== null && val !== '') || 'Please type your age',
-              (val) => (val > 0 && val < 100) || 'Please type a real age'
-            ]"
+            dense
+            maxlength="50"
+            :rules="[(val) => (val && val.length > 0) || 'FullName is required']"
           />
-
-          <q-toggle v-model="accept" label="I accept the license and terms" />
-
-          <div>
-            <q-btn label="Submit" type="submit" color="primary" />
-            <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-          </div>
+          <q-toggle v-model="model.isActive" label="Is Active" />
         </q-form>
       </q-card-section>
 
