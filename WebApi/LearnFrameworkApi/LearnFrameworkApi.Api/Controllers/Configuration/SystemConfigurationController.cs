@@ -34,7 +34,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             }
         }
 
-        [HttpPost("CreateOrUpdate")]
+        [HttpPut("CreateOrUpdate")]
         public ActionResult<GeneralResponseMessage> CreateOrUpdate(SystemConfigurationModelCreateOrUpdate model)
         {
             try
