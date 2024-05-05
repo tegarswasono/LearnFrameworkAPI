@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System.Linq.Dynamic.Core;
 
 namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
@@ -23,12 +24,25 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet]
-        public ActionResult<List<RoleModel>> Index()
+        public ActionResult<GeneralDatatableResponseModel<RoleModel>> Index([FromQuery] GeneralDatatableRequestModel model)
         {
             try
             {
-                var roles = _context.Roles.Select(x => new RoleModel() { Id = x.Id, Name = x.Name }).ToList();
-                return Ok(roles);
+                var orderType = model.Descending ? "desc" : "asc";
+                string OrderBy = "Email " + orderType;
+                if (!string.IsNullOrEmpty(model.SortBy) && model.SortBy != "null")
+                {
+                    OrderBy = $"{model.SortBy} {orderType}";
+                }
+                int total = _context.Roles.Count();
+                var roles = _context.Roles
+                    .OrderBy(OrderBy)
+                    .Skip((model.Page - 1) * model.RowsPerPage).Take(model.RowsPerPage)
+                    .Select(x => RoleModel.Dto(x))
+                    .ToList();
+
+                var result = GeneralDatatableResponseModel<RoleModel>.Dto(roles, model, total);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -42,8 +56,8 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         {
             try
             {
-                var role = _context.Roles.Select(x => new RoleModel() { Id = x.Id, Name = x.Name }).FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
-                return Ok(role);
+                var role = _context.Roles.FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
+                return Ok(RoleModel.Dto(role));
             }
             catch (Exception ex)
             {
@@ -79,7 +93,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             }
         }
 
-        [HttpPost("Update")]
+        [HttpPut("Update")]
         public async Task<ActionResult<GeneralResponseMessage>> Update(RoleUpdateModel model)
         {
             try

@@ -1,11 +1,11 @@
 import { inject } from 'vue'
 import ApiHelper from '../apiHelper'
 import type { IPagination, IGeneralSuccessResponse } from '../apiModel'
-import type { IUserModel, IUserModelCreateOrUpdate } from './userModel'
+import type { IRoleModel, IRoleModelCreateOrUpdate } from './roleModel'
 
-export class UserApi {
+export class RoleApi {
   private apiHelper: ApiHelper
-  private endpoint: string = 'configuration/User'
+  private endpoint: string = 'configuration/Role'
 
   constructor() {
     this.apiHelper = inject('$apiHelper') as ApiHelper
@@ -16,7 +16,7 @@ export class UserApi {
     descending: boolean,
     page: number,
     rowsPerPage: number
-  ): Promise<IPagination<IUserModel>> {
+  ): Promise<IPagination<IRoleModel>> {
     const url =
       this.endpoint +
       '?sortBy=' +
@@ -31,17 +31,17 @@ export class UserApi {
     return output
   }
 
-  public async getById(id: string): Promise<IUserModel> {
+  public async getById(id: string): Promise<IRoleModel> {
     const output = await this.apiHelper.callApi(this.endpoint + '/' + id, 'GET')
     return output
   }
 
-  public async create(input: IUserModelCreateOrUpdate): Promise<IGeneralSuccessResponse> {
+  public async create(input: IRoleModelCreateOrUpdate): Promise<IGeneralSuccessResponse> {
     const output = await this.apiHelper.callApi(this.endpoint + '/Create', 'POST', input)
     return output
   }
 
-  public async update(input: IUserModelCreateOrUpdate): Promise<IGeneralSuccessResponse> {
+  public async update(input: IRoleModelCreateOrUpdate): Promise<IGeneralSuccessResponse> {
     const output = await this.apiHelper.callApi(this.endpoint + '/Update', 'PUT', input)
     return output
   }
@@ -53,19 +53,4 @@ export class UserApi {
     )
     return output
   }
-
-  //   public async resetPassword(model: IUsersResetPasswordInput): Promise<IGeneralSuccessResponse> {
-  //     var output = await this.apiHelper.callApi(this.endpoint + '/ResetPassword', 'POST', model)
-  //     return output
-  //   }
-
-  //   public async getRolesDatasource(): Promise<IGeneralDatasourceOutput[]> {
-  //     var output = await this.apiHelper.callApi(this.endpoint + '/Datasources/Roles', 'GET')
-  //     return output
-  //   }
-
-  //   public async getActionRolesDatasource(): Promise<IGeneralDatasourceOutput[]> {
-  //     var output = await this.apiHelper.callApi(this.endpoint + '/Datasources/ActionRoles', 'GET')
-  //     return output
-  //   }
 }

@@ -1,4 +1,5 @@
-﻿using LearnFrameworkApi.Module.Helpers.CustomAttribute;
+﻿using LearnFrameworkApi.Module.Datas.Entities.Configuration;
+using LearnFrameworkApi.Module.Helpers.CustomAttribute;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +15,10 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public string? Name { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public static RoleModel Dto(AppRole model) 
+        { 
+            return new RoleModel() { Id = model.Id, Name = model.Name, CreatedAt = model.CreatedAt, UpdatedAt = model.UpdatedAt };
+        }
     }
     public class RoleCreateModel
     {

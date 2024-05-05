@@ -35,14 +35,14 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                 {
                     OrderBy = $"{model.SortBy} {orderType}";
                 }
-                int usersTotal = _context.Users.Count();
+                int total = _context.Users.Count();
                 var users = _context.Users
                     .OrderBy(OrderBy)
                     .Skip((model.Page - 1) * model.RowsPerPage).Take(model.RowsPerPage)
                     .Select(x => UserModel.Dto(x))
                     .ToList();
 
-                var result = GeneralDatatableResponseModel<UserModel>.Dto(users, model, usersTotal);
+                var result = GeneralDatatableResponseModel<UserModel>.Dto(users, model, total);
                 return Ok(result);
             }
             catch (Exception ex)
