@@ -1,23 +1,18 @@
 <script setup lang="ts">
 import { onMounted, ref, type Ref } from 'vue'
-import { useQuasar } from 'quasar'
+import { useQuasar, QForm } from 'quasar'
+import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 import { useRouter } from 'vue-router'
-import { UserApi } from '@/helpers/user/userApi'
 //import { IPagination } from '@/helpers/apiModel'
 import type { IUserModel, IUserModelCreateOrUpdate } from '@/helpers/user/userModel'
+import { UserApi } from '@/helpers/user/userApi'
 
 const quasar = useQuasar()
 const userApi = new UserApi()
 
 //listview
-const users = ref()
-const columns = [
-  { name: 'actions', label: '', align: 'left', style: 'width:50px;' },
-  { name: 'email', label: 'Email', field: 'email', sortable: true, align: 'left' },
-  { name: 'fullname', label: 'Fullname', field: 'fullName', sortable: true, align: 'left' },
-  { name: 'active', label: 'Active', field: 'activeInString', sortable: true, align: 'left' }
-]
 const loading = ref(false)
+const users = ref()
 const pagination = ref({
   sortBy: 'email',
   descending: false,
@@ -25,6 +20,12 @@ const pagination = ref({
   rowsPerPage: 20,
   rowsNumber: 0
 })
+const columns = [
+  { name: 'actions', label: '', align: 'left', style: 'width:50px;' },
+  { name: 'email', label: 'Email', field: 'email', sortable: true, align: 'left' },
+  { name: 'fullname', label: 'Fullname', field: 'fullName', sortable: true, align: 'left' },
+  { name: 'active', label: 'Active', field: 'activeInString', sortable: true, align: 'left' }
+]
 const getData = async () => {
   loading.value = true
   var response = await userApi.getAll(
@@ -56,6 +57,7 @@ const emptyModel = {
   active: true
 }
 const model: Ref<IUserModelCreateOrUpdate> = ref(emptyModel)
+const formRef: Ref<QForm | null> = ref(null)
 const onAdd = () => {
   dialog.value = true
   dialogTitle.value = 'Add User'
@@ -91,6 +93,34 @@ const onDelete = async (id: string) => {
       await getData()
     })
     .onCancel(() => {})
+}
+const onSubmit = async () => {
+  let isValid = await formFieldValidationHelper(formRef)
+  if (isValid) {
+    if (model.value.id) {
+      let output = await userApi.update(model.value)
+      if (output) {
+        quasar.notify({
+          type: 'positive',
+          message: output.message,
+          position: 'bottom-right'
+        })
+        dialog.value = false
+        await getData()
+      }
+    } else {
+      let output = await userApi.create(model.value)
+      if (output) {
+        quasar.notify({
+          type: 'positive',
+          message: output.message,
+          position: 'bottom-right'
+        })
+        dialog.value = false
+        await getData()
+      }
+    }
+  }
 }
 
 //onMounted
@@ -162,11 +192,12 @@ onMounted(async () => {
         <div class="text-h6">{{ dialogTitle }}</div>
       </q-card-section>
 
-      <q-card-section class="q-pt-none">
-        <q-form @submit="onSubmit" class="q-gutter-md">
+      <q-form ref="formRef" class="q-gutter-md">
+        <q-card-section class="q-pt-none">
           <q-input
             filled
             v-model="model.email"
+            type="email"
             label="Email *"
             lazy-rules
             dense
@@ -183,13 +214,12 @@ onMounted(async () => {
             :rules="[(val) => (val && val.length > 0) || 'FullName is required']"
           />
           <q-toggle v-model="model.active" label="Is Active" />
-        </q-form>
-      </q-card-section>
-
-      <q-card-actions align="right" class="bg-white text-teal">
-        <q-btn flat label="Cancel" color="primary" v-close-popup />
-        <q-btn flat label="Submit" color="primary" v-close-popup />
-      </q-card-actions>
+        </q-card-section>
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat label="Submit" color="primary" :onclick="onSubmit" />
+        </q-card-actions>
+      </q-form>
     </q-card>
   </q-dialog>
 </template>

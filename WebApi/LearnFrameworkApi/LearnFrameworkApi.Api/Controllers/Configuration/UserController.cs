@@ -99,7 +99,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             }
         }
 
-        [HttpPost("Update")]
+        [HttpPut("Update")]
         public async Task<ActionResult<GeneralResponseMessage>> Update(UserUpdateModel model)
         {
             try
