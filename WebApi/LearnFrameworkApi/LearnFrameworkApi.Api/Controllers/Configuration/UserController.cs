@@ -86,7 +86,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                     UserName = model.Email,
 
                     FullName = model.FullName,
-                    IsActive = model.IsActive,
+                    Active = model.Active,
                 };
 
                 await _userManager.CreateAsync(user, model.Password);
@@ -115,7 +115,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                 user.Email = model.Email;
                 user.UserName = model.Email;
                 user.FullName = model.FullName;
-                user.IsActive = model.IsActive;
+                user.Active = model.Active;
 
                 await _userManager.UpdateAsync(user);
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());

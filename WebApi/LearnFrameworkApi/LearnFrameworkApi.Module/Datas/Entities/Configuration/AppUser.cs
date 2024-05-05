@@ -12,7 +12,7 @@ namespace LearnFrameworkApi.Module.Datas.Entities.Configuration
     {
         [MaxLength(50)]
         public string FullName { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
+        public bool Active { get; set; }
 
         [MaxLength(100)]
         public string CreatedBy { get; set; } = string.Empty;

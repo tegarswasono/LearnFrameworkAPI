@@ -119,7 +119,7 @@ export default class apiHelper {
               const errorMessage = errorResponse.data.messages
               result = errorMessage.join('\n')
             } else {
-              result = errorResponse.data
+              result = errorResponse.data.message
             }
 
             Notify.create({

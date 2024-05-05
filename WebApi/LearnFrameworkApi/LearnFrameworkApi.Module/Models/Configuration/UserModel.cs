@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LearnFrameworkApi.Module.Helpers;
 
 namespace LearnFrameworkApi.Module.Models.Configuration
 {
@@ -15,7 +16,8 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public string? Username { get; set; }
         public string? Email { get; set; }
         public string FullName { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
+        public bool Active { get; set; }
+        public string ActiveInString { get { return Active.ActiveToString(); } }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public static UserModel Dto(AppUser data)
@@ -26,7 +28,7 @@ namespace LearnFrameworkApi.Module.Models.Configuration
                 Username = data.UserName,
                 Email = data.Email,
                 FullName = data.FullName,
-                IsActive = data.IsActive,
+                Active = data.Active,
                 CreatedAt = data.CreatedAt,
                 UpdatedAt = data.UpdatedAt
             };
@@ -40,7 +42,7 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         [Required]
         [MaxLength(50)]
         public string FullName { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
+        public bool Active { get; set; }
     }
     public class UserUpdateModel : UserCreateModel
     {

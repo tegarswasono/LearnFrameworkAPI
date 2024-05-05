@@ -3,13 +3,14 @@ interface IUserModel extends IBaseEntity {
   username: string
   email: string
   fullName: string
-  isActive: boolean
+  active: boolean
+  activeInString: string
 }
 interface IUserModelCreateOrUpdate {
   id: string
   email: string
   fullName: string
-  isActive: boolean
+  active: boolean
 }
 
 export type { IUserModel, IUserModelCreateOrUpdate }

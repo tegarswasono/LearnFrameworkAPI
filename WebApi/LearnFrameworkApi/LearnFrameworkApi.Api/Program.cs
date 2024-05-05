@@ -1,6 +1,7 @@
 using LearnFrameworkApi.Api.Helpers;
 using LearnFrameworkApi.Module.Datas;
 using LearnFrameworkApi.Module.Datas.Entities.Configuration;
+using LearnFrameworkApi.Module.Helpers;
 using LearnFrameworkApi.Module.Services.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -73,7 +74,12 @@ static void SetupService(WebApplicationBuilder? builder)
         .CreateLogger();
 
     //DbContext
-    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        options.UseSqlServer(connString);
+        options.UseOpenIddict();
+    });
     builder.Services.AddIdentity<AppUser, AppRole>(x =>
     {
         x.Password.RequireUppercase = false;
@@ -83,6 +89,7 @@ static void SetupService(WebApplicationBuilder? builder)
         x.Password.RequireLowercase = false;
     })
     .AddEntityFrameworkStores<AppDbContext>()
+    .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
     .AddDefaultTokenProviders();
 
     //OpenIddict

@@ -48,7 +48,7 @@ export class UserApi {
 
   public async delete(id: string): Promise<IGeneralSuccessResponse> {
     const output: IGeneralSuccessResponse = await this.apiHelper.callApi(
-      this.endpoint + `/${id}/delete`,
+      this.endpoint + `/${id}`,
       'DELETE'
     )
     return output

@@ -300,21 +300,21 @@ namespace LearnFrameworkApi.Api.Controllers
                     Email = "tegar.s@weefer.co.id",
                     UserName = "tegar.s@weefer.co.id",
                     FullName = "Administrator",
-                    IsActive = true,
+                    Active = true,
                 };
                 var appUser2 = new AppUser()
                 {
                     Email = "buyer@gmail.com",
                     UserName = "buyer@gmail.com",
                     FullName = "Buyer",
-                    IsActive = true,
+                    Active = true,
                 };
                 var appUser3 = new AppUser()
                 {
                     Email = "shopOwner@gmail.com",
                     UserName = "shopOwner@gmail.com",
                     FullName = "Shop Owner",
-                    IsActive = true,
+                    Active = true,
                 };
 
                 await _userManager.CreateAsync(appUser1, "Admin1234!");

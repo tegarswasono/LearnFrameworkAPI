@@ -6,18 +6,16 @@ import { UserApi } from '@/helpers/user/userApi'
 //import { IPagination } from '@/helpers/apiModel'
 import type { IUserModel, IUserModelCreateOrUpdate } from '@/helpers/user/userModel'
 
-const $q = useQuasar()
-const router = useRouter()
+const quasar = useQuasar()
 const userApi = new UserApi()
 
 //listview
 const users = ref()
-const user = ref()
 const columns = [
   { name: 'actions', label: '', align: 'left', style: 'width:50px;' },
   { name: 'email', label: 'Email', field: 'email', sortable: true, align: 'left' },
   { name: 'fullname', label: 'Fullname', field: 'fullName', sortable: true, align: 'left' },
-  { name: 'isActive', label: 'Active', field: 'isActive', sortable: true, align: 'left' }
+  { name: 'active', label: 'Active', field: 'activeInString', sortable: true, align: 'left' }
 ]
 const loading = ref(false)
 const pagination = ref({
@@ -55,7 +53,7 @@ const emptyModel = {
   id: '',
   email: '',
   fullName: '',
-  isActive: true
+  active: true
 }
 const model: Ref<IUserModelCreateOrUpdate> = ref(emptyModel)
 const onAdd = () => {
@@ -74,21 +72,23 @@ const onEdit = async (row: any) => {
   model.value = row
 }
 const onDelete = async (id: string) => {
-  $q.dialog({
-    title: '',
-    message: 'Are you sure want to delete this data?',
-    cancel: true,
-    color: 'dark'
-  })
+  quasar
+    .dialog({
+      title: '',
+      message: 'Are you sure want to delete this data?',
+      cancel: true,
+      color: 'primary'
+    })
     .onOk(async () => {
       let output = await userApi.delete(id)
       if (output) {
-        $q.notify({
+        quasar.notify({
           type: 'positive',
           message: output.message,
           position: 'bottom-right'
         })
       }
+      await getData()
     })
     .onCancel(() => {})
 }
@@ -182,7 +182,7 @@ onMounted(async () => {
             maxlength="50"
             :rules="[(val) => (val && val.length > 0) || 'FullName is required']"
           />
-          <q-toggle v-model="model.isActive" label="Is Active" />
+          <q-toggle v-model="model.active" label="Is Active" />
         </q-form>
       </q-card-section>
 
