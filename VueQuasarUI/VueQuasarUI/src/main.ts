@@ -1,5 +1,3 @@
-// import './assets/main.css'
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -7,7 +5,7 @@ import App from './App.vue'
 import router from './router'
 import { Quasar } from 'quasar'
 import quasarUserOptions from './quasar-user-options'
-import ApiHelper from './helpers/apiHelper'
+import ApiHelper from './helpers/api/apiHelper'
 
 const app = createApp(App)
 const apiHelper = new ApiHelper()

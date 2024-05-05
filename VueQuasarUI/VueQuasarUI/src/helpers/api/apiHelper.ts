@@ -1,5 +1,5 @@
 import { Notify, Loading } from 'quasar'
-import router from '../router/index'
+import router from '@/router/index'
 import { inject } from 'vue'
 // import AuthService from '../authService'
 import axios, { type AxiosResponse, AxiosError } from 'axios'

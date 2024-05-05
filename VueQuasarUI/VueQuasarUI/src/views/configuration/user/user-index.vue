@@ -2,10 +2,8 @@
 import { onMounted, ref, type Ref } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
-import { useRouter } from 'vue-router'
-//import { IPagination } from '@/helpers/apiModel'
-import type { IUserModel, IUserModelCreateOrUpdate } from '@/helpers/user/userModel'
-import { UserApi } from '@/helpers/user/userApi'
+import type { IUserModelCreateOrUpdate } from '@/helpers/api/user/userModel'
+import { UserApi } from '@/helpers/api/user/userApi'
 
 const quasar = useQuasar()
 const userApi = new UserApi()
@@ -20,7 +18,7 @@ const pagination = ref({
   rowsPerPage: 20,
   rowsNumber: 0
 })
-const columns = [
+const columns: any = [
   { name: 'actions', label: '', align: 'left', style: 'width:50px;' },
   { name: 'email', label: 'Email', field: 'email', sortable: true, align: 'left' },
   { name: 'fullname', label: 'Fullname', field: 'fullName', sortable: true, align: 'left' },

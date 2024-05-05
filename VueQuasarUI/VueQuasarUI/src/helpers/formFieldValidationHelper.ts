@@ -1,6 +1,6 @@
-const formFieldValidationHelper = async (formRef) => {
+const formFieldValidationHelper = async (formRef: any) => {
   const validationResults = await Promise.all(
-    formRef.value.getValidationComponents().map(async (field) => {
+    formRef.value.getValidationComponents().map(async (field: any) => {
       const isValid = await field.validate()
       return { field, isValid }
     })
