@@ -140,7 +140,7 @@ onMounted(async () => {
   <!-- breadcrumbs -->
   <q-breadcrumbs style="margin-bottom: 30px">
     <q-breadcrumbs-el label="Home" icon="home" />
-    <q-breadcrumbs-el label="Configuration" icon="widgets" />
+    <q-breadcrumbs-el label="Configuration" icon="settings" />
     <q-breadcrumbs-el label="Role" />
   </q-breadcrumbs>
   <!-- table -->

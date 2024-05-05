@@ -29,7 +29,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             try
             {
                 var orderType = model.Descending ? "desc" : "asc";
-                string OrderBy = "Email " + orderType;
+                string OrderBy = "Name " + orderType;
                 if (!string.IsNullOrEmpty(model.SortBy) && model.SortBy != "null")
                 {
                     OrderBy = $"{model.SortBy} {orderType}";

@@ -79,6 +79,12 @@
               <q-item-section> SMTP Setting </q-item-section>
             </q-item>
           </q-expansion-item>
+          <q-item clickable v-ripple :to="{ name: 'myprofileindex' }">
+            <q-item-section avatar>
+              <q-icon name="person" />
+            </q-item-section>
+            <q-item-section style="font-size:"> My Profile</q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
 
@@ -98,14 +104,8 @@
           </div>
           <!-- <div style="font-size: x-small">17-03-2024 12:19</div> -->
           <div style="font-size: smaller; margin-top: 5px">
-            <router-link
-              :to="{ name: 'myprofileindex' }"
-              style="color: white; text-decoration: none"
-              >My Profile</router-link
-            >
-            |
             <router-link :to="{ name: 'loginindex' }" style="color: white; text-decoration: none"
-              >Logout</router-link
+              ><q-icon name="logout" /> Logout</router-link
             >
           </div>
         </div>
