@@ -59,7 +59,7 @@ onMounted(async () => {
       <div class="row q-ml-auto">
         <div class="col-12 q-px-sm flex justify-end">
           <q-btn
-            label="Submit"
+            label="Save"
             color="primary"
             icon="save"
             style="padding-left: 10px; padding-right: 10px"

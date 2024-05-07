@@ -164,3 +164,8 @@ function fullScreenToggle() {
   this.fullscreen = !this.fullscreen
 }
 </script>
+<style>
+.textarea-no-resize textarea {
+  resize: none !important; /* Menonaktifkan resize */
+}
+</style>

@@ -46,7 +46,6 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public string Name { get; set; } = string.Empty;
         [MaxLength(300)]
         public string Description { get; set; } = string.Empty;
-        [Range(1, int.MaxValue, ErrorMessage = "Stok " + ConstantString.ShouldBeBiggerThan0)]
         public int Stok { get; set; }
         [Precision(18, 2)]
         [Range(1, int.MaxValue, ErrorMessage = "Price " + ConstantString.ShouldBeBiggerThan0)]

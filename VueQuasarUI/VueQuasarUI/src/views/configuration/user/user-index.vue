@@ -215,7 +215,7 @@ onMounted(async () => {
         </q-card-section>
         <q-card-actions align="right" class="bg-white text-teal">
           <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn flat label="Submit" color="primary" :onclick="onSubmit" />
+          <q-btn flat label="Save" color="primary" :onclick="onSubmit" />
         </q-card-actions>
       </q-form>
     </q-card>

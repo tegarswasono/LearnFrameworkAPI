@@ -7,6 +7,7 @@ using LearnFrameworkApi.Module.Models.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System.Linq.Dynamic.Core;
 
 namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
@@ -21,15 +22,25 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet]
-        public ActionResult<List<CategoryModel>> Index()
+        public ActionResult<GeneralDatatableResponseModel<CategoryModel>> Index([FromQuery] GeneralDatatableRequestModel model)
         {
             try
             {
+                var orderType = model.Descending ? "desc" : "asc";
+                string OrderBy = "Name " + orderType;
+                if (!string.IsNullOrEmpty(model.SortBy) && model.SortBy != "null")
+                {
+                    OrderBy = $"{model.SortBy} {orderType}";
+                }
+                int total = _context.Categories.Count();
                 var categories = _context.Categories
-                    .OrderBy(x => x.Name)
+                    .OrderBy(OrderBy)
+                    .Skip((model.Page - 1) * model.RowsPerPage).Take(model.RowsPerPage)
                     .Select(x => CategoryModel.Dto(x))
                     .ToList();
-                return Ok(categories);
+
+                var result = GeneralDatatableResponseModel<CategoryModel>.Dto(categories, model, total);
+                return Ok(result);
             }
             catch (Exception ex)
             {

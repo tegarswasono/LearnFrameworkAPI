@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Linq.Dynamic.Core;
 
 namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
@@ -22,16 +23,26 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet]
-        public ActionResult<List<ProductModel>> Index()
+        public ActionResult<GeneralDatatableResponseModel<ProductModel>> Index([FromQuery] GeneralDatatableRequestModel model)
         {
             try
             {
+                var orderType = model.Descending ? "desc" : "asc";
+                string OrderBy = "Name " + orderType;
+                if (!string.IsNullOrEmpty(model.SortBy) && model.SortBy != "null")
+                {
+                    OrderBy = $"{model.SortBy} {orderType}";
+                }
+                int total = _context.Products.Count();
                 var products = _context.Products
+                    .OrderBy(OrderBy)
+                    .Skip((model.Page - 1) * model.RowsPerPage).Take(model.RowsPerPage)
                     .Include(x => x.Category)
-                    .OrderBy(x => x.Name)
                     .Select(x => ProductModel.Dto(x))
                     .ToList();
-                return Ok(products);
+
+                var result = GeneralDatatableResponseModel<ProductModel>.Dto(products, model, total);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -46,8 +57,8 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             try
             {
                 var product = _context.Products
-                    .Include(x => x.Category)
                     .Where(x => x.Id == id)
+                    .Include(x => x.Category)
                     .Select(x => ProductModel.Dto(x))
                     .FirstOrDefault() ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Product"));
                 return Ok(product);
