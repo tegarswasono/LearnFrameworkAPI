@@ -26,6 +26,7 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors("Default");
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",

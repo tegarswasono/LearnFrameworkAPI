@@ -1,3 +1,56 @@
+<script setup>
+import { ref, onBeforeMount } from 'vue'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
+import AuthService from '@/helpers/authService'
+
+const router = useRouter()
+const auth = AuthService.getInstance()
+const idsUrl = auth.getIdsUrl()
+
+const username = ref()
+const password = ref()
+const isPwd = ref(true)
+
+onBeforeMount(async () => {
+  const token = localStorage.getItem('access_token')
+  if (token != null) {
+    router.push({
+      name: 'bookingindex'
+    })
+  }
+})
+
+function login() {
+  let model = {
+    grant_type: 'password',
+    scope: 'offline_access',
+    app: 'Administrator',
+    username: username.value,
+    password: password.value
+  }
+
+  let headers = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }
+
+  axios
+    .post(`${idsUrl}/connect/token`, model, headers)
+    .then((res) => {
+      localStorage.setItem('access_token', res.data.access_token)
+      localStorage.setItem('refresh_token', res.data.refresh_token)
+
+      router.push({
+        name: 'bookingindex'
+      })
+    })
+    .catch((err) => {
+      alert.value = true
+    })
+}
+</script>
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-dialog v-model="alert">
@@ -20,19 +73,38 @@
         <!-- <h2>Sign</h2> -->
         <q-card class="q-pa-md shadow-2" bordered>
           <q-card-section class="text-center">
-            <div class="text-grey-9 text-h5 text-weight-bold">New Century - Back Office 99</div>
+            <div class="text-grey-9 text-h5 text-weight-bold">New Century - Back Office</div>
             <div class="text-grey-8">Sign in below to access your account</div>
           </q-card-section>
           <q-card-section>
-            <q-input dense outlined v-model="username" label="Email"></q-input>
+            <q-input
+              dense
+              outlined
+              v-model="username"
+              label="Email"
+              :rules="[
+                (val) => (val && val.length > 0) || 'Email is required',
+                (val, rules) => rules.email(val) || 'Please enter a valid email address'
+              ]"
+            ></q-input>
+
             <q-input
               dense
               outlined
               class="q-mt-md"
               v-model="password"
-              type="password"
+              :type="isPwd ? 'password' : 'text'"
               label="Password"
-            ></q-input>
+              :rules="[(val) => (val && val.length > 0) || 'Password is required']"
+            >
+              <template v-slot:append>
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
+              </template>
+            </q-input>
           </q-card-section>
 
           <q-card-section class="q-py-none">
@@ -51,7 +123,7 @@
             <q-btn
               :loading="isLoading"
               style="border-radius: 8px"
-              color="dark"
+              color="primary"
               rounded
               size="md"
               label="Sign in"

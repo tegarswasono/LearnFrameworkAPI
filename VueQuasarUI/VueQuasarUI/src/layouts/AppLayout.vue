@@ -104,9 +104,9 @@
           </div>
           <!-- <div style="font-size: x-small">17-03-2024 12:19</div> -->
           <div style="font-size: smaller; margin-top: 5px">
-            <router-link :to="{ name: 'loginindex' }" style="color: white; text-decoration: none"
-              ><q-icon name="logout" /> Logout</router-link
-            >
+            <div style="color: white; cursor: pointer" @click="onLogout">
+              <q-icon name="logout" /> Logout
+            </div>
           </div>
         </div>
       </q-img>
@@ -127,11 +127,15 @@
 
 <script setup>
 import { computed, ref, onMounted } from 'vue'
-import { AppFullscreen } from 'quasar'
+import { useRouter } from 'vue-router'
+import { AppFullscreen, useQuasar } from 'quasar'
 import moment from 'moment'
 
-const drawer = ref(false)
+const $q = useQuasar()
+const router = useRouter()
+
 const fullscreen = ref(false)
+const drawer = ref(false)
 const currentTime = ref('')
 
 const updateTime = () => {
@@ -162,6 +166,21 @@ function fullScreenToggle() {
       })
   }
   this.fullscreen = !this.fullscreen
+}
+const onLogout = async () => {
+  $q.dialog({
+    title: '',
+    message: 'Are you sure want to Logout?',
+    cancel: true,
+    color: 'primary'
+  })
+    .onOk(async () => {
+      localStorage.clear()
+      router.push({
+        name: 'loginindex'
+      })
+    })
+    .onCancel(() => {})
 }
 </script>
 <style>
