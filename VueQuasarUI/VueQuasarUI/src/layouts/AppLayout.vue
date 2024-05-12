@@ -126,7 +126,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { AppFullscreen, useQuasar } from 'quasar'
 import moment from 'moment'
@@ -182,6 +182,14 @@ const onLogout = async () => {
     })
     .onCancel(() => {})
 }
+onBeforeMount(async () => {
+  const token = localStorage.getItem('access_token')
+  if (token == null) {
+    router.push({
+      name: 'loginindex'
+    })
+  }
+})
 </script>
 <style>
 .textarea-no-resize textarea {
