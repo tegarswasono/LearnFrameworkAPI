@@ -24,6 +24,7 @@ namespace LearnFrameworkApi.Module.Datas
         public DbSet<Entities.Configuration.Module> Modules { get; set; }
         public DbSet<ModuleFunction> ModuleFunctions { get; set; }
         public DbSet<Menu> Menus { get; set; }
+        public DbSet<RoleFunction> RoleFunctions { get; set; }
 
         public DbSet<SmtpSetting> SmtpSettings { get; set; }
         public DbSet<SystemConfiguration> SystemConfigurations { get; set; }

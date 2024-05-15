@@ -289,6 +289,86 @@ namespace LearnFrameworkApi.Api.Controllers.Common
                 await _roleManager.CreateAsync(appRole1);
                 await _roleManager.CreateAsync(appRole2);
                 await _roleManager.CreateAsync(appRole3);
+
+                //roleFunction administrator
+                var availableModuleFunctions = AvailableModuleFunction.GetAll();
+                foreach (var data in availableModuleFunctions)
+                {
+                    var roleFunction = new RoleFunction()
+                    {
+                        RoleId = appRole1.Id,
+                        FunctionId = data.Id
+                    };
+                    _context.RoleFunctions.Add(roleFunction);
+                }
+
+                //roleFunction Buyer
+                var buyerRoleFunction1 = new RoleFunction()
+                {
+                    RoleId = appRole2.Id,
+                    FunctionId = "Bookings.View"
+                };
+                _context.RoleFunctions.Add(buyerRoleFunction1);
+
+                //roleFunction ShopOwner
+                var shopRoleFunction0 = new RoleFunction()
+                {
+                    RoleId = appRole3.Id,
+                    FunctionId = "Bookings.View"
+                };
+                var shopRoleFunction1 = new RoleFunction()
+                {
+                    RoleId = appRole3.Id,
+                    FunctionId = "Category.Add"
+                };
+                var shopRoleFunction2 = new RoleFunction()
+                {
+                    RoleId = appRole3.Id,
+                    FunctionId = "Category.Delete"
+                };
+                var shopRoleFunction3 = new RoleFunction()
+                {
+                    RoleId = appRole3.Id,
+                    FunctionId = "Category.Edit"
+                };
+                var shopRoleFunction4 = new RoleFunction()
+                {
+                    RoleId = appRole3.Id,
+                    FunctionId = "Category.View"
+                };
+
+                var shopRoleFunction11 = new RoleFunction()
+                {
+                    RoleId = appRole3.Id,
+                    FunctionId = "Product.Add"
+                };
+                var shopRoleFunction12 = new RoleFunction()
+                {
+                    RoleId = appRole3.Id,
+                    FunctionId = "Product.Delete"
+                };
+                var shopRoleFunction13 = new RoleFunction()
+                {
+                    RoleId = appRole3.Id,
+                    FunctionId = "Product.Edit"
+                };
+                var shopRoleFunction14 = new RoleFunction()
+                {
+                    RoleId = appRole3.Id,
+                    FunctionId = "Product.View"
+                };
+
+                _context.RoleFunctions.Add(shopRoleFunction0);
+
+                _context.RoleFunctions.Add(shopRoleFunction1);
+                _context.RoleFunctions.Add(shopRoleFunction2);
+                _context.RoleFunctions.Add(shopRoleFunction3);
+                _context.RoleFunctions.Add(shopRoleFunction4);
+
+                _context.RoleFunctions.Add(shopRoleFunction11);
+                _context.RoleFunctions.Add(shopRoleFunction12);
+                _context.RoleFunctions.Add(shopRoleFunction13);
+                _context.RoleFunctions.Add(shopRoleFunction14);
             }
         }
         private async Task InitAppUser()

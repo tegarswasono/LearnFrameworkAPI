@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnFrameworkApi.Module.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240512062138_firstMigration")]
+    [Migration("20240515044444_firstMigration")]
     partial class firstMigration
     {
         /// <inheritdoc />
@@ -347,7 +347,7 @@ namespace LearnFrameworkApi.Module.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleFunction");
+                    b.ToTable("RoleFunctions");
                 });
 
             modelBuilder.Entity("LearnFrameworkApi.Module.Datas.Entities.Configuration.SmtpSetting", b =>

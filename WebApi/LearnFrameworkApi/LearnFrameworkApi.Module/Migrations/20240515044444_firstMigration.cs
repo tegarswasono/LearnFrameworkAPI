@@ -221,7 +221,7 @@ namespace LearnFrameworkApi.Module.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoleFunction",
+                name: "RoleFunctions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -234,9 +234,9 @@ namespace LearnFrameworkApi.Module.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoleFunction", x => x.Id);
+                    table.PrimaryKey("PK_RoleFunctions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RoleFunction_AspNetRoles_RoleId",
+                        name: "FK_RoleFunctions_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
@@ -539,8 +539,8 @@ namespace LearnFrameworkApi.Module.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoleFunction_RoleId",
-                table: "RoleFunction",
+                name: "IX_RoleFunctions_RoleId",
+                table: "RoleFunctions",
                 column: "RoleId");
         }
 
@@ -578,7 +578,7 @@ namespace LearnFrameworkApi.Module.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "RoleFunction");
+                name: "RoleFunctions");
 
             migrationBuilder.DropTable(
                 name: "SmtpSettings");

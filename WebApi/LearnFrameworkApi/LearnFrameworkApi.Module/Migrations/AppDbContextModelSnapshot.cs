@@ -344,7 +344,7 @@ namespace LearnFrameworkApi.Module.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleFunction");
+                    b.ToTable("RoleFunctions");
                 });
 
             modelBuilder.Entity("LearnFrameworkApi.Module.Datas.Entities.Configuration.SmtpSetting", b =>
