@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using LearnFrameworkApi.Module.Datas;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace LearnFrameworkApi.Api
 {
@@ -29,9 +30,8 @@ namespace LearnFrameworkApi.Api
             var userId = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
             if (string.IsNullOrEmpty(userId))
             {
-                context.Result = new UnauthorizedResult();
+                context.Result = new ObjectResult("") { StatusCode = 401 };
             }
-
             var exist = _context.RoleFunctions
                 .Any(x =>
                     x.FunctionId == Permissions[0] &&
@@ -39,7 +39,7 @@ namespace LearnFrameworkApi.Api
                 );
             if (!exist)
             {
-                context.Result = new ForbidResult();
+                context.Result = new ObjectResult("") { StatusCode = 403 };
             }
         }
     }
