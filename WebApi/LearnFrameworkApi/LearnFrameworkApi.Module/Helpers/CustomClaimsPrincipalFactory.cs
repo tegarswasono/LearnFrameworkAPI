@@ -19,12 +19,14 @@ namespace LearnFrameworkApi.Module.Helpers
         protected override async Task<ClaimsIdentity> GenerateClaimsAsync(AppUser user)
         {
             var identity = await base.GenerateClaimsAsync(user);
+            identity.AddClaim(new Claim("id", user.Id.ToString() ?? ""));
             identity.AddClaim(new Claim("username", user.UserName ?? ""));
             identity.AddClaim(new Claim("email", user.Email?? ""));
             identity.AddClaim(new Claim("fullname", user.FullName ?? ""));
 
             var role = await UserManager.GetRolesAsync(user);
-            identity.AddClaim(new Claim("role", role.First()));
+            string roles = string.Join(",", role.ToList());
+            identity.AddClaim(new Claim("roles", roles));
             return identity;
         }
     }

@@ -32,18 +32,26 @@ namespace LearnFrameworkApi.Api.Controllers.Common
         [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
         public ActionResult Test1()
         {
+            //way 1
             var tmp11 = User.Claims;
-            var tmp12 = User.Claims.FirstOrDefault(x => x.Type == "name");
+            var tmp12 = User.Claims.FirstOrDefault(x => x.Type == "username");
 
-            var tmp1 = httpContextAcc?.HttpContext?.User?.Claims;
+            //way 2
+            var tmp0 = httpContextAcc?.HttpContext?.User?.Claims;
+            string? tmp1 = httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
             string? tmp2 = httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "username")?.Value;
             string? tmp3 = httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "email")?.Value;
             string? tmp4 = httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "fullname")?.Value;
-            string? tmp5 = httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "role")?.Value;
+            string? tmp5 = httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "roles")?.Value;
+
+            //way 3
             var result = new
             {
+                userResolver.CurrentId,
                 userResolver.CurrentUsername,
-                userResolver.CurrentAppRole,
+                userResolver.CurrentEmail,
+                userResolver.CurrentFullname,
+                userResolver.CurrentRoles,
             };
             return Ok(result);
         }

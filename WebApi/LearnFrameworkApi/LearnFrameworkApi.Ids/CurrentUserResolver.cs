@@ -12,6 +12,13 @@ namespace LearnFrameworkApi.Ids
             this.httpContextAcc = httpContextAcc;
         }
 
+        public string CurrentId
+        {
+            get
+            {
+                return httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "id")?.Value ?? "";
+            }
+        }
         public string CurrentUsername
         {
             get
@@ -19,12 +26,25 @@ namespace LearnFrameworkApi.Ids
                 return httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "username")?.Value ?? "";
             }
         }
-
-        public string CurrentAppRole
+        public string CurrentEmail
         {
             get
             {
-                return httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "role")?.Value ?? "";
+                return httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "email")?.Value ?? "";
+            }
+        }
+        public string CurrentFullname
+        {
+            get
+            {
+                return httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "fullname")?.Value ?? "";
+            }
+        }
+        public string CurrentRoles
+        {
+            get
+            {
+                return httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "roles")?.Value ?? "";
             }
         }
     }

@@ -32,7 +32,7 @@ namespace LearnFrameworkApi.Api.Controllers.Common
             return Ok(new
             {
                 userResolver.CurrentUsername,
-                userResolver.CurrentAppRole,
+                userResolver.CurrentRoles,
             });
         }
         [HttpGet("Test2")]
