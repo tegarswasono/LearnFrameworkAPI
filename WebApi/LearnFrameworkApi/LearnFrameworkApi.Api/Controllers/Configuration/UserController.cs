@@ -3,9 +3,12 @@ using LearnFrameworkApi.Module.Datas;
 using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Models.Common;
 using LearnFrameworkApi.Module.Models.Configuration;
+using LearnFrameworkMvc.Module;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using OpenIddict.Validation.AspNetCore;
 using Serilog;
 using System.Collections.Generic;
 using System.Linq.Dynamic.Core;
@@ -14,6 +17,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
     [Route("api/configuration/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public class UserController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -25,6 +29,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet]
+        [AppAuthorize(AvailableModuleFunction.UsersView)]
         public ActionResult<GeneralDatatableResponseModel<UserModel>> Index([FromQuery]GeneralDatatableRequestModel model)
         {
             try
@@ -53,6 +58,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet("{id}")]
+        [AppAuthorize(AvailableModuleFunction.UsersView)]
         public ActionResult<UserModel> GetById(Guid id)
         {
             try
@@ -70,6 +76,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPost("Create")]
+        [AppAuthorize(AvailableModuleFunction.UsersAdd)]
         public async Task<ActionResult<GeneralResponseMessage>> Create(UserCreateModel1 model)
         {
             try
@@ -100,6 +107,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPut("Update")]
+        [AppAuthorize(AvailableModuleFunction.UsersEdit)]
         public async Task<ActionResult<GeneralResponseMessage>> Update(UserUpdateModel model)
         {
             try
@@ -128,6 +136,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpDelete("{id}")]
+        [AppAuthorize(AvailableModuleFunction.UsersDelete)]
         public async Task<ActionResult<GeneralResponseMessage>> Delete(Guid id)
         {
             try

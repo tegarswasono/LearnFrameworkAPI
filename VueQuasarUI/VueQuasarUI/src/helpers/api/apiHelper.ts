@@ -22,8 +22,8 @@ export default class apiHelper {
       const config: Record<string, any> = {
         method: method,
         headers: {
-          'Content-Type': 'application/json'
-          //Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`
         }
       }
 

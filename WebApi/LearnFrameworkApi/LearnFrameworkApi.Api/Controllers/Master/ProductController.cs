@@ -4,9 +4,12 @@ using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Datas.Entities.Master;
 using LearnFrameworkApi.Module.Models.Common;
 using LearnFrameworkApi.Module.Models.Configuration;
+using LearnFrameworkMvc.Module;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict.Validation.AspNetCore;
 using Serilog;
 using System.Linq.Dynamic.Core;
 
@@ -14,6 +17,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
     [Route("api/master/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public class ProductController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -23,6 +27,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet]
+        [AppAuthorize(AvailableModuleFunction.ProductView)]
         public ActionResult<GeneralDatatableResponseModel<ProductModel>> Index([FromQuery] GeneralDatatableRequestModel model)
         {
             try
@@ -52,6 +57,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet("{id}")]
+        [AppAuthorize(AvailableModuleFunction.ProductView)]
         public ActionResult<ProductModel> GetById(Guid id)
         {
             try
@@ -71,6 +77,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPost("Create")]
+        [AppAuthorize(AvailableModuleFunction.ProductAdd)]
         public ActionResult<GeneralResponseMessage> Create(ProductCreateModel model)
         {
             try
@@ -101,6 +108,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPut("Update")]
+        [AppAuthorize(AvailableModuleFunction.ProductEdit)]
         public ActionResult<GeneralResponseMessage> Update(ProductUpdateModel model)
         {
             try
@@ -130,6 +138,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpDelete("{id}")]
+        [AppAuthorize(AvailableModuleFunction.ProductDelete)]
         public ActionResult<GeneralResponseMessage> Delete(Guid id)
         {
             try

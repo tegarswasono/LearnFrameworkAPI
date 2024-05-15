@@ -3,6 +3,7 @@ using LearnFrameworkApi.Module.Datas;
 using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Models.Common;
 using LearnFrameworkApi.Module.Models.Configuration;
+using LearnFrameworkMvc.Module;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
     [Route("api/configuration/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public class RoleController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -26,6 +28,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet]
+        [AppAuthorize(AvailableModuleFunction.RolesView)]
         public ActionResult<GeneralDatatableResponseModel<RoleModel>> Index([FromQuery] GeneralDatatableRequestModel model)
         {
             try
@@ -54,6 +57,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet("{id}")]
+        [AppAuthorize(AvailableModuleFunction.RolesView)]
         public ActionResult<RoleModel> GetById(Guid id)
         {
             try
@@ -69,6 +73,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPost("Create")]
+        [AppAuthorize(AvailableModuleFunction.RolesAdd)]
         public async Task<ActionResult<GeneralResponseMessage>> Create(RoleCreateModel model)
         {
             try
@@ -96,6 +101,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPut("Update")]
+        [AppAuthorize(AvailableModuleFunction.RolesEdit)]
         public async Task<ActionResult<GeneralResponseMessage>> Update(RoleUpdateModel model)
         {
             try
@@ -120,6 +126,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpDelete("{id}")]
+        [AppAuthorize(AvailableModuleFunction.RolesDelete)]
         public async Task<ActionResult<GeneralResponseMessage>> Delete(Guid id)
         {
             try

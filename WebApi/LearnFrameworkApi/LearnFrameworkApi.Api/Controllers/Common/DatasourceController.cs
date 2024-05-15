@@ -4,8 +4,10 @@ using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Datas.Entities.Master;
 using LearnFrameworkApi.Module.Models.Common;
 using LearnFrameworkApi.Module.Models.Configuration;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OpenIddict.Validation.AspNetCore;
 using Serilog;
 using System.Linq.Dynamic.Core;
 
@@ -13,6 +15,7 @@ namespace LearnFrameworkApi.Api.Controllers.Common
 {
     [Route("api/common/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public class DatasourceController : ControllerBase
     {
         private readonly AppDbContext _context;

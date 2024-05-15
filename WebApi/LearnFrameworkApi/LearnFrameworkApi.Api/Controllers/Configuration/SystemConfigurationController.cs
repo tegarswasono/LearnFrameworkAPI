@@ -2,14 +2,18 @@
 using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Models.Common;
 using LearnFrameworkApi.Module.Models.Configuration;
+using LearnFrameworkMvc.Module;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OpenIddict.Validation.AspNetCore;
 using Serilog;
 
 namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
     [Route("api/configuration/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public class SystemConfigurationController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -19,6 +23,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet]
+        [AppAuthorize(AvailableModuleFunction.SystemConfigurationView)]
         public ActionResult<SystemConfigurationModel> Index()
         {
             try
@@ -35,6 +40,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPut("CreateOrUpdate")]
+        [AppAuthorize(AvailableModuleFunction.SystemConfigurationCreateOrUpdate)]
         public ActionResult<GeneralResponseMessage> CreateOrUpdate(SystemConfigurationModelCreateOrUpdate model)
         {
             try

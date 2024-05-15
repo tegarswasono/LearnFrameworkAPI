@@ -36,14 +36,18 @@ const columns: any = [
 ]
 const getData = async () => {
   loading.value = true
-  var response = await productApi.getAll(
-    pagination.value.sortBy,
-    pagination.value.descending,
-    pagination.value.page,
-    pagination.value.rowsPerPage
-  )
-  products.value = response.result
-  pagination.value.rowsNumber = response.rowsNumber
+  try {
+    var response = await productApi.getAll(
+      pagination.value.sortBy,
+      pagination.value.descending,
+      pagination.value.page,
+      pagination.value.rowsPerPage
+    )
+    products.value = response.result
+    pagination.value.rowsNumber = response.rowsNumber
+  } catch (error) {
+    /* empty */
+  }
   loading.value = false
 }
 const OnRequest = async (props: any) => {
