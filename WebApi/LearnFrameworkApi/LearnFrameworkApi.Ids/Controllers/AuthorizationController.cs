@@ -265,19 +265,6 @@ namespace LearnFrameworkApi.Ids.Controllers
                         }));
                 }
 
-                var app = request.GetParameter("app").Value;
-                var userAppRole = (await _userManager.GetRolesAsync(user)).First();
-                if (app != userAppRole)
-                {
-                    return Forbid(
-                        authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
-                        properties: new AuthenticationProperties(new Dictionary<string, string>
-                        {
-                            [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
-                            [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "The email/password couple is invalid."
-                        }));
-                }
-
                 // Validate the email/password parameters and ensure the account is not locked out.
                 var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
                 if (!result.Succeeded)

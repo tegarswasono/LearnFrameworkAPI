@@ -1,6 +1,8 @@
-﻿using LearnFrameworkApi.Module.Datas;
+﻿using LearnFrameworkApi.Module;
+using LearnFrameworkApi.Module.Datas;
 using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Services.Configuration;
+using LearnFrameworkMvc.Module;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +59,8 @@ namespace LearnFrameworkApi.Api.Controllers.Common
         }
 
         [HttpGet("Test2")]
+        [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+        [AppAuthorize(AvailableModuleFunction.RolesDelete)]
         public ActionResult Test2()
         {
             return Ok("Test2");
