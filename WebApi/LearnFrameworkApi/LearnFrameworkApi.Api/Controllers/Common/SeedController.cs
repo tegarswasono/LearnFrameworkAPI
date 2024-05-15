@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace LearnFrameworkApi.Api.Controllers
+namespace LearnFrameworkApi.Api.Controllers.Common
 {
-    [Route("api/[controller]")]
+    [Route("api/common/[controller]")]
     [ApiController]
     public class SeedController : ControllerBase
     {
@@ -266,8 +266,8 @@ namespace LearnFrameworkApi.Api.Controllers
                 Section = "MASTERS"
             };
 
-            _context.Menus.Add(menu1);_context.Menus.Add(menu2); _context.Menus.Add(menu3); _context.Menus.Add(menu4); _context.Menus.Add(menu5);
-            _context.Menus.Add(menu6);_context.Menus.Add(menu7); _context.Menus.Add(menu8); _context.Menus.Add(menu9); _context.Menus.Add(menu10);
+            _context.Menus.Add(menu1); _context.Menus.Add(menu2); _context.Menus.Add(menu3); _context.Menus.Add(menu4); _context.Menus.Add(menu5);
+            _context.Menus.Add(menu6); _context.Menus.Add(menu7); _context.Menus.Add(menu8); _context.Menus.Add(menu9); _context.Menus.Add(menu10);
             _context.Menus.Add(menu11);
         }
         private async Task InitAppRole()

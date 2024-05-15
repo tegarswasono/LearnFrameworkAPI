@@ -16,7 +16,7 @@ namespace LearnFrameworkApi.Api.Helpers
         {
             get
             {
-                return httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "preferred_username")?.Value ?? "";
+                return httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "username")?.Value ?? "";
             }
         }
 
@@ -27,15 +27,5 @@ namespace LearnFrameworkApi.Api.Helpers
                 return httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "role")?.Value ?? "";
             }
         }
-
-        public string CurrentActionRole
-        {
-            get
-            {
-                return httpContextAcc?.HttpContext?.User?.Claims.FirstOrDefault(x => x.Type == "action_role")?.Value ?? "";
-            }
-        }
-
-        public AppUser? CurrentAppUser => throw new NotImplementedException();
     }
 }

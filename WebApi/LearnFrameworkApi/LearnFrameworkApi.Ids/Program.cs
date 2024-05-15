@@ -74,6 +74,8 @@ static void SetupService(WebApplicationBuilder? builder)
         options.UseSqlServer(connString);
         options.UseOpenIddict();
     });
+
+    //Identity
     builder.Services.AddIdentity<AppUser, AppRole>(x =>
     {
         x.Password.RequireUppercase = false;

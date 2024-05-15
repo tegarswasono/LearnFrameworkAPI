@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Validation.AspNetCore;
 
-namespace LearnFrameworkApi.Api.Controllers
+namespace LearnFrameworkApi.Api.Controllers.Common
 {
-    [Route("api/[controller]")]
+    [Route("api/common/[controller]")]
     [ApiController]
     public class TestController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace LearnFrameworkApi.Api.Controllers
         }
         [HttpGet("Test1")]
         [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
-        public ActionResult Test1() 
+        public ActionResult Test1()
         {
             return Ok(new
             {
@@ -39,7 +39,7 @@ namespace LearnFrameworkApi.Api.Controllers
         public ActionResult Test2()
         {
 
-            for (int a= 1; a<40; a++)
+            for (int a = 1; a < 40; a++)
             {
                 string user = "User" + a;
                 var tmp = new AppUser()

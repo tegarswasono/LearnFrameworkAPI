@@ -80,6 +80,8 @@ static void SetupService(WebApplicationBuilder? builder)
         options.UseSqlServer(connString);
         options.UseOpenIddict();
     });
+
+    //Identity
     builder.Services.AddIdentity<AppUser, AppRole>(x =>
     {
         x.Password.RequireUppercase = false;
@@ -89,23 +91,15 @@ static void SetupService(WebApplicationBuilder? builder)
         x.Password.RequireLowercase = false;
     })
     .AddEntityFrameworkStores<AppDbContext>()
-    .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
     .AddDefaultTokenProviders();
 
     //OpenIddict
-    builder.Services.Configure<IdentityOptions>(options =>
-    {
-        options.ClaimsIdentity.UserNameClaimType = Claims.Name;
-        options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
-        options.ClaimsIdentity.RoleClaimType = Claims.Role;
-    });
     builder.Services.AddOpenIddict()
         // Register the OpenIddict server components.
         .AddValidation(options =>
         {
             options.UseAspNetCore();
             options.UseSystemNetHttp();
-
             options.SetIssuer(builder.Configuration.GetSection("AuthIssuer").Value!);
 
             byte[] certificateBytes = System.IO.File.ReadAllBytes(Path.Combine(builder.Environment.ContentRootPath, "Certs", "newcenturyids.pfx"));
