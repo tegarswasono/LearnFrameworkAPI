@@ -1,4 +1,5 @@
 ﻿using LearnFrameworkApi.Module.Datas.Entities.Configuration;
+using LearnFrameworkApi.Module.Helpers;
 using LearnFrameworkApi.Module.Helpers.CustomAttribute;
 using System;
 using System.Collections.Generic;
@@ -6,13 +7,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LearnFrameworkApi.Module.Helpers;
 
 namespace LearnFrameworkApi.Module.Models.Configuration
 {
-    public class UserModel
+    public class MyProfileModel
     {
-        public Guid Id {  get; set; }
+        public Guid Id { get; set; }
         public string? Username { get; set; }
         public string? Email { get; set; }
         public string FullName { get; set; } = string.Empty;
@@ -21,9 +21,9 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public string ActiveInString { get { return Active.ActiveToString(); } }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public static UserModel Dto(AppUser model)
+        public static MyProfileModel Dto(AppUser model)
         {
-            return new UserModel
+            return new MyProfileModel
             {
                 Id = model.Id,
                 Username = model.UserName,
@@ -36,26 +36,13 @@ namespace LearnFrameworkApi.Module.Models.Configuration
             };
         }
     }
-    public class UserCreateModel
-    {
-        [Required]
-        [MaxLength(512)]
-        public string Email { get; set; } = string.Empty;
-        [Required]
-        [MaxLength(50)]
-        public string FullName { get; set; } = string.Empty;
-        [MaxLength(512)]
-        public string PhoneNumber { get; set; } = string.Empty;
-        public bool Active { get; set; }
-    }
-    public class UserUpdateModel : UserCreateModel
+    public class MyProfileModelUpdate
     {
         [RequiredGuid]
         public Guid Id { get; set; }
-    }
-    public class UserCreateModel1 : UserCreateModel
-    {
         [Required]
-        public string Password { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        [MaxLength(512)]
+        public string PhoneNumber { get; set; } = string.Empty;
     }
 }

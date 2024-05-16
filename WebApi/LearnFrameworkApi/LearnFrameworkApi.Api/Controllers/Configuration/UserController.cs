@@ -93,6 +93,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                     UserName = model.Email,
 
                     FullName = model.FullName,
+                    PhoneNumber = model.PhoneNumber,
                     Active = model.Active,
                 };
 
@@ -123,6 +124,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                 user.Email = model.Email;
                 user.UserName = model.Email;
                 user.FullName = model.FullName;
+                user.PhoneNumber = model.PhoneNumber;
                 user.Active = model.Active;
 
                 await _userManager.UpdateAsync(user);

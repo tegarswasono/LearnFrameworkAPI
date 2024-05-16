@@ -1,5 +1,5 @@
 import type { IBaseEntity } from '../apiModel'
-interface IUserModel extends IBaseEntity {
+interface IMyProfileModel extends IBaseEntity {
   username: string
   email: string
   fullName: string
@@ -7,11 +7,10 @@ interface IUserModel extends IBaseEntity {
   active: boolean
   activeInString: string
 }
-interface IUserModelCreateOrUpdate {
+interface IMyProfileModelUpdate {
   id: string
-  email: string
   fullName: string
-  active: boolean
+  phoneNumber: string
 }
 
-export type { IUserModel, IUserModelCreateOrUpdate }
+export type { IMyProfileModel, IMyProfileModelUpdate }
