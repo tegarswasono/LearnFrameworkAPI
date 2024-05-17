@@ -1,3 +1,76 @@
+<script setup lang="ts">
+import { computed, ref, onMounted, onBeforeMount } from 'vue'
+import { useRouter } from 'vue-router'
+import { AppFullscreen, useQuasar } from 'quasar'
+import moment from 'moment'
+import { MyProfileApi } from '@/helpers/api/myProfile/myProfileApi'
+
+const $q = useQuasar()
+const router = useRouter()
+const myProfileApi = new MyProfileApi()
+const drawer = ref(false)
+const fullscreen = ref(false)
+const currentTime = ref()
+
+const fullName = ref()
+
+const updateTime = () => {
+  currentTime.value = new Date()
+}
+
+const fullScreenToggle = () => {
+  if (fullscreen.value) {
+    AppFullscreen.exit()
+      .then(() => {
+        // success!
+      })
+      .catch(() => {
+        // oh, no!!!
+      })
+  } else {
+    AppFullscreen.request()
+      .then(() => {
+        // success!
+      })
+      .catch(() => {
+        // oh, no!!!
+      })
+  }
+  fullscreen.value = !fullscreen.value
+}
+
+const onLogout = async () => {
+  $q.dialog({
+    title: '',
+    message: 'Are you sure want to Logout?',
+    cancel: true,
+    color: 'primary'
+  })
+    .onOk(async () => {
+      localStorage.clear()
+      router.push({
+        name: 'loginindex'
+      })
+    })
+    .onCancel(() => {})
+}
+
+onBeforeMount(async () => {
+  const token = localStorage.getItem('access_token')
+  if (token == null) {
+    router.push({
+      name: 'loginindex'
+    })
+  }
+  let myProfile = await myProfileApi.get()
+  fullName.value = myProfile.fullName
+})
+
+onMounted(() => {
+  setInterval(updateTime, 1000)
+  updateTime()
+})
+</script>
 <template>
   <q-layout view="lHh Lpr lff" class="shadow-2 rounded-borders">
     <q-header elevated class="bg-cyan-8">
@@ -98,7 +171,7 @@
             <!-- <img src="https://cdn.quasar.dev/img/boy-avatar.png" /> -->
             <img src="../assets/avatar.webp" />
           </q-avatar>
-          <div class="text-weight-bold" style="font-size: larger">Razvan Stoenescu</div>
+          <div class="text-weight-bold" style="font-size: larger">{{ fullName }}</div>
           <div style="font-size: x-small">
             {{ moment(currentTime).format('DD-MM-YYYY HH:mm:ss') }}
           </div>
@@ -124,73 +197,6 @@
     </q-page-container>
   </q-layout>
 </template>
-
-<script setup>
-import { computed, ref, onMounted, onBeforeMount } from 'vue'
-import { useRouter } from 'vue-router'
-import { AppFullscreen, useQuasar } from 'quasar'
-import moment from 'moment'
-
-const $q = useQuasar()
-const router = useRouter()
-
-const fullscreen = ref(false)
-const drawer = ref(false)
-const currentTime = ref('')
-
-const updateTime = () => {
-  currentTime.value = new Date()
-}
-
-onMounted(() => {
-  setInterval(updateTime, 1000)
-  updateTime()
-})
-
-function fullScreenToggle() {
-  if (this.fullscreen) {
-    AppFullscreen.exit()
-      .then(() => {
-        // success!
-      })
-      .catch((err) => {
-        // oh, no!!!
-      })
-  } else {
-    AppFullscreen.request()
-      .then(() => {
-        // success!
-      })
-      .catch((err) => {
-        // oh, no!!!
-      })
-  }
-  this.fullscreen = !this.fullscreen
-}
-const onLogout = async () => {
-  $q.dialog({
-    title: '',
-    message: 'Are you sure want to Logout?',
-    cancel: true,
-    color: 'primary'
-  })
-    .onOk(async () => {
-      localStorage.clear()
-      router.push({
-        name: 'loginindex'
-      })
-    })
-    .onCancel(() => {})
-}
-onBeforeMount(async () => {
-  const token = localStorage.getItem('access_token')
-  if (token == null) {
-    router.push({
-      name: 'loginindex'
-    })
-  }
-})
-</script>
 <style>
 .textarea-no-resize textarea {
   resize: none !important; /* Menonaktifkan resize */

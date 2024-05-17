@@ -1,14 +1,14 @@
 import { Notify, Loading } from 'quasar'
 import router from '@/router/index'
 import { inject } from 'vue'
-// import AuthService from '../authService'
+import AuthService from '../authService'
 import axios, { type AxiosResponse, AxiosError } from 'axios'
 
 export default class apiHelper {
-  //private authService: AuthService
+  private authService: AuthService
 
   constructor() {
-    //this.authService = AuthService.getInstance()
+    this.authService = AuthService.getInstance()
   }
 
   public async callApi(
@@ -78,25 +78,26 @@ export default class apiHelper {
       if (axiosError.response) {
         const errorResponse: AxiosResponse = axiosError.response
         switch (errorResponse.status) {
-          // case 401:
-          //   if ((await this.authService.renewToken()) === true) {
-          //     window.location.reload()
-          //   } else {
-          //     Notify.create({
-          //       type: 'negative',
-          //       position: 'bottom-right',
-          //       message: 'Session is expired, please re-login.',
-          //       actions: [
-          //         {
-          //           icon: 'close',
-          //           color: 'white',
-          //           rounded: true
-          //         }
-          //       ]
-          //     })
-          //     router.push('/login')
-          //   }
-          //   break
+          case 401:
+            if ((await this.authService.renewToken()) === true) {
+              window.location.reload()
+            } else {
+              localStorage.clear()
+              Notify.create({
+                type: 'negative',
+                position: 'bottom-right',
+                message: 'Session is expired, please re-login.',
+                actions: [
+                  {
+                    icon: 'close',
+                    color: 'white',
+                    rounded: true
+                  }
+                ]
+              })
+              router.push({ name: 'loginindex' })
+            }
+            break
           case 403:
             Notify.create({
               type: 'negative',
