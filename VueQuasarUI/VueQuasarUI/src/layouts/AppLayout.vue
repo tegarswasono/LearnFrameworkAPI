@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onBeforeMount } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { AppFullscreen, useQuasar } from 'quasar'
 import moment from 'moment'
 import { MyProfileApi } from '@/helpers/api/myProfile/myProfileApi'
+
+import backgroundProfilePicture from '@/assets/material.png'
+import logo from '@/assets/New_Century_Tour_Logo.svg'
+import profilePicture from '@/assets/avatar.webp'
 
 const $q = useQuasar()
 const router = useRouter()
@@ -77,8 +81,7 @@ onMounted(() => {
       <q-toolbar>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
         <q-toolbar-title style="text-align: center">
-          <!-- Learn Framework API -->
-          <img src="../assets/New_Century_Tour_Logo.svg" />
+          <img :src="logo" style="margin-top: 10px" />
         </q-toolbar-title>
         <q-btn flat round dense icon="fullscreen" @click="fullScreenToggle()" />
       </q-toolbar>
@@ -161,21 +164,15 @@ onMounted(() => {
         </q-list>
       </q-scroll-area>
 
-      <q-img
-        class="absolute-top"
-        src="https://cdn.quasar.dev/img/material.png"
-        style="height: 150px"
-      >
+      <q-img class="absolute-top" :src="backgroundProfilePicture" style="height: 150px">
         <div class="absolute-bottom bg-transparent">
           <q-avatar size="56px" class="q-mb-sm">
-            <!-- <img src="https://cdn.quasar.dev/img/boy-avatar.png" /> -->
-            <img src="../assets/avatar.webp" />
+            <img :src="profilePicture" />
           </q-avatar>
           <div class="text-weight-bold" style="font-size: larger">{{ fullName }}</div>
           <div style="font-size: x-small">
             {{ moment(currentTime).format('DD-MM-YYYY HH:mm:ss') }}
           </div>
-          <!-- <div style="font-size: x-small">17-03-2024 12:19</div> -->
           <div style="font-size: smaller; margin-top: 5px">
             <div style="color: white; cursor: pointer" @click="onLogout">
               <q-icon name="logout" /> Logout
@@ -188,11 +185,6 @@ onMounted(() => {
     <q-page-container>
       <q-page padding>
         <router-view></router-view>
-        <!-- <p v-for="n in 15" :key="n">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit nihil praesentium molestias
-          a adipisci, dolore vitae odit, quidem consequatur optio voluptates asperiores pariatur eos
-          numquam rerum delectus commodi perferendis voluptate?
-        </p> -->
       </q-page>
     </q-page-container>
   </q-layout>
