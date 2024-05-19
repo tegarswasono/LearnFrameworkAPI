@@ -161,7 +161,7 @@ onMounted(async () => {
       @request="OnRequest"
     >
       <template v-slot:top>
-        <q-btn icon="add" size="sm" label="Add" color="primary" @click="onAdd" />
+        <q-btn icon="add" size="sm" label="Add" color="secondary" @click="onAdd" />
       </template>
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
@@ -217,8 +217,15 @@ onMounted(async () => {
           />
         </q-card-section>
         <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="Close" color="primary" v-close-popup />
-          <q-btn flat label="Save" color="primary" :onclick="onSubmit" v-if="visibleSubmit" />
+          <q-btn label="Close" color="negative" size="sm" icon="cancel" v-close-popup />
+          <q-btn
+            label="Save"
+            color="primary"
+            size="sm"
+            icon="save"
+            :onclick="onSubmit"
+            v-if="visibleSubmit"
+          />
         </q-card-actions>
       </q-form>
     </q-card>

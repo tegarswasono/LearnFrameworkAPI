@@ -105,7 +105,7 @@ onMounted(async () => {
             color="primary"
             icon="save"
             style="padding-left: 10px; padding-right: 10px"
-            dense
+            size="sm"
             fixed-right
             @click="onSubmit"
           />
