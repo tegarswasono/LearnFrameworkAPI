@@ -6,6 +6,7 @@ using LearnFrameworkApi.Module.Services.Configuration;
 using LearnFrameworkMvc.Module;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Validation.AspNetCore;
 using Serilog;
@@ -19,22 +20,22 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
     {
         private readonly AppDbContext _context;
         private readonly ICurrentUserResolver _currentUserResolver;
-        public MyProfileController(AppDbContext context, ICurrentUserResolver currentUserResolver) 
+        private readonly UserManager<AppUser> _userManager;
+        public MyProfileController(AppDbContext context, ICurrentUserResolver currentUserResolver, UserManager<AppUser> userManager) 
         { 
             _context = context;
             _currentUserResolver = currentUserResolver;
+            _userManager = userManager;
         }
 
         [HttpGet]
-        public ActionResult<UserModel> Index()
+        public async Task<ActionResult<UserModel>> Index()
         {
             try
             {
-                var user = _context.Users
-                    .Where(x => x.Id == Guid.Parse(_currentUserResolver.CurrentId))
-                    .Select(x => MyProfileModel.Dto(x))
-                    .FirstOrDefault();
-                return Ok(user);
+                var user = (await _userManager.FindByIdAsync(_currentUserResolver.CurrentId))!;
+                var result = MyProfileModel.Dto(user);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -44,23 +45,45 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpPut("Update")]
-        public ActionResult<GeneralResponseMessage> Update(MyProfileModelUpdate model)
+        public async Task<ActionResult<GeneralResponseMessage>> Update(MyProfileModelUpdate model)
         {
             try
             {
-                var user = _context.Users
-                    .Where(x => x.Id == Guid.Parse(_currentUserResolver.CurrentId))
-                    .FirstOrDefault()!;
-
+                var user = (await _userManager.FindByIdAsync(_currentUserResolver.CurrentId))!;
                 user.FullName = model.FullName;
                 user.PhoneNumber = model.PhoneNumber;
-                _context.Users.Update(user);
-                _context.SaveChanges();
+
+                await _userManager.UpdateAsync(user);
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());
             }
             catch (Exception ex)
             {
                 Log.Error($"MyProfileController.Update | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                return BadRequest(GeneralResponseMessage.Dto(ex.Message));
+            }
+        }
+
+        [HttpPut("ChangePassword")]
+        public async Task<ActionResult<GeneralResponseMessage>> ChangePassword(MyProfileModelChangePassword model)
+        {
+            try
+            {
+                var isValid = model.IsValid();
+                if (!isValid.IsValid)
+                {
+                    throw new InvalidOperationException(isValid.Message);
+                }
+                var user = (await _userManager.FindByIdAsync(_currentUserResolver.CurrentId))!;
+                var response = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+                if (response.Errors.Any())
+                {
+                    throw new InvalidOperationException(response.Errors.FirstOrDefault()!.Description);
+                }
+                return Ok(GeneralResponseMessage.ProcessSuccessfully());
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"MyProfileController.ChangePassword | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
             }
         }

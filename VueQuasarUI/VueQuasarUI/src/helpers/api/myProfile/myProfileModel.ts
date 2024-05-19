@@ -12,5 +12,10 @@ interface IMyProfileModelUpdate {
   fullName: string
   phoneNumber: string
 }
+interface IMyProfileChangePassword {
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+}
 
-export type { IMyProfileModel, IMyProfileModelUpdate }
+export type { IMyProfileModel, IMyProfileModelUpdate, IMyProfileChangePassword }

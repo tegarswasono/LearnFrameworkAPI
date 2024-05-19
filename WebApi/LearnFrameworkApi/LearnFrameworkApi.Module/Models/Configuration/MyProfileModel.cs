@@ -1,6 +1,7 @@
 ﻿using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Helpers;
 using LearnFrameworkApi.Module.Helpers.CustomAttribute;
+using LearnFrameworkApi.Module.Models.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -38,11 +39,35 @@ namespace LearnFrameworkApi.Module.Models.Configuration
     }
     public class MyProfileModelUpdate
     {
-        [RequiredGuid]
-        public Guid Id { get; set; }
         [Required]
         public string FullName { get; set; } = string.Empty;
         [MaxLength(512)]
         public string PhoneNumber { get; set; } = string.Empty;
+    }
+    public class MyProfileModelChangePassword
+    {
+        [Required]
+        [MaxLength(512)]
+        public string CurrentPassword { get; set; } = string.Empty;
+        [Required]
+        [MaxLength(512)]
+        [ValidatePassword]
+        public string NewPassword { get; set; } = string.Empty;
+        [Required]
+        [MaxLength(512)]
+        [ValidatePassword]
+        public string ConfirmPassword { get; set; } = string.Empty;
+
+        public GeneralValidationModel IsValid()
+        {
+            if (NewPassword != ConfirmPassword)
+            {
+                return GeneralValidationModel.Dto(false, "NewPassword and ConfirmPassword should be same");
+            }else if (CurrentPassword == NewPassword)
+            {
+                return GeneralValidationModel.Dto(false, "CurrentPassword and NewPassword should be different");
+            }
+            return GeneralValidationModel.Dto(true, "");
+        }
     }
 }
