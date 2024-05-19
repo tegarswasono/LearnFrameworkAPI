@@ -85,12 +85,14 @@ onMounted(async () => {
   <!-- systemconfiguration -->
   <div style="border: 1px solid rgb(238, 238, 238)" class="q-pa-md">
     <q-btn
-      color="primary"
+      color="secondary"
       icon="lock"
       label="Change Password"
       size="sm"
       @click="onChangePasswordClicked"
+      style="margin-right: 10px"
     />
+    <q-btn color="secondary" icon="person" label="Change Profile Picture" size="sm" />
   </div>
   <div class="q-pa-md" style="border: 1px solid #eeeeee">
     <q-form class="q-gutter-md" ref="formRef">
@@ -241,8 +243,16 @@ onMounted(async () => {
           </q-input>
         </q-card-section>
         <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn flat label="Save" color="primary" :onclick="onSubmitChangePassword" />
+          <!-- <q-btn flat label="Cancel" color="primary" v-close-popup /> -->
+          <q-btn label="Cancel" color="negative" size="sm" icon="cancel" v-close-popup />
+          <!-- <q-btn flat label="Save" color="primary" :onclick="onSubmitChangePassword" /> -->
+          <q-btn
+            label="Save"
+            color="primary"
+            icon="save"
+            size="sm"
+            :onclick="onSubmitChangePassword"
+          />
         </q-card-actions>
       </q-form>
     </q-card>
