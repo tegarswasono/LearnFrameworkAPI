@@ -9,7 +9,7 @@ import type {
 
 export class MyProfileApi {
   private apiHelper: ApiHelper
-  private endpoint: string = 'configuration/MyProfile'
+  private endpoint: string = '/Api/Configuration/MyProfile'
 
   constructor() {
     this.apiHelper = inject('$apiHelper') as ApiHelper

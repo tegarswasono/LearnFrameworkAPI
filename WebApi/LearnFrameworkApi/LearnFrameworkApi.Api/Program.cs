@@ -7,12 +7,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System.Data;
 using System.Globalization;
+using System.Net.Mail;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using static OpenIddict.Abstractions.OpenIddictConstants;
@@ -119,6 +122,26 @@ static void SetupService(WebApplicationBuilder? builder)
         });
     });
 
+    //SmtpClient
+    builder.Services.AddTransient<SmtpClient>(sp =>
+    {
+        var context = sp.GetRequiredService<AppDbContext>();
+        var smtpSetting = context.SmtpSettings.FirstOrDefault();
+        if (smtpSetting != null)
+        {
+            var smtpClient = new SmtpClient(smtpSetting.SmtpServer, smtpSetting.SmtpPort)
+            {
+                Credentials = new NetworkCredential(smtpSetting.SmtpUser, smtpSetting.SmtpPassword),
+                EnableSsl = smtpSetting.SmtpIsUseSsl
+            };
+            return smtpClient;
+        }
+        else
+        {
+            return new SmtpClient();
+        }
+    });
+    builder.Services.AddTransient<EmailService>();
 
     //service
     builder.Services.AddScoped<ICurrentUserResolver, CurrentUserResolver>();

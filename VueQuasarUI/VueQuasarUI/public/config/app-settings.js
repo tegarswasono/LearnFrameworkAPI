@@ -9,6 +9,6 @@ window.appSettings = {
   },
   offsetInMins: 420,
   api: {
-    base_url: 'http://localhost:5120/api/'
+    base_url: 'http://localhost:5120'
   }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LearnFrameworkApi.Module.Helpers.CustomAttribute
@@ -53,6 +54,39 @@ namespace LearnFrameworkApi.Module.Helpers.CustomAttribute
                 }
             }
             return ValidationResult.Success;
+        }
+    }
+    public class ValidateEmailAttribute : ValidationAttribute
+    {
+        public ValidateEmailAttribute()
+        {
+        }
+
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        {
+            string displayName = validationContext.DisplayName;
+            string memberName = validationContext.MemberName ?? string.Empty;
+
+            if (value == null)
+            {
+                return new ValidationResult($"The {displayName} field is required.", new[] { memberName });
+            }
+            else
+            {
+                string value1 = value.ToString()!;
+
+                if (!IsValidEmail(value1))
+                {
+                    return new ValidationResult($"The {displayName} is not a valid email address.", new[] { memberName });
+                }
+            }
+            return ValidationResult.Success;
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            return Regex.IsMatch(email, pattern);
         }
     }
 }

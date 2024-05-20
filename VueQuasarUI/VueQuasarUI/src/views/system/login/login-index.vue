@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, Ref } from 'vue'
+import { ref, onBeforeMount, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import AuthService from '@/helpers/authService'
@@ -16,26 +16,15 @@ const password = ref()
 const isPwd = ref(true)
 const formRef: Ref<QForm | null> = ref(null)
 
-onBeforeMount(async () => {
-  const token = localStorage.getItem('access_token')
-  if (token != null) {
-    router.push({
-      name: 'bookingindex'
-    })
-  }
-})
-
-const login = async () => {
+const onLoginClicked = async () => {
   let isValid = await formFieldValidationHelper(formRef)
   if (isValid) {
     let model = {
       grant_type: 'password',
       scope: 'offline_access',
-      app: 'Administrator',
       username: username.value,
       password: password.value
     }
-
     let headers = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -61,27 +50,27 @@ const login = async () => {
       })
   }
 }
+
+const onForgotPasswordClicked = () => {
+  router.push({
+    name: 'forgotpassword'
+  })
+}
+
+onBeforeMount(async () => {
+  const token = localStorage.getItem('access_token')
+  if (token != null) {
+    router.push({
+      name: 'bookingindex'
+    })
+  }
+})
 </script>
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-dialog v-model="alert">
-      <q-card style="width: 400px">
-        <q-card-section>
-          <div class="text-h6">Login failed</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          Please enter a correct username and password.
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="OK" color="primary" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+  <q-layout>
     <q-page-container>
       <q-page class="flex flex-center bg-grey-2">
-        <q-card class="q-pa-md shadow-2" bordered>
+        <q-card class="q-pa-md shadow-24" bordered style="min-width: 400px">
           <q-form ref="formRef">
             <q-card-section class="text-center">
               <div class="text-grey-9 text-h5 text-weight-bold">New Century - Back Office</div>
@@ -130,7 +119,6 @@ const login = async () => {
             </q-card-section>
             <q-card-section>
               <q-btn
-                :loading="isLoading"
                 style="border-radius: 8px"
                 color="primary"
                 rounded
@@ -138,7 +126,7 @@ const login = async () => {
                 label="Sign in"
                 no-caps
                 class="full-width"
-                @click="login"
+                @click="onLoginClicked"
               ></q-btn>
             </q-card-section>
           </q-form>

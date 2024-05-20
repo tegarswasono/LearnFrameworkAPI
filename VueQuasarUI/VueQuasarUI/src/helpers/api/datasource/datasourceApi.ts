@@ -4,7 +4,7 @@ import type { IGeneralDatasourceModel } from './datasourceModel'
 
 export class DatasourceApi {
   private apiHelper: ApiHelper
-  private endpoint: string = 'common/Datasource'
+  private endpoint: string = '/Api/Common/Datasource'
 
   constructor() {
     this.apiHelper = inject('$apiHelper') as ApiHelper

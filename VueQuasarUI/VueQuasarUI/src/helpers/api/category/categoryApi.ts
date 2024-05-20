@@ -5,7 +5,7 @@ import type { ICategoryModel, ICategoryModelCreateOrUpdate } from './categoryMod
 
 export class CategoryApi {
   private apiHelper: ApiHelper
-  private endpoint: string = 'Master/Category'
+  private endpoint: string = '/Api/Master/Category'
 
   constructor() {
     this.apiHelper = inject('$apiHelper') as ApiHelper

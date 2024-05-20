@@ -11,6 +11,7 @@ namespace LearnFrameworkApi.Module.Datas.Entities.Configuration
     {
         [MaxLength(100)]
         public string ExampleSetting { get; set; } = string.Empty;
+        public string AppBaseUrl { get; set; } = string.Empty;
         public static SystemConfiguration GetInstance(AppDbContext context)
         {
             return context.SystemConfigurations.OrderBy(x => x.CreatedAt).FirstOrDefault()!;

@@ -5,7 +5,7 @@ import type { IUserModel, IUserModelCreateOrUpdate } from './userModel'
 
 export class UserApi {
   private apiHelper: ApiHelper
-  private endpoint: string = 'configuration/User'
+  private endpoint: string = '/Api/Configuration/User'
 
   constructor() {
     this.apiHelper = inject('$apiHelper') as ApiHelper

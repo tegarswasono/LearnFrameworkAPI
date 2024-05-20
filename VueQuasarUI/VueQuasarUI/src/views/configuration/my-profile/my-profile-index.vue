@@ -185,7 +185,8 @@ onMounted(async () => {
                   return 'New Password must contain 1 uppercase letter, 1 lowercase letter, and a number or symbol'
                 }
                 return true
-              }
+              },
+              (val) => (val != modelChangePassword.currentPassword) || 'Current Password and New Password should not be same',
             ]"
             filled
             dense

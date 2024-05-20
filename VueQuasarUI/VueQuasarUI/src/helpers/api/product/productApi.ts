@@ -5,7 +5,7 @@ import type { IProductModel, IProductModelCreateOrUpdate } from './productModel'
 
 export class ProductApi {
   private apiHelper: ApiHelper
-  private endpoint: string = 'Master/Product'
+  private endpoint: string = '/Api/Master/Product'
 
   constructor() {
     this.apiHelper = inject('$apiHelper') as ApiHelper

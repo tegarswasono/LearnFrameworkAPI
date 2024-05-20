@@ -2,8 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AppLayout from '../layouts/AppLayout.vue'
 import PublicLayout from '../layouts/PublicLayout.vue'
 
-//Login
+//System
 import LoginIndexView from '../views/system/login/login-index.vue'
+import forgotPassword from '@/views/system/login/forgot-password.vue'
 
 //Booking
 import BookingIndexView from '../views/transaction/booking/booking-index.vue'
@@ -28,11 +29,16 @@ const router = createRouter({
       component: LoginIndexView
     },
     {
-      path: '/',
+      path: '/forgotPassword',
+      name: 'forgotpassword',
+      component: forgotPassword
+    },
+    {
+      path: '/booking',
       component: AppLayout,
       children: [
         {
-          path: 'booking',
+          path: '',
           name: 'bookingindex',
           component: BookingIndexView
         }

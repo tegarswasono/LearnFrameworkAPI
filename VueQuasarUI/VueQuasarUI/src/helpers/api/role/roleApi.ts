@@ -5,7 +5,7 @@ import type { IRoleModel, IRoleModelCreateOrUpdate } from './roleModel'
 
 export class RoleApi {
   private apiHelper: ApiHelper
-  private endpoint: string = 'configuration/Role'
+  private endpoint: string = '/Api/Configuration/Role'
 
   constructor() {
     this.apiHelper = inject('$apiHelper') as ApiHelper

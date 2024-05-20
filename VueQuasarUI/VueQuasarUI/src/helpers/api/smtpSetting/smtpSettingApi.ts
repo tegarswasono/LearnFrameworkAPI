@@ -5,7 +5,7 @@ import type { ISmtpSettingModel, ISmtpSettingModelCreateOrUpdate } from './smtpS
 
 export class SmtpSettingApi {
   private apiHelper: ApiHelper
-  private endpoint: string = 'configuration/SmtpSetting'
+  private endpoint: string = '/Api/Configuration/SmtpSetting'
 
   constructor() {
     this.apiHelper = inject('$apiHelper') as ApiHelper

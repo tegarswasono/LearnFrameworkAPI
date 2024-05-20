@@ -8,7 +8,7 @@ import type {
 
 export class SystemConfigurationApi {
   private apiHelper: ApiHelper
-  private endpoint: string = 'configuration/SystemConfiguration'
+  private endpoint: string = '/Api/Configuration/SystemConfiguration'
 
   constructor() {
     this.apiHelper = inject('$apiHelper') as ApiHelper
