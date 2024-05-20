@@ -22,7 +22,7 @@ namespace LearnFrameworkApi.Module.Services.Configuration
 
         public void SendEmail(string to, string subject, string body)
         {
-            var smtpSetting = _context.SmtpSettings.FirstOrDefault()!;
+            var smtpSetting = SmtpSetting.GetInstance(_context);
             string from = new MailAddress(smtpSetting.SmtpUser, "no-reply").ToString();
             var mailMessage = new MailMessage(from, to, subject, body);
             _smtpClient.Send(mailMessage);
@@ -30,8 +30,8 @@ namespace LearnFrameworkApi.Module.Services.Configuration
 
         public void SendResetPasswordLink(string to, string fullName, string randomString)
         {
-            var smtpSetting = _context.SmtpSettings.FirstOrDefault()!;
-            var systemConfigration = _context.SystemConfigurations.FirstOrDefault()!;
+            var smtpSetting = SmtpSetting.GetInstance(_context);
+            var systemConfigration = SystemConfiguration.GetInstance(_context);
 
             string from = new MailAddress(smtpSetting.SmtpUser, "no-reply").ToString();
             string subject = "Password Reset Request";

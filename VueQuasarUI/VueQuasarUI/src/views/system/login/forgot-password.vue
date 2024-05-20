@@ -2,19 +2,18 @@
 import { ref, onBeforeMount, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import AuthService from '@/helpers/authService'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 
 const router = useRouter()
 const $q = useQuasar()
-const auth = AuthService.getInstance()
-const idsUrl = auth.getIdsUrl()
+const isLoadingBtnResetPassword = ref(false)
 
 const email = ref()
 const formRef: Ref<QForm | null> = ref(null)
 
 const onResetPasswordClicked = async () => {
+  isLoadingBtnResetPassword.value = true
   let isValid = await formFieldValidationHelper(formRef)
   if (isValid) {
     let model = {
@@ -26,25 +25,29 @@ const onResetPasswordClicked = async () => {
       }
     }
 
-    let tmp = (<any>window).appSettings.api.base_url
-    //console.log(tmp);
-    // axios
-    //   .post(`${idsUrl}/connect/token`, model, headers)
-    //   .then((res) => {
-    //     localStorage.setItem('access_token', res.data.access_token)
-    //     localStorage.setItem('refresh_token', res.data.refresh_token)
-    //     router.push({
-    //       name: 'bookingindex'
-    //     })
-    //   })
-    //   .catch(() => {
-    //     $q.notify({
-    //       type: 'negative',
-    //       message: 'Email Or Password is invalid',
-    //       position: 'bottom-right'
-    //     })
-    //   })
+    let baseUrlApi = (<any>window).appSettings.api.base_url
+    await axios
+      .post(`${baseUrlApi}/Api/Common/Guest/SendLinkResetPassword`, model, headers)
+      .then((res) => {
+        console.log(res)
+        $q.notify({
+          type: 'positive',
+          message: res.data.message,
+          position: 'bottom-right'
+        })
+        router.push({
+          name: 'loginindex'
+        })
+      })
+      .catch((err) => {
+        $q.notify({
+          type: 'negative',
+          message: err.response.data.message,
+          position: 'bottom-right'
+        })
+      })
   }
+  isLoadingBtnResetPassword.value = false
 }
 
 onBeforeMount(async () => {
@@ -91,6 +94,7 @@ onBeforeMount(async () => {
                 no-caps
                 class="full-width"
                 @click="onResetPasswordClicked"
+                :loading="isLoadingBtnResetPassword"
               ></q-btn>
             </q-card-section>
             <q-card-section class="q-py-none">

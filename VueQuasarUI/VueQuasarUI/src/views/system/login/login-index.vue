@@ -15,8 +15,10 @@ const username = ref()
 const password = ref()
 const isPwd = ref(true)
 const formRef: Ref<QForm | null> = ref(null)
+const isLoadingBtnLogin = ref(false)
 
 const onLoginClicked = async () => {
+  isLoadingBtnLogin.value = true
   let isValid = await formFieldValidationHelper(formRef)
   if (isValid) {
     let model = {
@@ -31,7 +33,7 @@ const onLoginClicked = async () => {
       }
     }
 
-    axios
+    await axios
       .post(`${idsUrl}/connect/token`, model, headers)
       .then((res) => {
         localStorage.setItem('access_token', res.data.access_token)
@@ -49,6 +51,7 @@ const onLoginClicked = async () => {
         })
       })
   }
+  isLoadingBtnLogin.value = false
 }
 
 const onForgotPasswordClicked = () => {
@@ -127,6 +130,7 @@ onBeforeMount(async () => {
                 no-caps
                 class="full-width"
                 @click="onLoginClicked"
+                :loading="isLoadingBtnLogin"
               ></q-btn>
             </q-card-section>
           </q-form>
