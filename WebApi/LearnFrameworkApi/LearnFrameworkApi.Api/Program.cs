@@ -143,6 +143,9 @@ static void SetupService(WebApplicationBuilder? builder)
     });
     builder.Services.AddTransient<EmailService>();
 
+    //Memory Cache
+    builder.Services.AddMemoryCache();
+
     //service
     builder.Services.AddScoped<ICurrentUserResolver, CurrentUserResolver>();
 }

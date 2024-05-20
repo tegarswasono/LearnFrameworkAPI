@@ -5,6 +5,7 @@ import PublicLayout from '../layouts/PublicLayout.vue'
 //System
 import LoginIndexView from '../views/system/login/login-index.vue'
 import forgotPassword from '@/views/system/login/forgot-password.vue'
+import resetPassword from '@/views/system/login/reset-password.vue'
 
 //Booking
 import BookingIndexView from '../views/transaction/booking/booking-index.vue'
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/forgotPassword',
       name: 'forgotpassword',
       component: forgotPassword
+    },
+    {
+      path: '/resetPassword',
+      name: 'resetpassword',
+      component: resetPassword
     },
     {
       path: '/booking',

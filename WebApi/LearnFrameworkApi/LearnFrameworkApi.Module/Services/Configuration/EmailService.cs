@@ -34,7 +34,7 @@ namespace LearnFrameworkApi.Module.Services.Configuration
             var systemConfigration = SystemConfiguration.GetInstance(_context);
 
             string from = new MailAddress(smtpSetting.SmtpUser, "no-reply").ToString();
-            string subject = "Password Reset Request";
+            string subject = "NCS App - Password Reset Request";
             string linkResetPassword = systemConfigration.AppBaseUrl + "/ResetPassword/" + randomString;
 
             string body = string.Format(

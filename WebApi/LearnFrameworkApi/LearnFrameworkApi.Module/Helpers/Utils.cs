@@ -14,5 +14,11 @@ namespace LearnFrameworkApi.Module.Helpers
             if (active) return "Active";
             else return "Not Active";
         }
+        public static string GenerateRandomNumberAsString(int length)
+        {
+            const string chars = "0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+        }
     }
 }

@@ -14,4 +14,31 @@ namespace LearnFrameworkApi.Module.Models.Common
         [ValidateEmail]
         public string Email { get; set; } = string.Empty;
     }
+    public class IsValidResetTokenModel
+    {
+        [Required]
+        public string ResetToken { get; set; } = string.Empty;
+    }
+    public class ResetPasswordModel
+    {
+        [Required]
+        public string ResetToken { get; set; } = string.Empty;
+        [Required]
+        [MaxLength(512)]
+        [ValidatePassword]
+        public string NewPassword { get; set; } = string.Empty;
+        [Required]
+        [MaxLength(512)]
+        [ValidatePassword]
+        public string ConfirmPassword { get; set; } = string.Empty;
+
+        public GeneralValidationModel IsValid()
+        {
+            if (NewPassword != ConfirmPassword)
+            {
+                return GeneralValidationModel.Dto(false, "NewPassword and ConfirmPassword should be same");
+            }
+            return GeneralValidationModel.Dto(true, "");
+        }
+    }
 }
