@@ -146,6 +146,13 @@ static void SetupService(WebApplicationBuilder? builder)
     //Memory Cache
     builder.Services.AddMemoryCache();
 
+    //UserManager Reset Token
+    builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+    {
+        options.TokenLifespan = TimeSpan.FromMinutes(5);
+    });
+
+
     //service
     builder.Services.AddScoped<ICurrentUserResolver, CurrentUserResolver>();
 }

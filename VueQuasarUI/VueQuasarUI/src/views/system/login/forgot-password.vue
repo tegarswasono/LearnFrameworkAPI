@@ -29,7 +29,6 @@ const onResetPasswordClicked = async () => {
     await axios
       .post(`${baseUrlApi}/Api/Common/Guest/SendLinkResetPassword`, model, headers)
       .then((res) => {
-        console.log(res)
         $q.notify({
           type: 'positive',
           message: res.data.message,
@@ -101,7 +100,7 @@ onBeforeMount(async () => {
               <q-btn
                 flat
                 size="md"
-                label="Forgot Password"
+                label="Back to Login"
                 no-caps
                 class="full-width"
                 icon="arrow_back"

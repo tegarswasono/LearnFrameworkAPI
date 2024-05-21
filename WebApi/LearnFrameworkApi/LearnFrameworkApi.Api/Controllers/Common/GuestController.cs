@@ -33,14 +33,9 @@ namespace LearnFrameworkApi.Api.Controllers.Common
             try
             {
                 var user = await _userManager.FindByEmailAsync(model.Email) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, model.Email));
-                var resetToken = Utils.GenerateRandomNumberAsString(6);
-                while (_memoryCache.TryGetValue(resetToken, out string? tokenValue) && tokenValue != null)
-                {
-                    resetToken = Utils.GenerateRandomNumberAsString(6);
-                }
+                string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                 _memoryCache.Set(resetToken, user.Id, DateTimeOffset.Now.AddMinutes(5));
                 _emailService.SendResetPasswordLink(user.Email!, user.FullName, resetToken);
-
                 return Ok(GeneralResponseMessage.Dto("A reset password link has been sent. Please check your email."));
             }catch(Exception ex)
             {
@@ -50,15 +45,18 @@ namespace LearnFrameworkApi.Api.Controllers.Common
         }
 
         [HttpPost("IsValidResetToken")]
-        public ActionResult<GeneralResponseMessage> IsValidResetToken(IsValidResetTokenModel model)
+        public async Task<ActionResult<GeneralResponseMessage>> IsValidResetToken(IsValidResetTokenModel model)
         {
             try
             {
-                var userId = _memoryCache.Get(model.ResetToken);
-                if (userId == null)
+                var userId = _memoryCache.Get(model.ResetToken) ?? throw new InvalidOperationException("Token is Expired");
+                var user = await _userManager.FindByIdAsync(userId.ToString()!) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
+                bool isTokenValid = await _userManager.VerifyUserTokenAsync(user!, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", model.ResetToken);
+                if (!isTokenValid)
                 {
-                    throw new InvalidOperationException("Token Is Expired");
+                    throw new InvalidOperationException("Token is Expired");
                 }
+
                 return Ok(GeneralResponseMessage.Dto("Token is valid"));
             }
             catch (Exception ex)
@@ -73,10 +71,24 @@ namespace LearnFrameworkApi.Api.Controllers.Common
         {
             try
             {
-                var userId = _memoryCache.Get(model.ResetToken) ?? throw new InvalidOperationException("Token Is Expired");
-                string userId1 = userId.ToString()!;
-                var user = await _userManager.FindByIdAsync(userId1) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
-                var tmp = await _userManager.ResetPasswordAsync(user, userId1, model.NewPassword);
+                var userId = _memoryCache.Get(model.ResetToken) ?? throw new InvalidOperationException("Token is Expired");
+                var user = await _userManager.FindByIdAsync(userId.ToString()!) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
+                bool isTokenValid = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", model.ResetToken);
+                if (!isTokenValid)
+                {
+                    throw new InvalidOperationException("Token is Expired");
+                }
+                var response = await _userManager.ResetPasswordAsync(user, model.ResetToken, model.NewPassword);
+                if (response.Errors.Any())
+                {
+                    throw new InvalidOperationException(response.Errors.FirstOrDefault()!.Description);
+                }
+
+                try
+                {
+                    _memoryCache.Remove(model.ResetToken);
+                }
+                catch (Exception) { }
 
                 return Ok(GeneralResponseMessage.Dto("Your password has been successfully reset. Please log in using your new password."));
             }
