@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OpenIddict.Validation.AspNetCore;
 using Serilog;
 using System.Linq.Dynamic.Core;
@@ -138,6 +139,35 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             catch (Exception ex)
             {
                 Log.Error($"RoleController.Delete | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                return BadRequest(GeneralResponseMessage.Dto(ex.Message));
+            }
+        }
+
+        [HttpGet("GetAllModules")]
+        [AppAuthorize(AvailableModuleFunction.RolesView)]
+        public async Task<ActionResult<List<Module.Models.Common.ModuleFunctionModel>>> GetAllModules(Guid? roleId)
+        {
+            try
+            {
+                var moduleFunctions = await _context.ModuleFunctions
+                    .OrderBy(x => x.ModuleId).ThenBy(x => x.Order)
+                    .ToListAsync();
+                var result = moduleFunctions
+                    .GroupBy(x => x.ModuleId)
+                    .Select(x => new Module.Models.Common.ModuleFunctionModel()
+                    {
+                        ModuleId = x.Key,
+                        Items = x.Select(y => new Module.Models.Common.ModuleFunctionModelItem()
+                        {
+                            Id = y.Id,
+                            Name = y.Name
+                        }).ToList()
+                    }).ToList();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"RoleController.GetAllModules | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
             }
         }

@@ -2,6 +2,7 @@ import { inject } from 'vue'
 import ApiHelper from '../apiHelper'
 import type { IPagination, IGeneralSuccessResponse } from '../apiModel'
 import type { IRoleModel, IRoleModelCreateOrUpdate } from './roleModel'
+import type { IModuleFunctionModel } from '../moduleFunction/moduleFunctionModel'
 
 export class RoleApi {
   private apiHelper: ApiHelper
@@ -51,6 +52,11 @@ export class RoleApi {
       this.endpoint + `/${id}`,
       'DELETE'
     )
+    return output
+  }
+
+  public async getAllModules(): Promise<IModuleFunctionModel> {
+    const output = await this.apiHelper.callApi(this.endpoint + '/GetAllModules', 'GET')
     return output
   }
 }

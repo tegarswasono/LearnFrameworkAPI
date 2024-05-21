@@ -8,9 +8,12 @@ import { RoleApi } from '@/helpers/api/role/roleApi'
 const quasar = useQuasar()
 const roleApi = new RoleApi()
 
-//listview
-const loading = ref(false)
 const roles = ref()
+const loadingTable = ref(false)
+const columns: any = [
+  { name: 'actions', label: '', align: 'left', style: 'width:50px;' },
+  { name: 'name', label: 'Name', field: 'name', sortable: true, align: 'left' }
+]
 const pagination = ref({
   sortBy: 'name',
   descending: false,
@@ -18,12 +21,29 @@ const pagination = ref({
   rowsPerPage: 20,
   rowsNumber: 0
 })
-const columns: any = [
-  { name: 'actions', label: '', align: 'left', style: 'width:50px;' },
-  { name: 'name', label: 'Name', field: 'name', sortable: true, align: 'left' }
+const dialog = ref(false)
+const dialogTitle = ref('Add Role')
+const visibleSubmit = ref(true)
+const formReadonly = ref(false)
+const model: Ref<IRoleModelCreateOrUpdate> = ref({
+  id: '',
+  name: ''
+})
+const formRef: Ref<QForm | null> = ref(null)
+
+const columnsModuleFunction: any = [
+  { name: 'actions', label: '', align: 'left', style: 'width:10px' },
+  { name: 'module', label: 'Module', align: 'left', field: 'moduleId', style: 'width:100px' },
+  { name: 'function1', label: 'Function', align: 'left' }
 ]
+const moduleFunctionsPagination = ref({
+  rowsPerPage: 0
+})
+const moduleFunctions = ref()
+const checkbox1 = ref(false)
+
 const getData = async () => {
-  loading.value = true
+  loadingTable.value = true
   try {
     var response = await roleApi.getAll(
       pagination.value.sortBy,
@@ -36,7 +56,7 @@ const getData = async () => {
   } catch (error) {
     /* empty */
   }
-  loading.value = false
+  loadingTable.value = false
 }
 const OnRequest = async (props: any) => {
   const { page, rowsPerPage, sortBy, descending } = props.pagination
@@ -46,17 +66,6 @@ const OnRequest = async (props: any) => {
   pagination.value.rowsPerPage = rowsPerPage
   await getData()
 }
-
-//Add, Edit, Delete
-const dialog = ref(false)
-const dialogTitle = ref('Add Role')
-const visibleSubmit = ref(true)
-const formReadonly = ref(false)
-const model: Ref<IRoleModelCreateOrUpdate> = ref({
-  id: '',
-  name: ''
-})
-const formRef: Ref<QForm | null> = ref(null)
 const onAdd = () => {
   dialog.value = true
   dialogTitle.value = 'Add Role'
@@ -75,6 +84,7 @@ const onView = async (row: any) => {
   formReadonly.value = true
 
   model.value = row
+  await refreshAvailableModule()
 }
 const onEdit = async (row: any) => {
   dialog.value = true
@@ -83,6 +93,10 @@ const onEdit = async (row: any) => {
   formReadonly.value = false
 
   model.value = JSON.parse(JSON.stringify(row))
+}
+const refreshAvailableModule = async () => {
+  var output = await roleApi.getAllModules()
+  moduleFunctions.value = output
 }
 const onDelete = async (id: string) => {
   quasar
@@ -134,7 +148,6 @@ const onSubmit = async () => {
   }
 }
 
-//onMounted
 onMounted(async () => {
   await getData()
 })
@@ -157,7 +170,7 @@ onMounted(async () => {
       separator="cell"
       v-model:pagination="pagination"
       dense
-      :loading="loading"
+      :loading="loadingTable"
       @request="OnRequest"
     >
       <template v-slot:top>
@@ -215,6 +228,37 @@ onMounted(async () => {
             :rules="[(val) => (val && val.length > 0) || 'Name is required']"
             :readonly="formReadonly"
           />
+          <q-table
+            :columns="columnsModuleFunction"
+            :rows="moduleFunctions"
+            :pagination="moduleFunctionsPagination"
+            dense
+            hide-bottom
+          >
+            <template v-slot:header-cell-actions="props">
+              <q-th :props="props">
+                <q-checkbox v-model="checkbox1" size="xs" :disable="formReadonly" />
+              </q-th>
+            </template>
+            <template v-slot:body-cell-actions="props">
+              <q-td :props="props">
+                <q-checkbox v-model="props.row.isChecked" size="xs" :disable="formReadonly" />
+              </q-td>
+            </template>
+            <template v-slot:body-cell-function1="props">
+              <q-td :props="props">
+                <template v-for="item in props.row.items" v-bind:key="item.id">
+                  <q-checkbox
+                    v-model="item.isChecked"
+                    size="xs"
+                    :label="item.name"
+                    :disable="formReadonly"
+                  />
+                  &nbsp;&nbsp;
+                </template>
+              </q-td>
+            </template>
+          </q-table>
         </q-card-section>
         <q-card-actions align="right" class="bg-white text-teal">
           <q-btn label="Close" color="negative" size="sm" icon="cancel" v-close-popup />
