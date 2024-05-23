@@ -9,4 +9,4 @@ interface IModuleFunctionModelItem extends IBaseEntity {
   name: string
   isChecked: boolean
 }
-export type { IModuleFunctionModel }
+export type { IModuleFunctionModel, IModuleFunctionModelItem }

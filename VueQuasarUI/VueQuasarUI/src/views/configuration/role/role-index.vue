@@ -3,6 +3,10 @@ import { onMounted, ref, type Ref } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 import type { IRoleModelCreateOrUpdate } from '@/helpers/api/role/roleModel'
+import type {
+  IModuleFunctionModel,
+  IModuleFunctionModelItem
+} from '@/helpers/api/moduleFunction/moduleFunctionModel'
 import { RoleApi } from '@/helpers/api/role/roleApi'
 
 const quasar = useQuasar()
@@ -93,10 +97,34 @@ const onEdit = async (row: any) => {
   formReadonly.value = false
 
   model.value = JSON.parse(JSON.stringify(row))
+  await refreshAvailableModule()
 }
 const refreshAvailableModule = async () => {
   var output = await roleApi.getAllModules()
   moduleFunctions.value = output
+}
+const onCheckbox1Change = async (value: boolean) => {
+  moduleFunctions.value.forEach((item: IModuleFunctionModel, index: any) => {
+    item.isChecked = value
+    item.items.forEach((item1: IModuleFunctionModelItem, index1: number) => {
+      item1.isChecked = value
+    })
+  })
+}
+const onCheckbox2Change = async (value: boolean, param1: IModuleFunctionModel) => {
+  param1.items.forEach((item: IModuleFunctionModelItem, index: any) => {
+    item.isChecked = value
+  })
+}
+const onCheckbox3Change = async (value: boolean, param1: IModuleFunctionModel) => {
+  if (value) {
+    var isCheckedFalse = param1.items.find(({ isChecked }) => isChecked == false)
+    if (isCheckedFalse == null) {
+      param1.isChecked = true
+    }
+  } else {
+    param1.isChecked = false
+  }
 }
 const onDelete = async (id: string) => {
   quasar
@@ -119,6 +147,7 @@ const onDelete = async (id: string) => {
     })
     .onCancel(() => {})
 }
+
 const onSubmit = async () => {
   let isValid = await formFieldValidationHelper(formRef)
   if (isValid) {
@@ -237,12 +266,22 @@ onMounted(async () => {
           >
             <template v-slot:header-cell-actions="props">
               <q-th :props="props">
-                <q-checkbox v-model="checkbox1" size="xs" :disable="formReadonly" />
+                <q-checkbox
+                  v-model="checkbox1"
+                  size="xs"
+                  :disable="formReadonly"
+                  @update:model-value="onCheckbox1Change"
+                />
               </q-th>
             </template>
             <template v-slot:body-cell-actions="props">
               <q-td :props="props">
-                <q-checkbox v-model="props.row.isChecked" size="xs" :disable="formReadonly" />
+                <q-checkbox
+                  v-model="props.row.isChecked"
+                  size="xs"
+                  :disable="formReadonly"
+                  @update:model-value="(val: boolean) => onCheckbox2Change(val, props.row)"
+                />
               </q-td>
             </template>
             <template v-slot:body-cell-function1="props">
@@ -253,6 +292,7 @@ onMounted(async () => {
                     size="xs"
                     :label="item.name"
                     :disable="formReadonly"
+                    @update:model-value="(val: boolean) => onCheckbox3Change(val, props.row)"
                   />
                   &nbsp;&nbsp;
                 </template>
