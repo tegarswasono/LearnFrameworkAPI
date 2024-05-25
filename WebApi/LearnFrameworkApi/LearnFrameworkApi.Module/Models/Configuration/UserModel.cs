@@ -19,22 +19,10 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public string? PhoneNumber { get; set; }
         public bool Active { get; set; }
         public string ActiveInString { get { return Active.ActiveToString(); } }
+        public List<RoleModel> Roles { get; set; } = [];
+        public string RolesInString { get { return string.Join(", ", Roles.OrderBy(x => x.Name).Select(x => x.Name)); } }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public static UserModel Dto(AppUser model)
-        {
-            return new UserModel
-            {
-                Id = model.Id,
-                Username = model.UserName,
-                Email = model.Email,
-                FullName = model.FullName,
-                PhoneNumber = model.PhoneNumber,
-                Active = model.Active,
-                CreatedAt = model.CreatedAt,
-                UpdatedAt = model.UpdatedAt
-            };
-        }
     }
     public class UserCreateModel
     {

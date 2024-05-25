@@ -21,6 +21,7 @@ const columns: any = [
   { name: 'actions', label: '', align: 'left', style: 'width:50px;' },
   { name: 'email', label: 'Email', field: 'email', sortable: true, align: 'left' },
   { name: 'fullname', label: 'Fullname', field: 'fullName', sortable: true, align: 'left' },
+  { name: 'rolesInString', label: 'Roles', field: 'rolesInString', sortable: false, align: 'left' },
   { name: 'active', label: 'Active', field: 'activeInString', sortable: true, align: 'left' }
 ]
 const dialog = ref(false)

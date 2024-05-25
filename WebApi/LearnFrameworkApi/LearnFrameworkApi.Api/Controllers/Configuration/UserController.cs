@@ -44,7 +44,27 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                 var users = _context.Users
                     .OrderBy(OrderBy)
                     .Skip((model.Page - 1) * model.RowsPerPage).Take(model.RowsPerPage)
-                    .Select(x => UserModel.Dto(x))
+                    .Select(x => new UserModel()
+                    {
+                        Id = x.Id,
+                        Username = x.UserName,
+                        Email = x.Email,
+                        FullName = x.FullName,
+                        PhoneNumber = x.PhoneNumber,
+                        Active = x.Active,
+                        CreatedAt = x.CreatedAt,
+                        UpdatedAt = x.UpdatedAt,
+                        Roles = (from userRole in _context.UserRoles.Where(y => y.UserId == x.Id)
+                                 join role in _context.Roles on userRole.RoleId equals role.Id
+                                 select new RoleModel()
+                                 {
+                                     Id = role.Id,
+                                     Name = role.Name,
+                                     CreatedAt = role.CreatedAt,
+                                     UpdatedAt = role.UpdatedAt
+                                 }
+                                ).ToList()
+                    })
                     .ToList();
 
                 var result = GeneralDatatableResponseModel<UserModel>.Dto(users, model, total);
@@ -64,7 +84,27 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             try
             {
                 var user = _context.Users
-                    .Select(x => UserModel.Dto(x))
+                    .Select(x => new UserModel()
+                    {
+                        Id = x.Id,
+                        Username = x.UserName,
+                        Email = x.Email,
+                        FullName = x.FullName,
+                        PhoneNumber = x.PhoneNumber,
+                        Active = x.Active,
+                        CreatedAt = x.CreatedAt,
+                        UpdatedAt = x.UpdatedAt,
+                        Roles = (from userRole in _context.UserRoles.Where(y => y.UserId == x.Id)
+                                 join role in _context.Roles on userRole.RoleId equals role.Id
+                                 select new RoleModel()
+                                 {
+                                     Id = role.Id,
+                                     Name = role.Name,
+                                     CreatedAt = role.CreatedAt,
+                                     UpdatedAt = role.UpdatedAt
+                                 }
+                                ).ToList()
+                    })
                     .FirstOrDefault(x => x.Id == id) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
                 return Ok(user);
             }
