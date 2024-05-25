@@ -2,6 +2,7 @@ import { inject } from 'vue'
 import ApiHelper from '../apiHelper'
 import type { IPagination, IGeneralSuccessResponse } from '../apiModel'
 import type { IUserModel, IUserModelCreateOrUpdate } from './userModel'
+import type { IGeneralDatasourceModel } from '../datasource/datasourceModel'
 
 export class UserApi {
   private apiHelper: ApiHelper
@@ -34,6 +35,10 @@ export class UserApi {
   public async getById(id: string): Promise<IUserModel> {
     const output = await this.apiHelper.callApi(this.endpoint + '/' + id, 'GET')
     return output
+  }
+
+  public async datasourceRoles(): Promise<IGeneralDatasourceModel[]> {
+    return await this.apiHelper.callApi(this.endpoint + '/Datasource/Roles', 'GET')
   }
 
   public async create(input: IUserModelCreateOrUpdate): Promise<IGeneralSuccessResponse> {

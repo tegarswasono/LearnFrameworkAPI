@@ -11,6 +11,7 @@ interface IUserModelCreateOrUpdate {
   id: string
   email: string
   fullName: string
+  phoneNumber: string
   active: boolean
   password: string | null
 }

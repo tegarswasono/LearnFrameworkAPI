@@ -12,6 +12,7 @@ using OpenIddict.Validation.AspNetCore;
 using Serilog;
 using System.Collections.Generic;
 using System.Linq.Dynamic.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
@@ -111,6 +112,29 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             catch (Exception ex)
             {
                 Log.Error($"UserController.GetById | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                return BadRequest(GeneralResponseMessage.Dto(ex.Message));
+            }
+        }
+
+        [HttpGet("Datasource/Roles")]
+        [AppAuthorize(AvailableModuleFunction.UsersView)]
+        public async Task<ActionResult<GeneralDatasourceModel>> DatasourceRoles()
+        {
+            try
+            {
+                var result = await _context.Roles
+                    .OrderBy(x => x.Name)
+                    .Select(x => new GeneralDatasourceModel()
+                    {
+                        Value = x.Id,
+                        Label = x.Name!
+                    })
+                    .ToListAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"UserController.DatasourceRoles | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
             }
         }

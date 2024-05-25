@@ -21,6 +21,13 @@ const columns: any = [
   { name: 'actions', label: '', align: 'left', style: 'width:50px;' },
   { name: 'email', label: 'Email', field: 'email', sortable: true, align: 'left' },
   { name: 'fullname', label: 'Fullname', field: 'fullName', sortable: true, align: 'left' },
+  {
+    name: 'phoneNumber',
+    label: 'PhoneNumber',
+    field: 'phoneNumber',
+    sortable: true,
+    align: 'left'
+  },
   { name: 'rolesInString', label: 'Roles', field: 'rolesInString', sortable: false, align: 'left' },
   { name: 'active', label: 'Active', field: 'activeInString', sortable: true, align: 'left' }
 ]
@@ -34,6 +41,7 @@ const model: Ref<IUserModelCreateOrUpdate> = ref({
   id: '',
   email: '',
   fullName: '',
+  phoneNumber: '',
   active: true,
   password: ''
 })
@@ -71,6 +79,7 @@ const onAdd = () => {
     id: '',
     email: '',
     fullName: '',
+    phoneNumber: '',
     active: true,
     password: ''
   }
@@ -234,6 +243,15 @@ onMounted(async () => {
             maxlength="50"
             :rules="[(val) => (val && val.length > 0) || 'FullName is required']"
             :readonly="formReadonly"
+          />
+          <q-input
+            filled
+            v-model="model.phoneNumber"
+            label="PhoneNumber"
+            dense
+            maxlength="50"
+            :readonly="formReadonly"
+            style="padding-bottom: 20px"
           />
           <q-input
             v-if="showPasswordField"
