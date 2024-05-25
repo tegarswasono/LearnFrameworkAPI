@@ -1,7 +1,7 @@
 ﻿using LearnFrameworkApi.Module.Datas;
 using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Models.Common;
-using LearnFrameworkMvc.Module;
+using LearnFrameworkApi.Module;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

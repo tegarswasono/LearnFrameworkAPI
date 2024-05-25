@@ -1,5 +1,4 @@
-﻿using LearnFrameworkApi.Module;
-namespace LearnFrameworkMvc.Module
+﻿namespace LearnFrameworkApi.Module
 {
     public static class AvailableModuleFunction
     {
