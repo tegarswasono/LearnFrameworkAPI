@@ -115,10 +115,24 @@ export default class apiHelper {
           case 400:
             // eslint-disable-next-line no-case-declarations
             let result = ''
+
             // eslint-disable-next-line no-prototype-builtins
-            if (errorResponse.data.hasOwnProperty('messages')) {
-              const errorMessage = errorResponse.data.messages
-              result = errorMessage.join('\n')
+            if (errorResponse.data.hasOwnProperty('errors')) {
+              for (const field in errorResponse.data.errors) {
+                // eslint-disable-next-line no-prototype-builtins
+                if (errorResponse.data.errors.hasOwnProperty(field)) {
+                  result = errorResponse.data.errors[field][0]
+                  //result = errorResponse.data.errors[field].join('\n')
+                  // errorResponse.data.errors[field].forEach((error: any) => {
+                  //   console.log(error)
+                  // })
+                }
+              }
+              // eslint-disable-next-line no-prototype-builtins
+            } else if (errorResponse.data.hasOwnProperty('messages')) {
+              result = errorResponse.data.messages[0]
+              // const errorMessage = errorResponse.data.messages
+              // result = errorMessage.join('\n')
             } else {
               result = errorResponse.data.message
             }

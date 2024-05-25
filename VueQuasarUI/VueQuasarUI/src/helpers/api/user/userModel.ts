@@ -12,6 +12,7 @@ interface IUserModelCreateOrUpdate {
   email: string
   fullName: string
   active: boolean
+  password: string | null
 }
 
 export type { IUserModel, IUserModelCreateOrUpdate }

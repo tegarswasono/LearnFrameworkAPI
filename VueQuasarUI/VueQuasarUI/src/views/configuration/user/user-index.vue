@@ -8,7 +8,6 @@ import { UserApi } from '@/helpers/api/user/userApi'
 const quasar = useQuasar()
 const userApi = new UserApi()
 
-//listview
 const loading = ref(false)
 const users = ref()
 const pagination = ref({
@@ -24,6 +23,19 @@ const columns: any = [
   { name: 'fullname', label: 'Fullname', field: 'fullName', sortable: true, align: 'left' },
   { name: 'active', label: 'Active', field: 'activeInString', sortable: true, align: 'left' }
 ]
+const dialog = ref(false)
+const dialogTitle = ref('Add User')
+const showPasswordField = ref(false)
+const isPwdPassword = ref(true)
+const model: Ref<IUserModelCreateOrUpdate> = ref({
+  id: '',
+  email: '',
+  fullName: '',
+  active: true,
+  password: ''
+})
+const formRef: Ref<QForm | null> = ref(null)
+
 const getData = async () => {
   loading.value = true
   try {
@@ -49,31 +61,29 @@ const OnRequest = async (props: any) => {
   await getData()
 }
 
-//Add, Edit, Delete
-const dialog = ref(false)
-const dialogTitle = ref('Add User')
-const emptyModel = {
-  id: '',
-  email: '',
-  fullName: '',
-  active: true
-}
-const model: Ref<IUserModelCreateOrUpdate> = ref(emptyModel)
-const formRef: Ref<QForm | null> = ref(null)
 const onAdd = () => {
   dialog.value = true
   dialogTitle.value = 'Add User'
-  model.value = emptyModel
+  model.value = {
+    id: '',
+    email: '',
+    fullName: '',
+    active: true,
+    password: ''
+  }
+  showPasswordField.value = true
 }
 const onView = async (row: any) => {
   dialogTitle.value = 'View User'
   dialog.value = true
   model.value = row
+  showPasswordField.value = false
 }
 const onEdit = async (row: any) => {
   dialogTitle.value = 'Edit User'
   dialog.value = true
   model.value = row
+  showPasswordField.value = false
 }
 const onDelete = async (id: string) => {
   quasar
@@ -125,7 +135,6 @@ const onSubmit = async () => {
   }
 }
 
-//onMounted
 onMounted(async () => {
   await getData()
 })
@@ -215,6 +224,47 @@ onMounted(async () => {
             maxlength="50"
             :rules="[(val) => (val && val.length > 0) || 'FullName is required']"
           />
+          <q-input
+            v-if="showPasswordField"
+            v-model="model.password"
+            filled
+            :type="isPwdPassword ? 'password' : 'text'"
+            label="Password"
+            lazy-rules
+            :rules="[
+              (val) => (val && val.length > 0) || 'Password is required',
+              (val) => val.length >= 8 || 'Password must be a minimum of 8 characters',
+              (val) => {
+                let hasUppercase = false
+                let hasLowercase = false
+                let hasNumberOrSpecialChar = false
+                for (let i = 0; i < val.length; i++) {
+                  const char = val[i]
+                  if (char >= 'A' && char <= 'Z') {
+                    hasUppercase = true
+                  } else if (char >= 'a' && char <= 'z') {
+                    hasLowercase = true
+                  } else if ((char >= '0' && char <= '9') || (char >= '!' && char <= '/')) {
+                    hasNumberOrSpecialChar = true
+                  }
+                }
+                if (!hasUppercase || !hasLowercase || !hasNumberOrSpecialChar) {
+                  return 'Password must contain 1 uppercase letter, 1 lowercase letter, and a number or symbol'
+                }
+                return true
+              }
+            ]"
+            dense
+            maxlength="100"
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="isPwdPassword ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="isPwdPassword = !isPwdPassword"
+              />
+            </template>
+          </q-input>
           <q-toggle v-model="model.active" label="Is Active" />
         </q-card-section>
         <q-card-actions align="right" class="bg-white text-teal">

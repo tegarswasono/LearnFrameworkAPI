@@ -56,6 +56,7 @@ namespace LearnFrameworkApi.Module.Models.Configuration
     public class UserCreateModel1 : UserCreateModel
     {
         [Required]
+        [ValidatePassword]
         public string Password { get; set; } = string.Empty;
     }
 }
