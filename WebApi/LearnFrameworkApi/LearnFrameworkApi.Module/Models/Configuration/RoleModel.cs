@@ -1,5 +1,6 @@
 ﻿using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Helpers.CustomAttribute;
+using LearnFrameworkApi.Module.Models.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -25,6 +26,7 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         [Required]
         [MaxLength(512)]
         public string Name { get; set; } = string.Empty;
+        public List<RoleFunctionModel> RoleFunctions { get; set; } = [];
     }
     public class RoleUpdateModel : RoleCreateModel
     {

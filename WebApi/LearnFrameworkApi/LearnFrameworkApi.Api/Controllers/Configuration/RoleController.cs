@@ -90,8 +90,21 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                     Name = model.Name,
                     NormalizedName = model.Name.ToUpper()
                 };
-                
+
                 await _roleManager.CreateAsync(role);
+                foreach (var roleFunction in model.RoleFunctions)
+                {
+                    foreach (var item in roleFunction.Items.Where(x => x.IsChecked))
+                    {
+                        var roleFunction1 = new RoleFunction()
+                        {
+                            RoleId = role.Id,
+                            FunctionId = item.Id
+                        };
+                        _context.RoleFunctions.Add(roleFunction1);
+                    }
+                }
+                _context.SaveChanges();
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());
             }
             catch (Exception ex)
@@ -117,6 +130,21 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                 role.Name = model.Name;
                 role.NormalizedName = model.Name.ToUpper();
                 await _roleManager.UpdateAsync(role);
+
+                _context.RoleFunctions.Where(x => x.RoleId == role.Id).ExecuteDelete();
+                foreach (var roleFunction in model.RoleFunctions)
+                {
+                    foreach (var item in roleFunction.Items.Where(x => x.IsChecked))
+                    {
+                        var roleFunction1 = new RoleFunction()
+                        {
+                            RoleId = role.Id,
+                            FunctionId = item.Id
+                        };
+                        _context.RoleFunctions.Add(roleFunction1);
+                    }
+                }
+                _context.SaveChanges();
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());
             }
             catch (Exception ex)
@@ -133,6 +161,9 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             try
             {
                 var role = await _roleManager.FindByIdAsync(id.ToString()) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
+
+                _context.RoleFunctions.Where(x => x.RoleId == id).ExecuteDelete();
+                _context.SaveChanges();
                 await _roleManager.DeleteAsync(role);
                 return Ok(GeneralResponseMessage.DeleteSuccessfully());
             }
@@ -143,31 +174,44 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             }
         }
 
-        [HttpGet("GetAllModules")]
+        [HttpGet("RoleFunctions/{roleId?}")]
         [AppAuthorize(AvailableModuleFunction.RolesView)]
-        public async Task<ActionResult<List<Module.Models.Common.ModuleFunctionModel>>> GetAllModules(Guid? roleId)
+        public async Task<ActionResult<List<RoleFunctionModel>>> RoleFunctions(Guid? roleId)
         {
             try
             {
-                var moduleFunctions = await _context.ModuleFunctions
+                var moduleFunctionModels = await _context.ModuleFunctions
                     .OrderBy(x => x.ModuleId).ThenBy(x => x.Order)
+                    .Select(x => new ModuleFunctionModel()
+                    {
+                        Id = x.Id,
+                        ModuleId = x.ModuleId,
+                        Name = x.Name,
+                        Description = x.Description,
+                        Order = x.Order,
+                        IsChecked = roleId == null || roleId == Guid.Empty ? false : _context.RoleFunctions.Any(y => y.RoleId == roleId && y.FunctionId == x.Id)
+                    })
                     .ToListAsync();
-                var result = moduleFunctions
+
+                var result = moduleFunctionModels
                     .GroupBy(x => x.ModuleId)
-                    .Select(x => new Module.Models.Common.ModuleFunctionModel()
+                    .Select(x => new RoleFunctionModel()
                     {
                         ModuleId = x.Key,
-                        Items = x.Select(y => new Module.Models.Common.ModuleFunctionModelItem()
+                        IsChecked = !x.Any(x => !x.IsChecked),
+                        Items = x.Select(y => new RoleFunctionModelItem()
                         {
                             Id = y.Id,
-                            Name = y.Name
+                            Name = y.Name,
+                            IsChecked = y.IsChecked
+
                         }).ToList()
                     }).ToList();
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                Log.Error($"RoleController.GetAllModules | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                Log.Error($"RoleController.RoleFunctions | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
             }
         }

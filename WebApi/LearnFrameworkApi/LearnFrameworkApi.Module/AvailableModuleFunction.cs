@@ -2,14 +2,14 @@
 {
     public static class AvailableModuleFunction
     {
-        public static List<ModuleFunctionModel> GetAll()
+        public static List<ModuleFunctionBaseModel> GetAll()
         {
 #pragma warning disable CS8601 // Possible null reference assignment.
 
             int a = 1;
             var result = typeof(AvailableModuleFunction)
                 .GetFields()
-                .Select(x => new ModuleFunctionModel 
+                .Select(x => new ModuleFunctionBaseModel 
                 { 
                     //Id = x.Name, 
                     Id = x.GetValue(null)?.ToString(),
@@ -50,7 +50,7 @@
 		public const string BookingsView = "Bookings.View";
 
     }
-    public class ModuleFunctionModel
+    public class ModuleFunctionBaseModel
     {
         public string Id { get; set; } = string.Empty;
         public string IdText { get; set; } = string.Empty;

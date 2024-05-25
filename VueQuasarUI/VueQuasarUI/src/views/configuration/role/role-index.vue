@@ -2,11 +2,11 @@
 import { onMounted, ref, type Ref } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
-import type { IRoleModelCreateOrUpdate } from '@/helpers/api/role/roleModel'
 import type {
-  IModuleFunctionModel,
-  IModuleFunctionModelItem
-} from '@/helpers/api/moduleFunction/moduleFunctionModel'
+  IRoleModelCreateOrUpdate,
+  IRoleFunctionModel,
+  IRoleFunctionModelItem
+} from '@/helpers/api/role/roleModel'
 import { RoleApi } from '@/helpers/api/role/roleApi'
 
 const quasar = useQuasar()
@@ -31,19 +31,20 @@ const visibleSubmit = ref(true)
 const formReadonly = ref(false)
 const model: Ref<IRoleModelCreateOrUpdate> = ref({
   id: '',
-  name: ''
+  name: '',
+  RoleFunctions: []
 })
 const formRef: Ref<QForm | null> = ref(null)
 
-const columnsModuleFunction: any = [
+const columnsRoleFunction: any = [
   { name: 'actions', label: '', align: 'left', style: 'width:10px' },
   { name: 'module', label: 'Module', align: 'left', field: 'moduleId', style: 'width:100px' },
   { name: 'function1', label: 'Function', align: 'left' }
 ]
-const moduleFunctionsPagination = ref({
+const roleFunctionsPagination = ref({
   rowsPerPage: 0
 })
-const moduleFunctions = ref()
+//const roleFunctions = ref()
 const checkbox1 = ref(false)
 
 const getData = async () => {
@@ -70,7 +71,7 @@ const OnRequest = async (props: any) => {
   pagination.value.rowsPerPage = rowsPerPage
   await getData()
 }
-const onAdd = () => {
+const onAdd = async () => {
   dialog.value = true
   dialogTitle.value = 'Add Role'
   visibleSubmit.value = true
@@ -78,8 +79,10 @@ const onAdd = () => {
 
   model.value = {
     id: '',
-    name: ''
+    name: '',
+    RoleFunctions: []
   }
+  await refreshRoleFunction('')
 }
 const onView = async (row: any) => {
   dialog.value = true
@@ -88,7 +91,7 @@ const onView = async (row: any) => {
   formReadonly.value = true
 
   model.value = row
-  await refreshAvailableModule()
+  await refreshRoleFunction(row.id)
 }
 const onEdit = async (row: any) => {
   dialog.value = true
@@ -97,26 +100,32 @@ const onEdit = async (row: any) => {
   formReadonly.value = false
 
   model.value = JSON.parse(JSON.stringify(row))
-  await refreshAvailableModule()
+  await refreshRoleFunction(row.id)
 }
-const refreshAvailableModule = async () => {
-  var output = await roleApi.getAllModules()
-  moduleFunctions.value = output
+const refreshRoleFunction = async (id: string) => {
+  var output = await roleApi.roleFunctions(id)
+  model.value.RoleFunctions = output
+  var isCheckedFalse = output.find(({ isChecked }) => isChecked == false)
+  if (isCheckedFalse == null) {
+    checkbox1.value = true
+  } else {
+    checkbox1.value = false
+  }
 }
 const onCheckbox1Change = async (value: boolean) => {
-  moduleFunctions.value.forEach((item: IModuleFunctionModel, index: any) => {
+  model.value.RoleFunctions.forEach((item: IRoleFunctionModel, index: any) => {
     item.isChecked = value
-    item.items.forEach((item1: IModuleFunctionModelItem, index1: number) => {
+    item.items.forEach((item1: IRoleFunctionModelItem, index1: number) => {
       item1.isChecked = value
     })
   })
 }
-const onCheckbox2Change = async (value: boolean, param1: IModuleFunctionModel) => {
-  param1.items.forEach((item: IModuleFunctionModelItem, index: any) => {
+const onCheckbox2Change = async (value: boolean, param1: IRoleFunctionModel) => {
+  param1.items.forEach((item: IRoleFunctionModelItem, index: any) => {
     item.isChecked = value
   })
 }
-const onCheckbox3Change = async (value: boolean, param1: IModuleFunctionModel) => {
+const onCheckbox3Change = async (value: boolean, param1: IRoleFunctionModel) => {
   if (value) {
     var isCheckedFalse = param1.items.find(({ isChecked }) => isChecked == false)
     if (isCheckedFalse == null) {
@@ -149,6 +158,7 @@ const onDelete = async (id: string) => {
 }
 
 const onSubmit = async () => {
+  //role
   let isValid = await formFieldValidationHelper(formRef)
   if (isValid) {
     if (model.value.id) {
@@ -175,6 +185,8 @@ const onSubmit = async () => {
       }
     }
   }
+
+  //
 }
 
 onMounted(async () => {
@@ -258,9 +270,9 @@ onMounted(async () => {
             :readonly="formReadonly"
           />
           <q-table
-            :columns="columnsModuleFunction"
-            :rows="moduleFunctions"
-            :pagination="moduleFunctionsPagination"
+            :columns="columnsRoleFunction"
+            :rows="model.RoleFunctions"
+            :pagination="roleFunctionsPagination"
             dense
             hide-bottom
           >
