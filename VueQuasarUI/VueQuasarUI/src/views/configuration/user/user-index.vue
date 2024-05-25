@@ -26,8 +26,10 @@ const columns: any = [
 ]
 const dialog = ref(false)
 const dialogTitle = ref('Add User')
-const showPasswordField = ref(false)
+const formReadonly = ref(false)
+const visibleSubmit = ref(true)
 const isPwdPassword = ref(true)
+const showPasswordField = ref(false)
 const model: Ref<IUserModelCreateOrUpdate> = ref({
   id: '',
   email: '',
@@ -73,18 +75,24 @@ const onAdd = () => {
     password: ''
   }
   showPasswordField.value = true
+  formReadonly.value = false
+  visibleSubmit.value = true
 }
 const onView = async (row: any) => {
   dialogTitle.value = 'View User'
   dialog.value = true
   model.value = row
   showPasswordField.value = false
+  formReadonly.value = true
+  visibleSubmit.value = false
 }
 const onEdit = async (row: any) => {
   dialogTitle.value = 'Edit User'
   dialog.value = true
   model.value = row
   showPasswordField.value = false
+  formReadonly.value = false
+  visibleSubmit.value = true
 }
 const onDelete = async (id: string) => {
   quasar
@@ -215,6 +223,7 @@ onMounted(async () => {
             dense
             maxlength="512"
             :rules="[(val) => (val && val.length > 0) || 'Email is required']"
+            :readonly="formReadonly"
           />
           <q-input
             filled
@@ -224,6 +233,7 @@ onMounted(async () => {
             dense
             maxlength="50"
             :rules="[(val) => (val && val.length > 0) || 'FullName is required']"
+            :readonly="formReadonly"
           />
           <q-input
             v-if="showPasswordField"
@@ -266,11 +276,18 @@ onMounted(async () => {
               />
             </template>
           </q-input>
-          <q-toggle v-model="model.active" label="Is Active" />
+          <q-toggle v-model="model.active" label="Is Active" :disable="formReadonly" />
         </q-card-section>
         <q-card-actions align="right" class="bg-white text-teal">
           <q-btn label="Close" color="negative" size="sm" icon="cancel" v-close-popup />
-          <q-btn label="Save" color="primary" size="sm" icon="save" :onclick="onSubmit" />
+          <q-btn
+            label="Save"
+            color="primary"
+            size="sm"
+            icon="save"
+            :onclick="onSubmit"
+            v-if="visibleSubmit"
+          />
         </q-card-actions>
       </q-form>
     </q-card>
