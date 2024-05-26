@@ -21,7 +21,7 @@ namespace LearnFrameworkApi.Module.Models.Configuration
 
         public bool Active { get; set; }
         public string ActiveInString { get { return Active.ActiveToString(); } }
-        public List<RoleModel> Roles { get; set; } = [];
+        public List<RoleModel>? Roles { get; set; }
         public string RolesInString { get { return string.Join(", ", Roles.OrderBy(x => x.Name).Select(x => x.Name)); } }
 
         public DateTime CreatedAt { get; set; }
@@ -38,7 +38,7 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         [MaxLength(512)]
         public string PhoneNumber { get; set; } = string.Empty;
         public bool Active { get; set; }
-        public List<RoleModel> Roles { get; set; } = [];
+        public List<RoleModel>? Roles { get; set; }
     }
     public class UserUpdateModel : UserCreateModel
     {

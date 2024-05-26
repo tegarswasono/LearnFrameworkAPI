@@ -47,8 +47,6 @@ const model: Ref<IUserModelCreateOrUpdate> = ref({
   roles: null
 })
 const formRef: Ref<QForm | null> = ref(null)
-
-const role = ref()
 const roles = ref()
 
 const getData = async () => {
@@ -186,7 +184,6 @@ onMounted(async () => {
       @request="OnRequest"
     >
       <template v-slot:top>
-        {{ role }}
         <q-btn icon="add" size="sm" label="Add" color="secondary" @click="onAdd" />
       </template>
       <template v-slot:body-cell-actions="props">
@@ -262,12 +259,12 @@ onMounted(async () => {
             style="padding-bottom: 20px"
           />
           <q-select
-            v-model="role"
+            v-model="model.roles"
             label="Roles"
             clearable
             :options="roles"
-            emit-value
-            map-options
+            option-label="name"
+            option-value="id"
             :readonly="formReadonly"
             dense
             filled

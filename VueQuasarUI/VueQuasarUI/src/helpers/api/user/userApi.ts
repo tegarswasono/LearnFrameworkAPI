@@ -3,6 +3,7 @@ import ApiHelper from '../apiHelper'
 import type { IPagination, IGeneralSuccessResponse } from '../apiModel'
 import type { IUserModel, IUserModelCreateOrUpdate } from './userModel'
 import type { IGeneralDatasourceModel } from '../datasource/datasourceModel'
+import type { IRoleModel } from '../role/roleModel'
 
 export class UserApi {
   private apiHelper: ApiHelper
@@ -37,7 +38,7 @@ export class UserApi {
     return output
   }
 
-  public async datasourceRoles(): Promise<IGeneralDatasourceModel[]> {
+  public async datasourceRoles(): Promise<IRoleModel[]> {
     return await this.apiHelper.callApi(this.endpoint + '/Datasource/Roles', 'GET')
   }
 

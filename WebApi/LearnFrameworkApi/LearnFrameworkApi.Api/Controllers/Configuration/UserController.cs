@@ -159,6 +159,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                     Active = model.Active,
                 };
                 await _userManager.CreateAsync(user, model.Password);
+                model.Roles ??= [];
                 foreach (var role in model.Roles)
                 {
                     await _userManager.AddToRoleAsync(user, role.Name!);
@@ -197,6 +198,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                 await _userManager.UpdateAsync(user);
 
                 //handle userRole
+                model.Roles ??= [];
                 List<string> rolesDb = (await _userManager.GetRolesAsync(user)).ToList();
                 if (rolesDb.Count == 0)
                 {
