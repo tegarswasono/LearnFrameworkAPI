@@ -23,10 +23,12 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
     {
         private readonly AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
-        public UserController(AppDbContext context, UserManager<AppUser> userManager)
+        private readonly RoleManager<AppRole> _roleManager;
+        public UserController(AppDbContext context, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -118,17 +120,13 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
 
         [HttpGet("Datasource/Roles")]
         [AppAuthorize(AvailableModuleFunction.UsersView)]
-        public async Task<ActionResult<GeneralDatasourceModel>> DatasourceRoles()
+        public async Task<ActionResult<RoleModel>> DatasourceRoles()
         {
             try
             {
                 var result = await _context.Roles
                     .OrderBy(x => x.Name)
-                    .Select(x => new GeneralDatasourceModel()
-                    {
-                        Value = x.Id,
-                        Label = x.Name!
-                    })
+                    .Select(x => RoleModel.Dto(x))
                     .ToListAsync();
                 return Ok(result);
             }
@@ -160,8 +158,13 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                     PhoneNumber = model.PhoneNumber,
                     Active = model.Active,
                 };
-
                 await _userManager.CreateAsync(user, model.Password);
+                foreach (var role in model.Roles)
+                {
+                    await _userManager.AddToRoleAsync(user, role.Name!);
+                }
+                await _context.SaveChangesAsync();
+
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());
             }
             catch (Exception ex)
@@ -192,6 +195,35 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                 user.Active = model.Active;
 
                 await _userManager.UpdateAsync(user);
+
+                //handle userRole
+                List<string> rolesDb = (await _userManager.GetRolesAsync(user)).ToList();
+                if (rolesDb.Count == 0)
+                {
+                    foreach (var role in model.Roles)
+                    {
+                        await _userManager.AddToRoleAsync(user, role.Name!);
+                    }
+                }
+                else
+                {
+                    //Delete
+                    foreach (var roleDb in rolesDb)
+                    {
+                        var any = model.Roles.Exists(x => x.Name == roleDb);
+                        if (!any)
+                        {
+                            await _userManager.RemoveFromRoleAsync(user, roleDb);
+                        }
+                    }
+                    //Insert
+                    foreach (var role in model.Roles.Where(x=> !rolesDb.Exists(y=> y == x.Name)))
+                    {
+                        await _userManager.AddToRoleAsync(user, role.Name!);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());
             }
             catch (Exception ex)

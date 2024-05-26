@@ -53,9 +53,9 @@ static void SetupService(WebApplicationBuilder? builder)
     builder!.Host.UseSerilog();
     Log.Logger = new LoggerConfiguration()
         .MinimumLevel.Information()
-        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
         .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
-        .MinimumLevel.Override("System", LogEventLevel.Information)
+        .MinimumLevel.Override("System", LogEventLevel.Warning)
         .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
         .Enrich.FromLogContext()
         .WriteTo.Logger(x =>

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LearnFrameworkApi.Module.Helpers;
+using System.Data;
 
 namespace LearnFrameworkApi.Module.Models.Configuration
 {
@@ -17,10 +18,12 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public string? Email { get; set; }
         public string FullName { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
+
         public bool Active { get; set; }
         public string ActiveInString { get { return Active.ActiveToString(); } }
         public List<RoleModel> Roles { get; set; } = [];
         public string RolesInString { get { return string.Join(", ", Roles.OrderBy(x => x.Name).Select(x => x.Name)); } }
+
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -35,7 +38,7 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         [MaxLength(512)]
         public string PhoneNumber { get; set; } = string.Empty;
         public bool Active { get; set; }
-        public List<Guid> RolesId { get; set; } = [];
+        public List<RoleModel> Roles { get; set; } = [];
     }
     public class UserUpdateModel : UserCreateModel
     {

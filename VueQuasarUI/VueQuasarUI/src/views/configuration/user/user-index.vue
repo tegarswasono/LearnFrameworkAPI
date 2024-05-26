@@ -43,9 +43,13 @@ const model: Ref<IUserModelCreateOrUpdate> = ref({
   fullName: '',
   phoneNumber: '',
   active: true,
-  password: ''
+  password: '',
+  roles: null
 })
 const formRef: Ref<QForm | null> = ref(null)
+
+const role = ref()
+const roles = ref()
 
 const getData = async () => {
   loading.value = true
@@ -81,7 +85,8 @@ const onAdd = () => {
     fullName: '',
     phoneNumber: '',
     active: true,
-    password: ''
+    password: '',
+    roles: null
   }
   showPasswordField.value = true
   formReadonly.value = false
@@ -155,6 +160,8 @@ const onSubmit = async () => {
 
 onMounted(async () => {
   await getData()
+  var roles1 = await userApi.datasourceRoles()
+  roles.value = roles1
 })
 </script>
 
@@ -179,6 +186,7 @@ onMounted(async () => {
       @request="OnRequest"
     >
       <template v-slot:top>
+        {{ role }}
         <q-btn icon="add" size="sm" label="Add" color="secondary" @click="onAdd" />
       </template>
       <template v-slot:body-cell-actions="props">
@@ -252,6 +260,19 @@ onMounted(async () => {
             maxlength="50"
             :readonly="formReadonly"
             style="padding-bottom: 20px"
+          />
+          <q-select
+            v-model="role"
+            label="Roles"
+            clearable
+            :options="roles"
+            emit-value
+            map-options
+            :readonly="formReadonly"
+            dense
+            filled
+            style="padding-bottom: 20px"
+            multiple
           />
           <q-input
             v-if="showPasswordField"

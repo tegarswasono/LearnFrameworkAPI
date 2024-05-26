@@ -1,4 +1,5 @@
 import type { IBaseEntity } from '../apiModel'
+import type { IRoleModel } from '../role/roleModel'
 interface IUserModel extends IBaseEntity {
   username: string
   email: string
@@ -6,6 +7,7 @@ interface IUserModel extends IBaseEntity {
   phoneNumber: string
   active: boolean
   activeInString: string
+  roles: IRoleModel[] | null
 }
 interface IUserModelCreateOrUpdate {
   id: string
@@ -14,6 +16,7 @@ interface IUserModelCreateOrUpdate {
   phoneNumber: string
   active: boolean
   password: string | null
+  roles: IRoleModel[] | null
 }
 
 export type { IUserModel, IUserModelCreateOrUpdate }
