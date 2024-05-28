@@ -18,5 +18,7 @@ namespace LearnFrameworkApi.Module
         public const string ShouldBeLowerThanOrEqualsTo0 = "should be lower than or equals to 0";
         public const string ShouldBeNotContainHtmlTag = "should be not contain html tag";
 
+        //Path
+        public const string PathProfilePicture = "wwwroot/Upload/ProfilePicture/";
     }
 }

@@ -44,15 +44,19 @@ export default class apiHelper {
     }
   }
 
-  public async callApiFormData(endpoint: string, body: FormData): Promise<any> {
+  public async callApiFormData(
+    endpoint: string,
+    method: string = 'POST',
+    body: FormData
+  ): Promise<any> {
     try {
       Loading.show()
 
       const postUrl = (<any>window).appSettings.api.base_url + endpoint
       const config = {
-        method: 'POST',
+        method: method,
         headers: {
-          //Authorization: `Bearer ${localStorage.getItem('access_token')}`
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`
         },
         data: body
       }

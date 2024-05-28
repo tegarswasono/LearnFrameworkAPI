@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Transaction\" />
+    <Folder Include="wwwroot\Upload\ProfilePicture\" />
   </ItemGroup>
 
 </Project>

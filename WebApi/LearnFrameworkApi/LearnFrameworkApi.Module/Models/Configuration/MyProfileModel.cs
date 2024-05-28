@@ -2,6 +2,7 @@
 using LearnFrameworkApi.Module.Helpers;
 using LearnFrameworkApi.Module.Helpers.CustomAttribute;
 using LearnFrameworkApi.Module.Models.Common;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -69,5 +70,11 @@ namespace LearnFrameworkApi.Module.Models.Configuration
             }
             return GeneralValidationModel.Dto(true, "");
         }
+    }
+    public class MyProfileModelChangeProfilePicture
+    {
+        [MaxFileSize(4*1000*1000)]
+        [AllowedExtension([".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg", ".webp", ".heic", ".ico"])]
+        public IFormFile? File { get; set; }
     }
 }

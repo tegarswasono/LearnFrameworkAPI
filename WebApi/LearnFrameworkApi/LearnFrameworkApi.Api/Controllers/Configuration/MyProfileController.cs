@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Validation.AspNetCore;
 using Serilog;
+using LearnFrameworkApi.Module.Helpers;
 
 namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
@@ -85,6 +86,47 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             {
                 Log.Error($"MyProfileController.ChangePassword | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
+            }
+        }
+
+        [HttpPut("ChangeProfilePicture")]
+        public async Task<ActionResult<GeneralResponseMessage>> ChangeProfilePicture(MyProfileModelChangeProfilePicture model)
+        {
+            try
+            {
+                var user = (await _userManager.FindByIdAsync(_currentUserResolver.CurrentId))!;
+                var file = model.File!;
+                string extension = System.IO.Path.GetExtension(file.FileName);
+                string fileName = user.Id + extension;
+
+                //Delete
+                bool exist1 = System.IO.File.Exists(ConstantString.PathProfilePicture + fileName);
+                if (exist1)
+                {
+                    System.IO.File.Delete(ConstantString.PathProfilePicture + fileName);
+                }
+                if (!string.IsNullOrEmpty(user.ProfilePicture))
+                {
+                    bool exist2 = System.IO.File.Exists(ConstantString.PathProfilePicture + user.ProfilePicture);
+                    if (exist2) 
+                    {
+                        System.IO.File.Delete(ConstantString.PathProfilePicture + user.ProfilePicture);
+                    }
+                }
+
+                //Upload
+                var filePath = Path.Combine(ConstantString.PathProfilePicture, fileName);
+                using (var stream = System.IO.File.Create(filePath))
+                    await file.CopyToAsync(stream);
+
+                user.ProfilePicture = fileName;
+                await _userManager.UpdateAsync(user);
+                return Ok(GeneralResponseMessage.Dto("Process Successfully, Please refresh your page"));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"MyProfileController.ChangeProfilePicture | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                return BadRequest(ex.Message);
             }
         }
     }

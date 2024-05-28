@@ -27,7 +27,7 @@ namespace LearnFrameworkApi.Module.Helpers.CustomAttribute
                 string value1 = value.ToString()!;
                 if (value1.Length < 8)
                 {
-                    return new ValidationResult($"The {displayName} should be a minimum of 8 characters");
+                    return new ValidationResult($"The {displayName} should be a minimum of 8 characters", new[] { memberName });
                 }
 
                 bool hasUppercase = false;
@@ -50,7 +50,7 @@ namespace LearnFrameworkApi.Module.Helpers.CustomAttribute
                 }
                 if (!hasUppercase || !hasLowercase || !hasDigitOrSymbol)
                 {
-                    return new ValidationResult($"The {displayName} should be contain 1 uppercase letter, 1 lowercase letter, and a number or symbol");
+                    return new ValidationResult($"The {displayName} should be contain 1 uppercase letter, 1 lowercase letter, and a number or symbol", new[] { memberName });
                 }
             }
             return ValidationResult.Success;

@@ -27,4 +27,8 @@ export class MyProfileApi {
   public async changePassword(input: IMyProfileChangePassword): Promise<IGeneralSuccessResponse> {
     return this.apiHelper.callApi(this.endpoint + '/ChangePassword', 'PUT', input)
   }
+
+  public async ChangeProfilePicture(input: FormData): Promise<IGeneralSuccessResponse> {
+    return this.apiHelper.callApiFormData(this.endpoint + '/ChangeProfilePicture', 'PUT', input)
+  }
 }
