@@ -69,8 +69,10 @@ onBeforeMount(async () => {
   }
   let myProfile = await myProfileApi.get()
   fullName.value = myProfile.fullName
-  let baseUrl = (<any>window).appSettings.api.base_url
-  profilePicture.value = baseUrl + '/Upload/ProfilePicture/' + myProfile.profilePicture
+  if (myProfile.profilePicture) {
+    let baseUrl = (<any>window).appSettings.api.base_url
+    profilePicture.value = baseUrl + '/Upload/ProfilePicture/' + myProfile.profilePicture
+  }
 })
 
 onMounted(() => {
