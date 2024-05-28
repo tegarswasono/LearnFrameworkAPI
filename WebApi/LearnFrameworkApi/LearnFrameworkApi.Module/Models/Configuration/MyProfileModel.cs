@@ -21,6 +21,7 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public string? PhoneNumber { get; set; }
         public bool Active { get; set; }
         public string ActiveInString { get { return Active.ActiveToString(); } }
+        public string ProfilePicture { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public static MyProfileModel Dto(AppUser model)
@@ -33,6 +34,7 @@ namespace LearnFrameworkApi.Module.Models.Configuration
                 FullName = model.FullName,
                 PhoneNumber = model.PhoneNumber,
                 Active = model.Active,
+                ProfilePicture = model.ProfilePicture,
                 CreatedAt = model.CreatedAt,
                 UpdatedAt = model.UpdatedAt
             };

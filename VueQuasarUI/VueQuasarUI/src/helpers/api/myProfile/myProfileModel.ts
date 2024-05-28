@@ -6,6 +6,7 @@ interface IMyProfileModel extends IBaseEntity {
   phoneNumber: string
   active: boolean
   activeInString: string
+  profilePicture: string
 }
 interface IMyProfileModelUpdate {
   id: string

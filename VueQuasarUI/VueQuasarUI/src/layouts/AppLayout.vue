@@ -7,7 +7,7 @@ import { MyProfileApi } from '@/helpers/api/myProfile/myProfileApi'
 
 import backgroundProfilePicture from '@/assets/material.png'
 import logo from '@/assets/New_Century_Tour_Logo.svg'
-import profilePicture from '@/assets/avatar.webp'
+import defaultProfilePicture from '@/assets/avatar.webp'
 
 const $q = useQuasar()
 const router = useRouter()
@@ -17,6 +17,7 @@ const fullscreen = ref(false)
 const currentTime = ref()
 
 const fullName = ref()
+const profilePicture = ref()
 
 const updateTime = () => {
   currentTime.value = new Date()
@@ -68,6 +69,8 @@ onBeforeMount(async () => {
   }
   let myProfile = await myProfileApi.get()
   fullName.value = myProfile.fullName
+  let baseUrl = (<any>window).appSettings.api.base_url
+  profilePicture.value = baseUrl + '/Upload/ProfilePicture/' + myProfile.profilePicture
 })
 
 onMounted(() => {
@@ -167,7 +170,8 @@ onMounted(() => {
       <q-img class="absolute-top" :src="backgroundProfilePicture" style="height: 150px">
         <div class="absolute-bottom bg-transparent">
           <q-avatar size="56px" class="q-mb-sm">
-            <img :src="profilePicture" />
+            <img v-if="profilePicture" :src="profilePicture" />
+            <img v-else :src="defaultProfilePicture" />
           </q-avatar>
           <div class="text-weight-bold" style="font-size: larger">{{ fullName }}</div>
           <div style="font-size: x-small">

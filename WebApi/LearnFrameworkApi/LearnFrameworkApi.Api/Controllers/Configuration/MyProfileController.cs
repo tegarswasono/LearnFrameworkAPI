@@ -121,7 +121,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
 
                 user.ProfilePicture = fileName;
                 await _userManager.UpdateAsync(user);
-                return Ok(GeneralResponseMessage.Dto("Process Successfully, Please refresh your page"));
+                return Ok(GeneralResponseMessage.Dto("Process Successfully, Please hard refresh your page"));
             }
             catch (Exception ex)
             {
