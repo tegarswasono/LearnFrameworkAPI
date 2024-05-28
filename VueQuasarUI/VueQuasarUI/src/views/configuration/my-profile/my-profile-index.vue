@@ -7,6 +7,7 @@ import type {
   IMyProfileChangePassword
 } from '@/helpers/api/myProfile/myProfileModel'
 import { MyProfileApi } from '@/helpers/api/myProfile/myProfileApi'
+import axios from 'axios'
 
 const $q = useQuasar()
 const myProfileApi = new MyProfileApi()
@@ -76,6 +77,21 @@ const onSubmitChangePassword = async () => {
 }
 const onChangeProfilePictureClicked = async () => {
   dialogChangeProfilePicture.value = true
+  var response = await myProfileApi.get()
+  if (response) {
+    if (response.profilePicture) {
+      let baseUrl = (<any>window).appSettings.api.base_url
+      let profilePictureUrl = baseUrl + '/Upload/ProfilePicture/' + response.profilePicture
+
+      // console.log(profilePictureUrl)
+      // const response2 = await axios.get(profilePictureUrl, { responseType: 'blob' })
+      // const blob = await response2.data
+      // const fileName = response.profilePicture
+      // const file = new File([blob], fileName, { type: blob.type })
+
+      newProfilePicturePrev.value = profilePictureUrl
+    }
+  }
 }
 
 const onRejected = (rejectedEntries: any) => {
@@ -335,9 +351,7 @@ onMounted(async () => {
             accept=".jpg, .jpeg, .png, .gif, .bmp, .tiff, .svg, .webp, .heic, .ico"
             max-file-size="4000000"
             input-class="text-dark"
-            lazy-rules
             label="Profile Picture"
-            :rules="[(val) => val != null || 'Profile Picture is required']"
             @rejected="onRejected"
             @update:model-value="qFileOnUpdateModelValue"
           >

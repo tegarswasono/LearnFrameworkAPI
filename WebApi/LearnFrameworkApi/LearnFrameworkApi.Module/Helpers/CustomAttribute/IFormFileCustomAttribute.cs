@@ -8,6 +8,24 @@ using System.Threading.Tasks;
 
 namespace LearnFrameworkApi.Module.Helpers.CustomAttribute
 {
+    public class RequiredIFormFileAttribute : ValidationAttribute
+    {
+        public RequiredIFormFileAttribute()
+        {
+
+        }
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        {
+            string displayName = validationContext.DisplayName;
+            string memberName = validationContext.MemberName ?? string.Empty;
+
+            if (value is null)
+            {
+                return new ValidationResult($"The {displayName} field is required.", new[] { memberName });
+            }
+            return ValidationResult.Success;
+        }
+    }
     public class MaxFileSizeAttribute : ValidationAttribute
     {
         private readonly int _maxFileSize;
@@ -20,11 +38,7 @@ namespace LearnFrameworkApi.Module.Helpers.CustomAttribute
             string displayName = validationContext.DisplayName;
             string memberName = validationContext.MemberName ?? string.Empty;
 
-            if (value is null)
-            {
-                return new ValidationResult($"The {displayName} field is required.", new[] { memberName });
-            }
-            else if (value is IFormFile file && file.Length > _maxFileSize)
+            if (value is IFormFile file && file.Length > _maxFileSize)
             {
                 return new ValidationResult($"The Maximum file size of {displayName} field is {_maxFileSize} bytes.", new[] { memberName });
             }

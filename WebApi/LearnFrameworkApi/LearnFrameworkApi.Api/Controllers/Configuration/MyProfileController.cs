@@ -95,32 +95,48 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             try
             {
                 var user = (await _userManager.FindByIdAsync(_currentUserResolver.CurrentId))!;
-                var file = model.File!;
-                string extension = System.IO.Path.GetExtension(file.FileName);
-                string fileName = user.Id + extension;
-
-                //Delete
-                bool exist1 = System.IO.File.Exists(ConstantString.PathProfilePicture + fileName);
-                if (exist1)
+                if (model.File == null)
                 {
-                    System.IO.File.Delete(ConstantString.PathProfilePicture + fileName);
-                }
-                if (!string.IsNullOrEmpty(user.ProfilePicture))
-                {
-                    bool exist2 = System.IO.File.Exists(ConstantString.PathProfilePicture + user.ProfilePicture);
-                    if (exist2) 
+                    if (!string.IsNullOrEmpty(user.ProfilePicture))
                     {
-                        System.IO.File.Delete(ConstantString.PathProfilePicture + user.ProfilePicture);
+                        bool exist2 = System.IO.File.Exists(ConstantString.PathProfilePicture + user.ProfilePicture);
+                        if (exist2)
+                        {
+                            System.IO.File.Delete(ConstantString.PathProfilePicture + user.ProfilePicture);
+                        }
                     }
+                    user.ProfilePicture = "";
+                    await _userManager.UpdateAsync(user);
                 }
+                else
+                {
+                    var file = model.File!;
+                    string extension = System.IO.Path.GetExtension(file.FileName);
+                    string fileName = user.Id + extension;
 
-                //Upload
-                var filePath = Path.Combine(ConstantString.PathProfilePicture, fileName);
-                using (var stream = System.IO.File.Create(filePath))
-                    await file.CopyToAsync(stream);
+                    //Delete
+                    bool exist1 = System.IO.File.Exists(ConstantString.PathProfilePicture + fileName);
+                    if (exist1)
+                    {
+                        System.IO.File.Delete(ConstantString.PathProfilePicture + fileName);
+                    }
+                    if (!string.IsNullOrEmpty(user.ProfilePicture))
+                    {
+                        bool exist2 = System.IO.File.Exists(ConstantString.PathProfilePicture + user.ProfilePicture);
+                        if (exist2)
+                        {
+                            System.IO.File.Delete(ConstantString.PathProfilePicture + user.ProfilePicture);
+                        }
+                    }
 
-                user.ProfilePicture = fileName;
-                await _userManager.UpdateAsync(user);
+                    //Upload
+                    var filePath = Path.Combine(ConstantString.PathProfilePicture, fileName);
+                    using (var stream = System.IO.File.Create(filePath))
+                        await file.CopyToAsync(stream);
+
+                    user.ProfilePicture = fileName;
+                    await _userManager.UpdateAsync(user);
+                }
                 return Ok(GeneralResponseMessage.Dto("Process Successfully, Please hard refresh your page"));
             }
             catch (Exception ex)
