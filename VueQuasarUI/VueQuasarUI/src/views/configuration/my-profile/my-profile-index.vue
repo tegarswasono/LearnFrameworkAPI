@@ -83,12 +83,8 @@ const onChangeProfilePictureClicked = async () => {
       let baseUrl = (<any>window).appSettings.api.base_url
       let profilePictureUrl = baseUrl + '/Upload/ProfilePicture/' + response.profilePicture
 
-      // console.log(profilePictureUrl)
-      // const response2 = await axios.get(profilePictureUrl, { responseType: 'blob' })
-      // const blob = await response2.data
-      // const fileName = response.profilePicture
-      // const file = new File([blob], fileName, { type: blob.type })
-
+      const file = new File([profilePictureUrl], response.profilePicture, { type: 'blob' })
+      newProfilePicture.value = file
       newProfilePicturePrev.value = profilePictureUrl
     }
   }
