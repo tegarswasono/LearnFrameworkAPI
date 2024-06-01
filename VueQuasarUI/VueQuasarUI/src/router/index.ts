@@ -6,6 +6,7 @@ import PublicLayout from '../layouts/PublicLayout.vue'
 import LoginIndexView from '../views/system/login/login-index.vue'
 import forgotPassword from '@/views/system/login/forgot-password.vue'
 import resetPassword from '@/views/system/login/reset-password.vue'
+import notFound from '@/views/system/not-found.vue'
 
 //Booking
 import BookingIndexView from '../views/transaction/booking/booking-index.vue'
@@ -96,6 +97,11 @@ const router = createRouter({
           component: MyProfileIndexView
         }
       ]
+    },
+    {
+      path: '/:catchAll(.*)',
+      name: 'notfound',
+      component: notFound
     }
   ]
 })

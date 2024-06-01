@@ -257,7 +257,7 @@ namespace LearnFrameworkApi.Api.Controllers.Common
                 OrderIndex = 10,
                 Section = "Configurations",
                 ParentId = null,
-                Title = "MyProfile",
+                Title = "My Profile",
 
                 Url = "myprofileindex",
                 IconClass = "person",
