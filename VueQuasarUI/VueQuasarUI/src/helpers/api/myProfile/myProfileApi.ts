@@ -4,7 +4,8 @@ import type { IGeneralSuccessResponse } from '../apiModel'
 import type {
   IMyProfileModel,
   IMyProfileModelUpdate,
-  IMyProfileChangePassword
+  IMyProfileChangePassword,
+  IMyMenuModel
 } from './myProfileModel'
 
 export class MyProfileApi {
@@ -30,5 +31,9 @@ export class MyProfileApi {
 
   public async ChangeProfilePicture(input: FormData): Promise<IGeneralSuccessResponse> {
     return this.apiHelper.callApiFormData(this.endpoint + '/ChangeProfilePicture', 'PUT', input)
+  }
+
+  public async myMenu(): Promise<IMyMenuModel> {
+    return this.apiHelper.callApi(this.endpoint + '/MyMenu', 'GET')
   }
 }

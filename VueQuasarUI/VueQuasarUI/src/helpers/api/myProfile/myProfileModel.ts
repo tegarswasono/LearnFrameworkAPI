@@ -18,5 +18,21 @@ interface IMyProfileChangePassword {
   newPassword: string
   confirmPassword: string
 }
+interface IMyMenuModel {
+  section: string
+  child: IMyMenuModelItem
+}
+interface IMyMenuModelItem {
+  title: string
+  icon: string
+  url: string
+  child: IMyMenuModelItem
+}
 
-export type { IMyProfileModel, IMyProfileModelUpdate, IMyProfileChangePassword }
+export type {
+  IMyProfileModel,
+  IMyProfileModelUpdate,
+  IMyProfileChangePassword,
+  IMyMenuModel,
+  IMyMenuModelItem
+}

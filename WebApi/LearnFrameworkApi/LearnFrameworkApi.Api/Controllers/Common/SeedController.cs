@@ -185,7 +185,7 @@ namespace LearnFrameworkApi.Api.Controllers.Common
                 Title = "Configurations",
 
                 Url = "",
-                IconClass = "assignment",
+                IconClass = "settings",
                 Description = "Configurations",
                 Visible = true,
                 FunctionId = "",
@@ -261,7 +261,7 @@ namespace LearnFrameworkApi.Api.Controllers.Common
 
                 Url = "myprofileindex",
                 IconClass = "person",
-                Description = "MyProfile",
+                Description = "My Profile",
                 Visible = true,
                 FunctionId = "",
             };
@@ -282,7 +282,7 @@ namespace LearnFrameworkApi.Api.Controllers.Common
                 Url = "",
                 IconClass = "settings",
                 Description = "Menu",
-                Visible = true,
+                Visible = false,
                 FunctionId = "",
             };
             var menu92 = new Menu()
@@ -296,7 +296,7 @@ namespace LearnFrameworkApi.Api.Controllers.Common
                 Url = "bookingindex",
                 IconClass = "settings",
                 Description = "Menu",
-                Visible = true,
+                Visible = false,
                 FunctionId = "",
             };
             var menu911 = new Menu()
@@ -310,7 +310,7 @@ namespace LearnFrameworkApi.Api.Controllers.Common
                 Url = "",
                 IconClass = "settings",
                 Description = "Menu",
-                Visible = true,
+                Visible = false,
                 FunctionId = "",
             };
             var menu912 = new Menu()
@@ -324,7 +324,7 @@ namespace LearnFrameworkApi.Api.Controllers.Common
                 Url = "bookingindex",
                 IconClass = "settings",
                 Description = "Menu",
-                Visible = true,
+                Visible = false,
                 FunctionId = "",
             };
             var menu9111 = new Menu()
@@ -338,7 +338,7 @@ namespace LearnFrameworkApi.Api.Controllers.Common
                 Url = "bookingindex",
                 IconClass = "settings",
                 Description = "Menu",
-                Visible = true,
+                Visible = false,
                 FunctionId = "",
             };
             var menu9112 = new Menu()
@@ -352,7 +352,7 @@ namespace LearnFrameworkApi.Api.Controllers.Common
                 Url = "bookingindex",
                 IconClass = "settings",
                 Description = "Menu",
-                Visible = true,
+                Visible = false,
                 FunctionId = "",
             };
             _context.Menus.Add(menu91); _context.Menus.Add(menu92); 

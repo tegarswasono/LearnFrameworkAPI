@@ -47,7 +47,7 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         }
 
         [HttpGet("MyMenu")]
-        public async Task<ActionResult> MyMenu()
+        public async Task<ActionResult<List<MyMenuModel>>> MyMenu()
         {
             try
             {
