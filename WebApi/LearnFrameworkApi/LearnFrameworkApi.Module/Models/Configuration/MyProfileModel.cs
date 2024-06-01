@@ -79,4 +79,16 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         [AllowedExtension([".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg", ".webp", ".heic", ".ico"])]
         public IFormFile? File { get; set; }
     }
+    public class MyMenuModel
+    {
+        public string Section { get; set; } = string.Empty;
+        public List<MyMenuModelItem> Child { get; set; } = [];
+    }
+    public class MyMenuModelItem
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
+        public List<MyMenuModelItem> Child { get; set; } = [];
+    }
 }

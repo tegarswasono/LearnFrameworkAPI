@@ -45,6 +45,72 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             }
         }
 
+        [HttpGet("MyMenu")]
+        public async Task<ActionResult> MyMenu()
+        {
+            try
+            {
+                var user = (await _userManager.FindByIdAsync(_currentUserResolver.CurrentId))!;
+                var menus = _context.Menus
+                    .Where(x => x.Visible)
+                    .OrderBy(x => x.OrderIndex)
+                    .ToList();
+
+
+                var result = new List<MyMenuModel>();
+                //section
+                foreach (var section in menus.GroupBy(x => x.Section))
+                {
+                    var newSection = new MyMenuModel()
+                    {
+                        Section = section.Key,
+                    };
+                    //menu
+                    foreach (var menu in menus.Where(x => x.Section == section.Key && x.ParentId == null))
+                    {
+                        var newMenu = new MyMenuModelItem()
+                        {
+                            Title = menu.Title,
+                            Icon = menu.IconClass,
+                            Url = menu.Url
+                        };
+                        //subMenu
+                        if (menus.Any(x => x.ParentId == menu.Id))
+                        {
+                            foreach (var subMenu in menus.Where(x => x.ParentId == menu.Id))
+                            {
+                                var newSubmenu = new MyMenuModelItem()
+                                {
+                                    Title = subMenu.Title,
+                                    Icon = subMenu.IconClass,
+                                    Url = subMenu.Url
+                                };
+                                newMenu.Child.Add(newSubmenu);
+                            }
+                        }
+                        newSection.Child.Add(newMenu);
+                    }
+                    result.Add(newSection);
+                }
+                //var result = menus.GroupBy(x => x.Section).Select(x => new MyMenuModel()
+                //{
+                //    Section = x.Key,
+                //    Child = x.Select(y => new MyMenuModelItem()
+                //    {
+                //        Title = y.Title,
+                //        Icon = y.IconClass,
+                //        Url = y.Url
+                //    }).ToList()
+                //});
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"MyProfileController.MyMenu | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                return BadRequest(GeneralResponseMessage.Dto(ex.Message));
+            }
+        }
+
         [HttpPut("Update")]
         public async Task<ActionResult<GeneralResponseMessage>> Update(MyProfileModelUpdate model)
         {
