@@ -98,6 +98,7 @@ onMounted(async () => {
           />
         </template>
       </q-input>
+      <q-toggle v-model="model.smtpIsUseSsl" filled dense label="Smtp Is Use SSL" />
       <div class="row q-ml-auto">
         <div class="col-12 q-px-sm flex justify-end">
           <q-btn
