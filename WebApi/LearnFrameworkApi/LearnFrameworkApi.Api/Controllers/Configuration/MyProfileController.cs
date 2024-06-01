@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Validation.AspNetCore;
 using Serilog;
 using LearnFrameworkApi.Module.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
@@ -50,13 +51,21 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
         {
             try
             {
-                var user = (await _userManager.FindByIdAsync(_currentUserResolver.CurrentId))!;
-                var menus = _context.Menus
-                    .Where(x => x.Visible)
+                Guid userId = Guid.Parse(_currentUserResolver.CurrentId);
+                var menus = await _context.Menus
+                    .Where(x =>
+                            x.Visible &&
+                            (x.FunctionId == "" || _context.RoleFunctions
+                                .Any(y =>
+                                    y.FunctionId == x.FunctionId &&
+                                    _context.UserRoles.Where(x => x.UserId == userId).Select(x => x.RoleId).Contains(y.RoleId)
+                                )
+                            )
+                        )
                     .OrderBy(x => x.OrderIndex)
-                    .ToList();
+                    .ToListAsync();
 
-
+                //Method 1 : using foreach
                 var result = new List<MyMenuModel>();
                 //section
                 foreach (var section in menus.GroupBy(x => x.Section))
@@ -68,41 +77,78 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                     //menu
                     foreach (var menu in menus.Where(x => x.Section == section.Key && x.ParentId == null))
                     {
-                        var newMenu = new MyMenuModelItem()
+                        if (menus.Any(x => x.ParentId == menu.Id || menu.Url != ""))
                         {
-                            Title = menu.Title,
-                            Icon = menu.IconClass,
-                            Url = menu.Url
-                        };
-                        //subMenu
-                        if (menus.Any(x => x.ParentId == menu.Id))
-                        {
+                            var newMenu = new MyMenuModelItem()
+                            {
+                                Title = menu.Title,
+                                Icon = menu.IconClass,
+                                Url = menu.Url
+                            };
+                            //subMenu
                             foreach (var subMenu in menus.Where(x => x.ParentId == menu.Id))
                             {
-                                var newSubmenu = new MyMenuModelItem()
+                                if(menus.Any(x=>x.ParentId == subMenu.Id || subMenu.Url != ""))
                                 {
-                                    Title = subMenu.Title,
-                                    Icon = subMenu.IconClass,
-                                    Url = subMenu.Url
-                                };
-                                newMenu.Child.Add(newSubmenu);
+                                    var newSubmenu = new MyMenuModelItem()
+                                    {
+                                        Title = subMenu.Title,
+                                        Icon = subMenu.IconClass,
+                                        Url = subMenu.Url
+                                    };
+                                    //subMenu1
+                                    foreach (var subMenu1 in menus.Where(x => x.ParentId == subMenu.Id))
+                                    {
+                                        var newSubMenu1 = new MyMenuModelItem()
+                                        {
+                                            Title = subMenu1.Title,
+                                            Icon = subMenu1.IconClass,
+                                            Url = subMenu1.Url
+                                        };
+                                        newSubmenu.Child.Add(newSubMenu1);
+                                    }
+                                    newMenu.Child.Add(newSubmenu);
+                                }
                             }
+                            newSection.Child.Add(newMenu);
                         }
-                        newSection.Child.Add(newMenu);
                     }
                     result.Add(newSection);
                 }
-                //var result = menus.GroupBy(x => x.Section).Select(x => new MyMenuModel()
-                //{
-                //    Section = x.Key,
-                //    Child = x.Select(y => new MyMenuModelItem()
-                //    {
-                //        Title = y.Title,
-                //        Icon = y.IconClass,
-                //        Url = y.Url
-                //    }).ToList()
-                //});
-                return Ok(result);
+
+                //Method 2 : Using Linq
+                var result2 = menus
+                    .GroupBy(x => x.Section)
+                    .Select(section => new MyMenuModel
+                    {
+                        Section = section.Key,
+                        Child = menus
+                            .Where(menu => menu.Section == section.Key && menu.ParentId == null && (menus.Any(x => x.ParentId == menu.Id) || menu.Url != ""))
+                            .Select(menu => new MyMenuModelItem
+                            {
+                                Title = menu.Title,
+                                Icon = menu.IconClass,
+                                Url = menu.Url,
+                                Child = menus
+                                    .Where(subMenu => subMenu.ParentId == menu.Id && (menus.Any(x => x.ParentId == subMenu.Id) || subMenu.Url != ""))
+                                    .Select(subMenu => new MyMenuModelItem
+                                    {
+                                        Title = subMenu.Title,
+                                        Icon = subMenu.IconClass,
+                                        Url = subMenu.Url,
+                                        Child = menus
+                                            .Where(subMenu1 => subMenu1.ParentId == subMenu.Id)
+                                            .Select(subMenu1 => new MyMenuModelItem
+                                            {
+                                                Title = subMenu1.Title,
+                                                Icon = subMenu1.IconClass,
+                                                Url = subMenu1.Url
+                                            }).ToList()
+                                    }).ToList()
+                            }).ToList()
+                    }).ToList();
+
+                return Ok(result2);
             }
             catch (Exception ex)
             {
