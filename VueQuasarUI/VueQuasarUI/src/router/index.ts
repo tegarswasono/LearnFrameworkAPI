@@ -22,6 +22,9 @@ import SystemConfigurationIndexView from '../views/configuration/system-configur
 import SmtpSettingIndexView from '../views/configuration/smtp-setting/smtp-setting-index.vue'
 import MyProfileIndexView from '../views/configuration/my-profile/my-profile-index.vue'
 
+//Example
+import Example1 from '../views/example/example1.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -95,6 +98,17 @@ const router = createRouter({
           path: 'myprofile',
           name: 'myprofileindex',
           component: MyProfileIndexView
+        }
+      ]
+    },
+    {
+      path: '/example',
+      component: AppLayout,
+      children: [
+        {
+          path: 'example1',
+          name: 'example1',
+          component: Example1
         }
       ]
     },
