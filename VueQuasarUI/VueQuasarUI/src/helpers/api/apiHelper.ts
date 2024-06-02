@@ -103,18 +103,7 @@ export default class apiHelper {
             }
             break
           case 403:
-            Notify.create({
-              type: 'negative',
-              position: 'bottom-right',
-              message: 'You are not eligible to access this API endpoint.',
-              actions: [
-                {
-                  icon: 'close',
-                  color: 'white',
-                  rounded: true
-                }
-              ]
-            })
+            router.push({ name: 'forbiddenindex' })
             break
           case 400:
             // eslint-disable-next-line no-case-declarations

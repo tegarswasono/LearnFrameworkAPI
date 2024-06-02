@@ -7,6 +7,7 @@ import LoginIndexView from '../views/system/login/login-index.vue'
 import forgotPassword from '@/views/system/login/forgot-password.vue'
 import resetPassword from '@/views/system/login/reset-password.vue'
 import notFound from '@/views/system/not-found.vue'
+import forbidden from '@/views/system/forbidden.vue'
 
 //Booking
 import BookingIndexView from '../views/transaction/booking/booking-index.vue'
@@ -111,6 +112,11 @@ const router = createRouter({
           component: Example1
         }
       ]
+    },
+    {
+      path: '/forbidden',
+      name: 'forbiddenindex',
+      component: forbidden
     },
     {
       path: '/:catchAll(.*)',
