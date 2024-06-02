@@ -7,8 +7,7 @@ import {
   numberRequired,
   numberShouldbeBiggerThanOrEqualsTo0,
   numberShouldbeBiggerThan0,
-  selectRequired,
-  dateRequired
+  selectRequired
 } from '@/helpers/rulesHelper'
 
 const name = ref('')
@@ -36,11 +35,6 @@ const foodOptions = ref([
 ])
 const select1 = ref()
 const select2 = ref()
-
-const date1 = ref()
-const date1Options = ref(['2024-06-02', '2024-06-03', '2024-06-04', '2024-06-05', '2024-06-06'])
-const date2 = ref()
-const date3 = ref()
 
 //date
 </script>
@@ -154,9 +148,9 @@ const date3 = ref()
         :rules="selectRequired('Food')"
         clearable
       />
-      <div class="q-pl-xs">Food: {{ food }}</div>
+      Food: {{ food }}
       <q-select v-model="select1" :options="foodOptions" label="Select 1" filled dense clearable />
-      <div class="q-pl-xs">Select1: {{ select1 }}</div>
+      Select1: {{ select1 }}
       <q-select
         v-model="select2"
         :options="foodOptions"
@@ -169,28 +163,7 @@ const date3 = ref()
         dense
         clearable
       />
-      <div class="q-pl-xs">Select2: {{ select2 }}</div>
-      <p class="text-weight-medium text-blue-grey-8">Date</p>
-      <q-input
-        filled
-        dense
-        label="Date 1"
-        v-model="date1"
-        lazy-rules
-        :rules="dateRequired('Date 1')"
-      >
-        <template v-slot:append>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="date1" mask="DD/MM/YYYY">
-                <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
+      Select2: {{ select2 }}
     </form>
   </div>
 </template>

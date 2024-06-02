@@ -44,8 +44,7 @@ const numberShouldbeBiggerThan0 = (fieldName: string) => [
 const selectRequired = (fieldName: string) => [(val: string) => !!val || fieldName + ' is required']
 
 //date
-
-//datetime
+const dateRequired = (fieldName: string) => [(val: Date) => !!val || fieldName + ' is required']
 
 //textarea
 
@@ -58,5 +57,6 @@ export {
   numberRequired,
   numberShouldbeBiggerThanOrEqualsTo0,
   numberShouldbeBiggerThan0,
-  selectRequired
+  selectRequired,
+  dateRequired
 }
