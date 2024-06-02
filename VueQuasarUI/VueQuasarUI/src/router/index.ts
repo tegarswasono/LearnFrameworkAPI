@@ -107,7 +107,7 @@ const router = createRouter({
       children: [
         {
           path: 'example1',
-          name: 'example1',
+          name: 'example1index',
           component: Example1
         }
       ]

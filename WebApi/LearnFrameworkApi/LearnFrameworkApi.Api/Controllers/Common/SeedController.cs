@@ -270,89 +270,120 @@ namespace LearnFrameworkApi.Api.Controllers.Common
             _context.Menus.Add(menu6); _context.Menus.Add(menu7); _context.Menus.Add(menu8); _context.Menus.Add(menu9); _context.Menus.Add(menu10);
             _context.Menus.Add(menu11);
 
+            //Example
+            var menu81 = new Menu()
+            {
+                Id = Guid.Parse("422B4163-2E90-4093-BB23-FF65A18EC03E"),
+                OrderIndex = 81,
+                Section = "Example",
+                ParentId = null,
+                Title = "Example",
+
+                Url = "",
+                IconClass = "science",
+                Description = "Example",
+                Visible = true,
+                FunctionId = "",
+            };
+            var menu82 = new Menu()
+            {
+                Id = Guid.Parse("2213651F-EDB1-4EB5-BAED-E428268068F5"),
+                OrderIndex = 81,
+                Section = "Example",
+                ParentId = Guid.Parse("422B4163-2E90-4093-BB23-FF65A18EC03E"),
+                Title = "Example 1",
+
+                Url = "example1index",
+                IconClass = "science",
+                Description = "Example 1",
+                Visible = true,
+                FunctionId = "",
+            };
+            _context.Menus.Add(menu81); _context.Menus.Add(menu82);
+
             //3 level menu example
             var menu91 = new Menu()
             {
                 Id = Guid.Parse("53EFDED8-DFB4-436A-BF70-F536D788D387"),
                 OrderIndex = 91,
-                Section = "Menu 3 Level",
+                Section = "Example",
                 ParentId = null,
                 Title = "Menu 1",
 
                 Url = "",
                 IconClass = "settings",
                 Description = "Menu",
-                Visible = false,
+                Visible = true,
                 FunctionId = "",
             };
             var menu92 = new Menu()
             {
                 Id = Guid.Parse("486C3BF1-1FE9-4A6D-A87B-5D2602DD3CA6"),
                 OrderIndex = 92,
-                Section = "Menu 3 Level",
+                Section = "Example",
                 ParentId = null,
                 Title = "Menu 2",
 
                 Url = "bookingindex",
                 IconClass = "settings",
                 Description = "Menu",
-                Visible = false,
+                Visible = true,
                 FunctionId = "",
             };
             var menu911 = new Menu()
             {
                 Id = Guid.Parse("186C54A9-AA15-44A4-A1F8-59BD34338555"),
                 OrderIndex = 91,
-                Section = "Menu 3 Level",
+                Section = "Example",
                 ParentId = Guid.Parse("53EFDED8-DFB4-436A-BF70-F536D788D387"),
                 Title = "Menu 11",
 
                 Url = "",
                 IconClass = "settings",
                 Description = "Menu",
-                Visible = false,
+                Visible = true,
                 FunctionId = "",
             };
             var menu912 = new Menu()
             {
                 Id = Guid.Parse("912E49A9-2990-4970-AF7B-1A7DC5B6569E"),
                 OrderIndex = 91,
-                Section = "Menu 3 Level",
+                Section = "Example",
                 ParentId = Guid.Parse("53EFDED8-DFB4-436A-BF70-F536D788D387"),
                 Title = "Menu 12",
 
                 Url = "bookingindex",
                 IconClass = "settings",
                 Description = "Menu",
-                Visible = false,
+                Visible = true,
                 FunctionId = "",
             };
             var menu9111 = new Menu()
             {
                 Id = Guid.Parse("10F0ECB8-23CF-45FC-A62D-CD4373C109E1"),
                 OrderIndex = 91,
-                Section = "Menu 3 Level",
+                Section = "Example",
                 ParentId = Guid.Parse("186C54A9-AA15-44A4-A1F8-59BD34338555"),
                 Title = "Menu 111",
 
                 Url = "bookingindex",
                 IconClass = "settings",
                 Description = "Menu",
-                Visible = false,
+                Visible = true,
                 FunctionId = "",
             };
             var menu9112 = new Menu()
             {
                 Id = Guid.Parse("F900E10D-8ECA-4DC1-A8A1-9101DB389F4F"),
                 OrderIndex = 91,
-                Section = "Menu 3 Level",
+                Section = "Example",
                 ParentId = Guid.Parse("186C54A9-AA15-44A4-A1F8-59BD34338555"),
                 Title = "Menu 112",
 
                 Url = "bookingindex",
                 IconClass = "settings",
                 Description = "Menu",
-                Visible = false,
+                Visible = true,
                 FunctionId = "",
             };
             _context.Menus.Add(menu91); _context.Menus.Add(menu92); 
