@@ -30,8 +30,18 @@ const passwordRequiredType2 = (fieldName: string) => [
 ]
 
 //number
+const numberRequired = (fieldName: string) => [(val: number) => !!val || fieldName + ' is required']
+const numberShouldbeBiggerThanOrEqualsTo0 = (fieldName: string) => [
+  (val: number) => !!val || fieldName + ' is required',
+  (val: number) => val >= 0 || fieldName + ' should be bigger than or equals to zero'
+]
+const numberShouldbeBiggerThan0 = (fieldName: string) => [
+  (val: number) => !!val || fieldName + ' is required',
+  (val: number) => val > 0 || fieldName + ' should be bigger than zero'
+]
 
 //dropdown
+const selectRequired = (fieldName: string) => [(val: string) => !!val || fieldName + ' is required']
 
 //date
 
@@ -44,5 +54,9 @@ export {
   emailRequired,
   passwordRequired,
   passwordRequiredType1,
-  passwordRequiredType2
+  passwordRequiredType2,
+  numberRequired,
+  numberShouldbeBiggerThanOrEqualsTo0,
+  numberShouldbeBiggerThan0,
+  selectRequired
 }

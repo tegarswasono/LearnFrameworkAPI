@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { onMounted, ref, type Ref } from 'vue'
-import { stringRequired, emailRequired, passwordRequired } from '@/helpers/rulesHelper'
+import {
+  stringRequired,
+  emailRequired,
+  passwordRequired,
+  numberRequired,
+  numberShouldbeBiggerThanOrEqualsTo0,
+  numberShouldbeBiggerThan0,
+  selectRequired
+} from '@/helpers/rulesHelper'
 
 const name = ref('')
 const email = ref('')
@@ -12,6 +20,15 @@ const isPwdConfirmPassword = ref(true)
 
 const number1 = ref()
 const number2 = ref()
+const number3 = ref()
+
+const food = ref()
+const foodOptions = ref([
+  { value: '6F45F3E5-19F4-4A91-95D2-98B0EEFF4840', label: 'Sate' },
+  { value: 'D878A796-7527-49C3-9DF8-0722CC7520AC', label: 'Soto' },
+  { value: '022407C4-2575-4C24-9E93-9DD61D527352', label: 'Bakso' },
+  { value: '1BCB7406-0885-47BF-872A-19287B0CF5D5', label: 'Nasi Goreng' }
+])
 
 //date
 </script>
@@ -25,6 +42,7 @@ const number2 = ref()
   <!--Content-->
   <div class="q-pa-md" style="border: 1px solid #eeeeee">
     <form class="q-gutter-md" ref="">
+      <p class="text-weight-medium text-blue-grey-8">String input</p>
       <q-input
         type="text"
         v-model="name"
@@ -33,6 +51,7 @@ const number2 = ref()
         dense
         lazy-rules
         :rules="stringRequired('Name')"
+        maxlength="15"
       />
       <q-input
         type="email"
@@ -42,6 +61,7 @@ const number2 = ref()
         dense
         lazy-rules
         :rules="emailRequired('Email')"
+        maxlength="15"
       />
       <q-input
         v-model="password"
@@ -51,6 +71,7 @@ const number2 = ref()
         lazy-rules
         :rules="passwordRequired('Password')"
         :type="isPwdPassword ? 'password' : 'text'"
+        maxlength="15"
       >
         <template v-slot:append>
           <q-icon
@@ -70,6 +91,7 @@ const number2 = ref()
           ...passwordRequired('Confirm Password'),
           (val) => val == password || 'Confirm Password and Password should be same'
         ]"
+        maxlength="15"
       >
         <template v-slot:append>
           <q-icon
@@ -79,6 +101,45 @@ const number2 = ref()
           />
         </template>
       </q-input>
+      <p class="text-weight-medium text-blue-grey-8">Number input</p>
+      <q-input
+        v-model="number1"
+        label="Number 1"
+        type="number"
+        filled
+        dense
+        lazy-rules
+        :rules="numberRequired('Number 1')"
+      />
+      <q-input
+        v-model="number2"
+        label="Number 2"
+        type="number"
+        filled
+        dense
+        lazy-rules
+        :rules="numberShouldbeBiggerThanOrEqualsTo0('Number 2')"
+      />
+      <q-input
+        v-model="number3"
+        label="Number 3"
+        type="number"
+        filled
+        dense
+        lazy-rules
+        :rules="numberShouldbeBiggerThan0('Number 3')"
+      />
+      <p class="text-weight-medium text-blue-grey-8">Select</p>
+      <q-select
+        v-model="food"
+        :options="foodOptions"
+        label="Food"
+        filled
+        dense
+        lazy-rules
+        :rules="selectRequired('Food')"
+        clearable
+      />
     </form>
   </div>
 </template>
