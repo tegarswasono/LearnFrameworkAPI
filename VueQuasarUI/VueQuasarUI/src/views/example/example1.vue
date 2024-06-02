@@ -24,11 +24,17 @@ const number3 = ref()
 
 const food = ref()
 const foodOptions = ref([
-  { value: '6F45F3E5-19F4-4A91-95D2-98B0EEFF4840', label: 'Sate' },
-  { value: 'D878A796-7527-49C3-9DF8-0722CC7520AC', label: 'Soto' },
-  { value: '022407C4-2575-4C24-9E93-9DD61D527352', label: 'Bakso' },
-  { value: '1BCB7406-0885-47BF-872A-19287B0CF5D5', label: 'Nasi Goreng' }
+  { value: '6F45F3E5-19F4-4A91-95D2-98B0EEFF4840', label: 'Sate', description: 'Sate enak' },
+  { value: 'D878A796-7527-49C3-9DF8-0722CC7520AC', label: 'Soto', description: 'Soto enak' },
+  { value: '022407C4-2575-4C24-9E93-9DD61D527352', label: 'Bakso', description: 'Bakso enak' },
+  {
+    value: '1BCB7406-0885-47BF-872A-19287B0CF5D5',
+    label: 'Nasi Goreng',
+    description: 'Nasi Goreng enak'
+  }
 ])
+const select1 = ref()
+const select2 = ref()
 
 //date
 </script>
@@ -136,10 +142,28 @@ const foodOptions = ref([
         label="Food"
         filled
         dense
+        emit-value
+        map-options
         lazy-rules
         :rules="selectRequired('Food')"
         clearable
       />
+      Food: {{ food }}
+      <q-select v-model="select1" :options="foodOptions" label="Select 1" filled dense clearable />
+      Select1: {{ select1 }}
+      <q-select
+        v-model="select2"
+        :options="foodOptions"
+        option-value="label"
+        option-label="description"
+        emit-value
+        map-options
+        label="Select 2"
+        filled
+        dense
+        clearable
+      />
+      Select2: {{ select2 }}
     </form>
   </div>
 </template>
