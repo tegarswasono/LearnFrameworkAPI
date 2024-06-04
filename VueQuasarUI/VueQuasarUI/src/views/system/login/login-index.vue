@@ -60,6 +60,10 @@ const onForgotPasswordClicked = () => {
   })
 }
 
+const onSignUpClicked = () => {
+  router.push({ name: 'signUp' })
+}
+
 onBeforeMount(async () => {
   const token = localStorage.getItem('access_token')
   if (token != null) {
@@ -118,7 +122,18 @@ onBeforeMount(async () => {
                 no-caps
                 class="full-width"
                 @click="onForgotPasswordClicked"
-              ></q-btn>
+              />
+            </q-card-section>
+            <q-card-section class="q-py-none">
+              <q-btn
+                flat
+                borderless
+                size="md"
+                label="Don't have an account? Sign up"
+                no-caps
+                class="full-width"
+                @click="onSignUpClicked"
+              />
             </q-card-section>
             <q-card-section>
               <q-btn
@@ -131,7 +146,7 @@ onBeforeMount(async () => {
                 class="full-width"
                 @click="onLoginClicked"
                 :loading="isLoadingBtnLogin"
-              ></q-btn>
+              />
             </q-card-section>
           </q-form>
         </q-card>

@@ -41,4 +41,10 @@ namespace LearnFrameworkApi.Module.Models.Common
             return GeneralValidationModel.Dto(true, "");
         }
     }
+    public class SendLinkSignUpModel
+    {
+        [Required]
+        [ValidateEmail]
+        public string Email { get; set; } = string.Empty;
+    }
 }

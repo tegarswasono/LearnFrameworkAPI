@@ -1,6 +1,10 @@
 <script setup>
 import { onMounted, onBeforeUnmount } from 'vue'
 
+const goBack = () => {
+  window.history.back()
+}
+
 onMounted(() => {
   document.body.style.backgroundColor = '#F0F0F0'
 })
@@ -16,6 +20,6 @@ onBeforeUnmount(() => {
     <p class="text-blue-grey-3 text-weight-regular">
       Sorry, the page you are looking for does not exist.
     </p>
-    <router-link :to="{ name: 'bookingindex' }">Go to Bookings</router-link>
+    <a href="#" @click.prevent="goBack">Go Back</a>
   </div>
 </template>

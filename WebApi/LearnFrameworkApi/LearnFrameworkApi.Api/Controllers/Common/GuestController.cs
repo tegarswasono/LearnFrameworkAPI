@@ -88,13 +88,40 @@ namespace LearnFrameworkApi.Api.Controllers.Common
                 {
                     _memoryCache.Remove(model.ResetToken);
                 }
-                catch (Exception) { }
+                catch (Exception) 
+                { 
+                    //ignore exception
+                }
 
                 return Ok(GeneralResponseMessage.Dto("Your password has been successfully reset. Please log in using your new password."));
             }
             catch (Exception ex)
             {
                 Log.Error($"GuestController.SendLinkResetPassword | Message: {ex.Message} | InnerException: {ex.InnerException}");
+                return BadRequest(GeneralResponseMessage.Dto(ex.Message));
+            }
+        }
+
+        [HttpPost("SendLinkSignUp")]
+        public async Task<ActionResult<GeneralResponseMessage>> SendLinkSignUp(SendLinkSignUpModel model)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    throw new InvalidOperationException($"{model.Email} already registered. Please login using your account");
+                }
+
+                string registrationToken = Utils.GenerateRandomString(15);
+                _memoryCache.Set(registrationToken, model.Email, DateTimeOffset.Now.AddMinutes(30));
+                _emailService.SendLinkSignUp(model.Email, registrationToken);
+
+                return Ok(GeneralResponseMessage.Dto("A registration link has been sent. Please check your email."));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"GuestController.SendLinkSignUp | Message: {ex.Message} | InnerException: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
             }
         }
