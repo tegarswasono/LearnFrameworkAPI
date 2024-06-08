@@ -1,14 +1,35 @@
 <script setup lang="ts">
-import { onMounted, ref, type Ref } from 'vue'
+import { onMounted, ref, type Ref, computed, inject } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 import type { ISystemConfigurationModelCreateOrUpdate } from '@/helpers/api/systemConfiguration/systemConfigurationModel'
 import SystemConfigurationApi from '@/helpers/api/systemConfiguration/systemConfigurationApi'
+import type { IBreadCrumbsModel } from '@/models/BreadCrumbsModel'
+import {
+  stringRequired,
+  dropdownRequired,
+  numberShouldbeBiggerThanOrEqualsTo0,
+  numberShouldbeBiggerThan0
+} from '@/helpers/rulesHelper'
+import type { IMyPermissionModel } from '@/helpers/api/myProfile/myProfileModel'
+import { SystemConfigurationCreateOrUpdate } from '@/helpers/constantString'
+import CustomBreadCrumbs from '@/components/CustomBreadCrumbs.vue'
 
 const quasar = useQuasar()
 const scApi = new SystemConfigurationApi()
 
-//createOrEdit
+const myPermission = inject<Ref<IMyPermissionModel[]>>('myPermission')
+const canCreateOrUpdate = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (
+      myPermission.value.some(({ functionId }) => functionId == SystemConfigurationCreateOrUpdate)
+    ) {
+      return true
+    }
+  }
+  return false
+})
+
 const model: Ref<ISystemConfigurationModelCreateOrUpdate> = ref({
   id: '',
   exampleSetting: ''
@@ -32,17 +53,20 @@ const onSubmit = async () => {
   }
 }
 
+//breadcrumbs
+const breadcrumbs = ref<IBreadCrumbsModel[]>([
+  { label: 'Home', icon: 'home' },
+  { label: 'Configuration', icon: 'settings' },
+  { label: 'System Configuration', icon: 'manufacturing' }
+])
+
 onMounted(async () => {
   await getData()
 })
 </script>
 <template>
   <!-- breadcrumbs -->
-  <q-breadcrumbs style="margin-bottom: 30px">
-    <q-breadcrumbs-el label="Home" icon="home" />
-    <q-breadcrumbs-el label="Configuration" icon="settings" />
-    <q-breadcrumbs-el label="System Configuration" />
-  </q-breadcrumbs>
+  <CustomBreadCrumbs :breadcrumbs="breadcrumbs" />
 
   <!-- systemconfiguration -->
   <div class="q-pa-md" style="border: 1px solid #eeeeee">
@@ -52,9 +76,10 @@ onMounted(async () => {
         v-model="model.exampleSetting"
         label="Example Setting"
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Example Setting is Required']"
+        :rules="stringRequired('Example Setting')"
         dense
         maxlength="100"
+        :readonly="!canCreateOrUpdate"
       />
       <div class="row q-ml-auto">
         <div class="col-12 q-px-sm flex justify-end">
@@ -66,6 +91,7 @@ onMounted(async () => {
             size="sm"
             fixed-right
             @click="onSubmit"
+            v-if="canCreateOrUpdate"
           />
         </div>
       </div>
