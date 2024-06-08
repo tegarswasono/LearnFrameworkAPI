@@ -195,7 +195,7 @@ onMounted(async () => {
   <q-breadcrumbs style="margin-bottom: 30px">
     <q-breadcrumbs-el label="Home" icon="home" />
     <q-breadcrumbs-el label="Master" icon="assignment" />
-    <q-breadcrumbs-el label="Product" />
+    <q-breadcrumbs-el label="Product" icon="inventory" />
   </q-breadcrumbs>
   <!-- table -->
   <CustomTable

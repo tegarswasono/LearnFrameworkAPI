@@ -26,5 +26,12 @@ namespace LearnFrameworkApi.Module.Helpers
             var random = new Random();
             return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
         }
+        public static int GenerateRandomNumber(int length)
+        {
+            const string chars = "0123456789";
+            var random = new Random();
+            var result = new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+            return int.Parse(result);
+        }
     }
 }
