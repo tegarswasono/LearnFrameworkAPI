@@ -13,8 +13,9 @@ import {
   numberShouldbeBiggerThan0
 } from '@/helpers/rulesHelper'
 import type { IMyPermissionModel } from '@/helpers/api/myProfile/myProfileModel'
-
 import { ProductAdd, ProductEdit, ProductDelete } from '@/helpers/constantString'
+import type { IBreadCrumbsModel } from '@/models/BreadCrumbsModel'
+import CustomBreadCrumbs from '@/components/CustomBreadCrumbs.vue'
 
 const quasar = useQuasar()
 const productApi = new ProductApi()
@@ -46,6 +47,11 @@ const canDelete = computed(() => {
   return false
 })
 
+const breadcrumbs = ref<IBreadCrumbsModel[]>([
+  { label: 'Home', icon: 'home' },
+  { label: 'Master', icon: 'assignment' },
+  { label: 'Product', icon: 'inventory' }
+])
 const loading = ref(false)
 const columns: any = [
   { name: 'actions', label: '', align: 'left', style: 'width:50px;' },
@@ -192,11 +198,7 @@ onMounted(async () => {
 
 <template>
   <!-- breadcrumbs -->
-  <q-breadcrumbs style="margin-bottom: 30px">
-    <q-breadcrumbs-el label="Home" icon="home" />
-    <q-breadcrumbs-el label="Master" icon="assignment" />
-    <q-breadcrumbs-el label="Product" icon="inventory" />
-  </q-breadcrumbs>
+  <CustomBreadCrumbs :breadcrumbs="breadcrumbs" />
   <!-- table -->
   <CustomTable
     title="Product"
