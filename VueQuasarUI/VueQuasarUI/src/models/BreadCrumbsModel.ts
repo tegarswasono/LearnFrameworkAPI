@@ -1,6 +1,6 @@
 interface IBreadCrumbsModel {
   label: string
-  icon: string | null
+  icon: string
 }
 
 export type { IBreadCrumbsModel }
