@@ -203,6 +203,16 @@ onMounted(async () => {
           :rules="stringRequired('Name')"
           :readonly="formReadonly"
         />
+        <q-input
+          type="textarea"
+          v-model="model.description"
+          label="Description"
+          dense
+          filled
+          maxlength="300"
+          :readonly="formReadonly"
+          class="textarea-no-resize"
+        />
       </q-form>
     </template>
   </CustomTable>
