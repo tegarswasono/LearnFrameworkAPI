@@ -4,6 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 import axios, { Axios } from 'axios'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
+import { stringRequired, emailRequired, passwordRequired } from '@/helpers/rulesHelper'
 
 const router = useRouter()
 const route = useRoute()
@@ -107,29 +108,7 @@ onBeforeMount(async () => {
                 label="New Password"
                 maxlength="100"
                 lazy-rules
-                :rules="[
-                  (val) => (val && val.length > 0) || 'New Password is required',
-                  (val) => val.length >= 8 || 'New Password must be a minimum of 8 characters',
-                  (val) => {
-                    let hasUppercase = false
-                    let hasLowercase = false
-                    let hasNumberOrSpecialChar = false
-                    for (let i = 0; i < val.length; i++) {
-                      const char = val[i]
-                      if (char >= 'A' && char <= 'Z') {
-                        hasUppercase = true
-                      } else if (char >= 'a' && char <= 'z') {
-                        hasLowercase = true
-                      } else if ((char >= '0' && char <= '9') || (char >= '!' && char <= '/')) {
-                        hasNumberOrSpecialChar = true
-                      }
-                    }
-                    if (!hasUppercase || !hasLowercase || !hasNumberOrSpecialChar) {
-                      return 'New Password must contain 1 uppercase letter, 1 lowercase letter, and a number or symbol'
-                    }
-                    return true
-                  }
-                ]"
+                :rules="passwordRequired('New Password')"
                 filled
                 dense
                 class="q-mb-lg"
@@ -149,27 +128,7 @@ onBeforeMount(async () => {
                 maxlength="100"
                 lazy-rules
                 :rules="[
-                  (val) => (val && val.length > 0) || 'Confirm Password is required',
-                  (val) => val.length >= 8 || 'Confirm Password must be a minimum of 8 characters',
-                  (val) => {
-                    let hasUppercase = false
-                    let hasLowercase = false
-                    let hasNumberOrSpecialChar = false
-                    for (let i = 0; i < val.length; i++) {
-                      const char = val[i]
-                      if (char >= 'A' && char <= 'Z') {
-                        hasUppercase = true
-                      } else if (char >= 'a' && char <= 'z') {
-                        hasLowercase = true
-                      } else if ((char >= '0' && char <= '9') || (char >= '!' && char <= '/')) {
-                        hasNumberOrSpecialChar = true
-                      }
-                    }
-                    if (!hasUppercase || !hasLowercase || !hasNumberOrSpecialChar) {
-                      return 'Confirm Password must contain 1 uppercase letter, 1 lowercase letter, and a number or symbol'
-                    }
-                    return true
-                  },
+                  ...passwordRequired('Confirm Password'),
                   (val) => val == newPassword || 'Confirm Password and New Password Should be same'
                 ]"
                 filled

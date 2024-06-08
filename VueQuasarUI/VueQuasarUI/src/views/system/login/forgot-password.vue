@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
+import { emailRequired } from '@/helpers/rulesHelper'
 
 const router = useRouter()
 const $q = useQuasar()
@@ -77,10 +78,7 @@ onBeforeMount(async () => {
                 outlined
                 v-model="email"
                 label="Email"
-                :rules="[
-                  (val) => (val && val.length > 0) || 'Email is required',
-                  (val, rules) => rules.email(val) || 'Please enter a valid email address'
-                ]"
+                :rules="emailRequired('Email')"
               ></q-input>
             </q-card-section>
             <q-card-section>

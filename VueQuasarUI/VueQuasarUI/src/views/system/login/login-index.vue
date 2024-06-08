@@ -5,6 +5,7 @@ import axios from 'axios'
 import AuthService from '@/helpers/authService'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
+import { stringRequired, emailRequired } from '@/helpers/rulesHelper'
 
 const router = useRouter()
 const $q = useQuasar()
@@ -89,10 +90,7 @@ onBeforeMount(async () => {
                 outlined
                 v-model="username"
                 label="Email"
-                :rules="[
-                  (val) => (val && val.length > 0) || 'Email is required',
-                  (val, rules) => rules.email(val) || 'Please enter a valid email address'
-                ]"
+                :rules="emailRequired('Email')"
               ></q-input>
 
               <q-input
@@ -102,7 +100,7 @@ onBeforeMount(async () => {
                 v-model="password"
                 :type="isPwd ? 'password' : 'text'"
                 label="Password"
-                :rules="[(val) => (val && val.length > 0) || 'Password is required']"
+                :rules="stringRequired('Password')"
               >
                 <template v-slot:append>
                   <q-icon
