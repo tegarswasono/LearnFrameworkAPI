@@ -91,4 +91,8 @@ namespace LearnFrameworkApi.Module.Models.Configuration
         public string Url { get; set; } = string.Empty;
         public List<MyMenuModelItem> Child { get; set; } = [];
     }
+    public class MyPermissionModel
+    {
+        public string FunctionId { get; set; } = string.Empty;
+    }
 }

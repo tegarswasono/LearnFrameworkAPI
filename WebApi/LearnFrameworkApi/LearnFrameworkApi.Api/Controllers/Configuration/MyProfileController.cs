@@ -157,6 +157,26 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             }
         }
 
+        [HttpGet("MyPermission")]
+        public async Task<ActionResult<List<MyPermissionModel>>> MyPermission()
+        {
+            try
+            {
+                var functionIds = await _context.RoleFunctions
+                .Where(x =>
+                    _context.UserRoles.Where(x => x.UserId == Guid.Parse(_currentUserResolver.CurrentId!)).Select(x => x.RoleId).Contains(x.RoleId)
+                )
+                .Select(x => new MyPermissionModel() { FunctionId = x.FunctionId })
+                .ToListAsync();
+                return Ok(functionIds);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"MyProfileController.MyPermission | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                return BadRequest(GeneralResponseMessage.Dto(ex.Message));
+            }
+        }
+        
         [HttpPut("Update")]
         public async Task<ActionResult<GeneralResponseMessage>> Update(MyProfileModelUpdate model)
         {
