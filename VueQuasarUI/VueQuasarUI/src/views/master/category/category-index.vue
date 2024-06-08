@@ -164,7 +164,7 @@ const onSubmit = async () => {
 const breadcrumbs = ref<IBreadCrumbsModel[]>([
   { label: 'Home', icon: 'home' },
   { label: 'Master', icon: 'assignment' },
-  { label: 'Category', icon: 'category' }
+  { label: 'Categories', icon: 'category' }
 ])
 
 //onMounted

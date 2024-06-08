@@ -1,15 +1,54 @@
 <script setup lang="ts">
-import { onMounted, ref, type Ref } from 'vue'
+import { onMounted, ref, type Ref, inject, computed } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 import type { IUserModelCreateOrUpdate } from '@/helpers/api/user/userModel'
 import UserApi from '@/helpers/api/user/userApi'
+import type { IBreadCrumbsModel } from '@/models/BreadCrumbsModel'
+import {
+  stringRequired,
+  emailRequired,
+  dropdownRequired,
+  numberShouldbeBiggerThanOrEqualsTo0,
+  numberShouldbeBiggerThan0,
+  passwordRequired
+} from '@/helpers/rulesHelper'
+import type { IMyPermissionModel } from '@/helpers/api/myProfile/myProfileModel'
+import { UsersAdd, UsersEdit, UsersDelete } from '@/helpers/constantString'
+import CustomBreadCrumbs from '@/components/CustomBreadCrumbs.vue'
+import CustomTable from '@/components/CustomTable.vue'
 
 const quasar = useQuasar()
 const userApi = new UserApi()
 
+const myPermission = inject<Ref<IMyPermissionModel[]>>('myPermission')
+const canAdd = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (myPermission.value.some(({ functionId }) => functionId == UsersAdd)) {
+      return true
+    }
+  }
+  return false
+})
+const canEdit = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (myPermission.value.some(({ functionId }) => functionId == UsersEdit)) {
+      return true
+    }
+  }
+  return false
+})
+const canDelete = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (myPermission.value.some(({ functionId }) => functionId == UsersDelete)) {
+      return true
+    }
+  }
+  return false
+})
+
 const loading = ref(false)
-const users = ref()
+const rows = ref()
 const pagination = ref({
   sortBy: 'email',
   descending: false,
@@ -32,9 +71,7 @@ const columns: any = [
   { name: 'active', label: 'Active', field: 'activeInString', sortable: true, align: 'left' }
 ]
 const dialog = ref(false)
-const dialogTitle = ref('Add User')
 const formReadonly = ref(false)
-const visibleSubmit = ref(true)
 const isPwdPassword = ref(true)
 const showPasswordField = ref(false)
 const model: Ref<IUserModelCreateOrUpdate> = ref({
@@ -58,14 +95,14 @@ const getData = async () => {
       pagination.value.page,
       pagination.value.rowsPerPage
     )
-    users.value = response.result
+    rows.value = response.result
     pagination.value.rowsNumber = response.rowsNumber
   } catch (error) {
     /* empty */
   }
   loading.value = false
 }
-const OnRequest = async (props: any) => {
+const onRequest = async (props: any) => {
   const { page, rowsPerPage, sortBy, descending } = props.pagination
   pagination.value.sortBy = sortBy
   pagination.value.descending = descending
@@ -76,7 +113,6 @@ const OnRequest = async (props: any) => {
 
 const onAdd = () => {
   dialog.value = true
-  dialogTitle.value = 'Add User'
   model.value = {
     id: '',
     email: '',
@@ -88,23 +124,18 @@ const onAdd = () => {
   }
   showPasswordField.value = true
   formReadonly.value = false
-  visibleSubmit.value = true
 }
 const onView = async (row: any) => {
-  dialogTitle.value = 'View User'
   dialog.value = true
   model.value = row
   showPasswordField.value = false
   formReadonly.value = true
-  visibleSubmit.value = false
 }
 const onEdit = async (row: any) => {
-  dialogTitle.value = 'Edit User'
   dialog.value = true
   model.value = row
   showPasswordField.value = false
   formReadonly.value = false
-  visibleSubmit.value = true
 }
 const onDelete = async (id: string) => {
   quasar
@@ -156,6 +187,13 @@ const onSubmit = async () => {
   }
 }
 
+//breadcrumbs
+const breadcrumbs = ref<IBreadCrumbsModel[]>([
+  { label: 'Home', icon: 'home' },
+  { label: 'Configuration', icon: 'settings' },
+  { label: 'Users', icon: 'group' }
+])
+
 onMounted(async () => {
   await getData()
   var roles1 = await userApi.datasourceRoles()
@@ -165,167 +203,88 @@ onMounted(async () => {
 
 <template>
   <!-- breadcrumbs -->
-  <q-breadcrumbs style="margin-bottom: 30px">
-    <q-breadcrumbs-el label="Home" icon="home" />
-    <q-breadcrumbs-el label="Configuration" icon="settings" />
-    <q-breadcrumbs-el label="User" />
-  </q-breadcrumbs>
+  <CustomBreadCrumbs :breadcrumbs="breadcrumbs" />
   <!-- table -->
-  <div>
-    <q-table
-      title="User"
-      :rows="users"
-      :columns="columns"
-      row-key="email"
-      separator="cell"
-      v-model:pagination="pagination"
-      dense
-      :loading="loading"
-      @request="OnRequest"
-    >
-      <template v-slot:top>
-        <q-btn icon="add" size="sm" label="Add" color="secondary" @click="onAdd" />
-      </template>
-      <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            size="xs"
-            icon="visibility"
-            @click="onView(props.row)"
-          ></q-btn>
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            size="xs"
-            icon="edit"
-            @click="onEdit(props.row)"
-          ></q-btn>
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            size="xs"
-            icon="delete"
-            @click="onDelete(props.row.id)"
-          ></q-btn>
-        </q-td>
-      </template>
-    </q-table>
-  </div>
-  <!-- dialog -->
-  <q-dialog v-model="dialog" backdrop-filter="blur(4px) saturate(150%)">
-    <q-card style="width: 700px; max-width: 80vw">
-      <q-card-section>
-        <div class="text-h6">{{ dialogTitle }}</div>
-      </q-card-section>
-
+  <CustomTable
+    title="User"
+    :columns="columns"
+    :rows="rows"
+    :loading="loading"
+    :pagination="pagination"
+    :onRequest="onRequest"
+    :onView="onView"
+    :onAdd="canAdd ? onAdd : undefined"
+    :onEdit="canEdit ? onEdit : undefined"
+    :onDelete="canDelete ? onDelete : undefined"
+    :dialog="dialog"
+    :onSubmit="onSubmit"
+  >
+    <template #detailView>
       <q-form ref="formRef" class="q-gutter-md">
-        <q-card-section class="q-pt-none">
-          <q-input
-            filled
-            v-model="model.email"
-            type="email"
-            label="Email *"
-            lazy-rules
-            dense
-            maxlength="512"
-            :rules="[(val) => (val && val.length > 0) || 'Email is required']"
-            :readonly="formReadonly"
-          />
-          <q-input
-            filled
-            v-model="model.fullName"
-            label="FullName *"
-            lazy-rules
-            dense
-            maxlength="50"
-            :rules="[(val) => (val && val.length > 0) || 'FullName is required']"
-            :readonly="formReadonly"
-          />
-          <q-input
-            filled
-            v-model="model.phoneNumber"
-            label="PhoneNumber"
-            dense
-            maxlength="50"
-            :readonly="formReadonly"
-            style="padding-bottom: 20px"
-          />
-          <q-select
-            v-model="model.roles"
-            label="Roles"
-            clearable
-            :options="roles"
-            option-label="name"
-            option-value="id"
-            :readonly="formReadonly"
-            dense
-            filled
-            style="padding-bottom: 20px"
-            multiple
-          />
-          <q-input
-            v-if="showPasswordField"
-            v-model="model.password"
-            filled
-            :type="isPwdPassword ? 'password' : 'text'"
-            label="Password"
-            lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Password is required',
-              (val) => val.length >= 8 || 'Password must be a minimum of 8 characters',
-              (val) => {
-                let hasUppercase = false
-                let hasLowercase = false
-                let hasNumberOrSpecialChar = false
-                for (let i = 0; i < val.length; i++) {
-                  const char = val[i]
-                  if (char >= 'A' && char <= 'Z') {
-                    hasUppercase = true
-                  } else if (char >= 'a' && char <= 'z') {
-                    hasLowercase = true
-                  } else if ((char >= '0' && char <= '9') || (char >= '!' && char <= '/')) {
-                    hasNumberOrSpecialChar = true
-                  }
-                }
-                if (!hasUppercase || !hasLowercase || !hasNumberOrSpecialChar) {
-                  return 'Password must contain 1 uppercase letter, 1 lowercase letter, and a number or symbol'
-                }
-                return true
-              }
-            ]"
-            dense
-            maxlength="100"
-          >
-            <template v-slot:append>
-              <q-icon
-                :name="isPwdPassword ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwdPassword = !isPwdPassword"
-              />
-            </template>
-          </q-input>
-          <q-toggle v-model="model.active" label="Is Active" :disable="formReadonly" />
-        </q-card-section>
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn label="Close" color="negative" size="sm" icon="cancel" v-close-popup />
-          <q-btn
-            label="Save"
-            color="primary"
-            size="sm"
-            icon="save"
-            :onclick="onSubmit"
-            v-if="visibleSubmit"
-          />
-        </q-card-actions>
+        <q-input
+          filled
+          v-model="model.email"
+          type="email"
+          label="Email *"
+          lazy-rules
+          dense
+          maxlength="512"
+          :rules="emailRequired('Email')"
+          :readonly="formReadonly"
+        />
+        <q-input
+          filled
+          v-model="model.fullName"
+          label="FullName *"
+          lazy-rules
+          dense
+          maxlength="50"
+          :rules="stringRequired('Fullname')"
+          :readonly="formReadonly"
+        />
+        <q-input
+          filled
+          v-model="model.phoneNumber"
+          label="PhoneNumber"
+          dense
+          maxlength="50"
+          :readonly="formReadonly"
+          style="padding-bottom: 20px"
+        />
+        <q-select
+          v-model="model.roles"
+          label="Roles"
+          clearable
+          :options="roles"
+          option-label="name"
+          option-value="id"
+          :readonly="formReadonly"
+          dense
+          filled
+          style="padding-bottom: 20px"
+          multiple
+        />
+        <q-input
+          v-if="showPasswordField"
+          v-model="model.password"
+          filled
+          :type="isPwdPassword ? 'password' : 'text'"
+          label="Password"
+          lazy-rules
+          :rules="passwordRequired('Password')"
+          dense
+          maxlength="100"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="isPwdPassword ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isPwdPassword = !isPwdPassword"
+            />
+          </template>
+        </q-input>
+        <q-toggle v-model="model.active" label="Is Active" :disable="formReadonly" />
       </q-form>
-    </q-card>
-  </q-dialog>
+    </template>
+  </CustomTable>
 </template>

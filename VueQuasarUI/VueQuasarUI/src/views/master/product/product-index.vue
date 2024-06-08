@@ -50,7 +50,7 @@ const canDelete = computed(() => {
 const breadcrumbs = ref<IBreadCrumbsModel[]>([
   { label: 'Home', icon: 'home' },
   { label: 'Master', icon: 'assignment' },
-  { label: 'Product', icon: 'inventory' }
+  { label: 'Products', icon: 'inventory' }
 ])
 const loading = ref(false)
 const columns: any = [
