@@ -3,7 +3,7 @@ import { ref, onMounted, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { AppFullscreen, useQuasar } from 'quasar'
 import moment from 'moment'
-import { MyProfileApi } from '@/helpers/api/myProfile/myProfileApi'
+import MyProfileApi from '@/helpers/api/myProfile/myProfileApi'
 
 import backgroundProfilePicture from '@/assets/material.png'
 import logo from '@/assets/New_Century_Tour_Logo.svg'

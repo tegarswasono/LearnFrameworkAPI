@@ -7,7 +7,7 @@ import {
   numberRequired,
   numberShouldbeBiggerThanOrEqualsTo0,
   numberShouldbeBiggerThan0,
-  selectRequired,
+  dropdownRequired,
   dateRequired
 } from '@/helpers/rulesHelper'
 

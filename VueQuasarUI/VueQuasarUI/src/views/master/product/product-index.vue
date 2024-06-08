@@ -7,6 +7,12 @@ import ProductApi from '@/helpers/api/product/productApi'
 import type { IGeneralDatasourceModel } from '@/helpers/api/datasource/datasourceModel'
 import DatasourceApi from '@/helpers/api/datasource/datasourceApi'
 import CustomTable from '@/components/CustomTable.vue'
+import {
+  stringRequired,
+  dropdownRequired,
+  numberShouldbeBiggerThanOrEqualsTo0,
+  numberShouldbeBiggerThan0
+} from '@/helpers/rulesHelper'
 
 const quasar = useQuasar()
 const productApi = new ProductApi()
@@ -187,7 +193,7 @@ onMounted(async () => {
           lazy-rules
           dense
           maxlength="100"
-          :rules="[(val) => (val && val.length > 0) || 'Name is required']"
+          :rules="stringRequired('Name')"
           :readonly="formReadonly"
         />
         <q-input
@@ -197,10 +203,7 @@ onMounted(async () => {
           label="Stok *"
           lazy-rules
           dense
-          :rules="[
-            (val) => val !== '' || 'Stok is required',
-            (val) => val >= 0 || 'Stok Should be bigger than or equals to zero'
-          ]"
+          :rules="numberShouldbeBiggerThanOrEqualsTo0('Stok')"
           :readonly="formReadonly"
         />
         <q-input
@@ -210,10 +213,7 @@ onMounted(async () => {
           label="Price *"
           lazy-rules
           dense
-          :rules="[
-            (val) => val !== '' || 'Price is required',
-            (val) => val > 0 || 'Price Should be bigger than zero'
-          ]"
+          :rules="numberShouldbeBiggerThan0('Price')"
           :readonly="formReadonly"
         />
         <q-select
@@ -227,7 +227,7 @@ onMounted(async () => {
           map-options
           :readonly="formReadonly"
           lazy-rules
-          :rules="[(val) => (val && val.length > 0) || 'Category is required']"
+          :rules="dropdownRequired('Category')"
         />
         <q-input
           type="textarea"

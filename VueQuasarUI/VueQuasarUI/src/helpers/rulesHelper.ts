@@ -41,7 +41,9 @@ const numberShouldbeBiggerThan0 = (fieldName: string) => [
 ]
 
 //dropdown
-const selectRequired = (fieldName: string) => [(val: string) => !!val || fieldName + ' is required']
+const dropdownRequired = (fieldName: string) => [
+  (val: string) => !!val || fieldName + ' is required'
+]
 
 //date
 const dateRequired = (fieldName: string) => [(val: Date) => !!val || fieldName + ' is required']
@@ -57,6 +59,6 @@ export {
   numberRequired,
   numberShouldbeBiggerThanOrEqualsTo0,
   numberShouldbeBiggerThan0,
-  selectRequired,
+  dropdownRequired,
   dateRequired
 }

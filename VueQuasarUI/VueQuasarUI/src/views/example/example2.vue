@@ -7,7 +7,7 @@ import {
   numberRequired,
   numberShouldbeBiggerThanOrEqualsTo0,
   numberShouldbeBiggerThan0,
-  selectRequired
+  dropdownRequired
 } from '@/helpers/rulesHelper'
 
 const name = ref('')
