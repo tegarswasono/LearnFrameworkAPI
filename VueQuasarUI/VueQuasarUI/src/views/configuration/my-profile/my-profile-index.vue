@@ -8,6 +8,11 @@ import type {
 } from '@/helpers/api/myProfile/myProfileModel'
 import MyProfileApi from '@/helpers/api/myProfile/myProfileApi'
 import axios from 'axios'
+import type { IBreadCrumbsModel } from '@/models/BreadCrumbsModel'
+import { stringRequired, passwordRequired } from '@/helpers/rulesHelper'
+import type { IMyPermissionModel } from '@/helpers/api/myProfile/myProfileModel'
+import { SystemConfigurationCreateOrUpdate } from '@/helpers/constantString'
+import CustomBreadCrumbs from '@/components/CustomBreadCrumbs.vue'
 
 const $q = useQuasar()
 const myProfileApi = new MyProfileApi()
@@ -133,17 +138,20 @@ const onSubmitProfilePicture = async () => {
   }
 }
 
+//breadcrumbs
+const breadcrumbs = ref<IBreadCrumbsModel[]>([
+  { label: 'Home', icon: 'home' },
+  { label: 'Configuration', icon: 'settings' },
+  { label: 'My Profile', icon: 'person' }
+])
+
 onMounted(async () => {
   await getData()
 })
 </script>
 <template>
   <!-- breadcrumbs -->
-  <q-breadcrumbs style="margin-bottom: 30px">
-    <q-breadcrumbs-el label="Home" icon="home" />
-    <q-breadcrumbs-el label="Configuration" icon="settings" />
-    <q-breadcrumbs-el label="My Profile" />
-  </q-breadcrumbs>
+  <CustomBreadCrumbs :breadcrumbs="breadcrumbs" />
 
   <!-- systemconfiguration -->
   <div style="border: 1px solid rgb(238, 238, 238)" class="q-pa-md">
@@ -171,7 +179,7 @@ onMounted(async () => {
         label="FullName"
         maxlength="512"
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'FullName is Required']"
+        :rules="stringRequired('Fullname')"
         dense
         filled
       />
@@ -181,7 +189,7 @@ onMounted(async () => {
         label="PhoneNumber"
         maxlength="512"
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'PhoneNumber is Required']"
+        :rules="stringRequired('PhoneNumber')"
         dense
         filled
       />
@@ -215,7 +223,7 @@ onMounted(async () => {
             :type="currentPasswordIsPwd ? 'password' : 'text'"
             label="Current Password"
             lazy-rules
-            :rules="[(val) => (val && val.length > 0) || 'Current Password is Required']"
+            :rules="stringRequired('Current Password')"
             dense
             maxlength="100"
           >
@@ -234,27 +242,7 @@ onMounted(async () => {
             maxlength="100"
             lazy-rules
             :rules="[
-              (val) => (val && val.length > 0) || 'New Password is required',
-              (val) => val.length >= 8 || 'New Password must be a minimum of 8 characters',
-              (val) => {
-                let hasUppercase = false
-                let hasLowercase = false
-                let hasNumberOrSpecialChar = false
-                for (let i = 0; i < val.length; i++) {
-                  const char = val[i]
-                  if (char >= 'A' && char <= 'Z') {
-                    hasUppercase = true
-                  } else if (char >= 'a' && char <= 'z') {
-                    hasLowercase = true
-                  } else if ((char >= '0' && char <= '9') || (char >= '!' && char <= '/')) {
-                    hasNumberOrSpecialChar = true
-                  }
-                }
-                if (!hasUppercase || !hasLowercase || !hasNumberOrSpecialChar) {
-                  return 'New Password must contain 1 uppercase letter, 1 lowercase letter, and a number or symbol'
-                }
-                return true
-              },
+              ...passwordRequired('New Password'),
               (val) =>
                 val != modelChangePassword.currentPassword ||
                 'Current Password and New Password should not be same'
@@ -277,27 +265,7 @@ onMounted(async () => {
             maxlength="100"
             lazy-rules
             :rules="[
-              (val) => (val && val.length > 0) || 'Confirm Password is required',
-              (val) => val.length >= 8 || 'Confirm Password must be a minimum of 8 characters',
-              (val) => {
-                let hasUppercase = false
-                let hasLowercase = false
-                let hasNumberOrSpecialChar = false
-                for (let i = 0; i < val.length; i++) {
-                  const char = val[i]
-                  if (char >= 'A' && char <= 'Z') {
-                    hasUppercase = true
-                  } else if (char >= 'a' && char <= 'z') {
-                    hasLowercase = true
-                  } else if ((char >= '0' && char <= '9') || (char >= '!' && char <= '/')) {
-                    hasNumberOrSpecialChar = true
-                  }
-                }
-                if (!hasUppercase || !hasLowercase || !hasNumberOrSpecialChar) {
-                  return 'Confirm Password must contain 1 uppercase letter, 1 lowercase letter, and a number or symbol'
-                }
-                return true
-              },
+              ...passwordRequired('Confirm Password'),
               (val) =>
                 val == modelChangePassword.newPassword ||
                 'Confirm Password and New Password Should be same'
