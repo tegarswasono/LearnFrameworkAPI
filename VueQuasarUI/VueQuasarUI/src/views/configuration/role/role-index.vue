@@ -7,7 +7,7 @@ import type {
   IRoleFunctionModel,
   IRoleFunctionModelItem
 } from '@/helpers/api/role/roleModel'
-import { RoleApi } from '@/helpers/api/role/roleApi'
+import RoleApi from '@/helpers/api/role/roleApi'
 
 const quasar = useQuasar()
 const roleApi = new RoleApi()

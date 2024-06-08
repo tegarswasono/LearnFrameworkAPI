@@ -3,7 +3,7 @@ import ApiHelper from '../apiHelper'
 import type { IPagination, IGeneralSuccessResponse } from '../apiModel'
 import type { ICategoryModel, ICategoryModelCreateOrUpdate } from './categoryModel'
 
-export class CategoryApi {
+export default class CategoryApi {
   private apiHelper: ApiHelper
   private endpoint: string = '/Api/Master/Category'
 

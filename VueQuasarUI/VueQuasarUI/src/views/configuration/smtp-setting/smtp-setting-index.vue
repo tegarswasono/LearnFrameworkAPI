@@ -3,7 +3,7 @@ import { onMounted, ref, type Ref } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 import type { ISmtpSettingModelCreateOrUpdate } from '@/helpers/api/smtpSetting/smtpSettingModel'
-import { SmtpSettingApi } from '@/helpers/api/smtpSetting/smtpSettingApi'
+import SmtpSettingApi from '@/helpers/api/smtpSetting/smtpSettingApi'
 
 const quasar = useQuasar()
 const ssApi = new SmtpSettingApi()

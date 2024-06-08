@@ -3,9 +3,9 @@ import { onMounted, ref, type Ref } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 import type { IProductModel, IProductModelCreateOrUpdate } from '@/helpers/api/product/productModel'
-import { ProductApi } from '@/helpers/api/product/productApi'
+import ProductApi from '@/helpers/api/product/productApi'
 import type { IGeneralDatasourceModel } from '@/helpers/api/datasource/datasourceModel'
-import { DatasourceApi } from '@/helpers/api/datasource/datasourceApi'
+import DatasourceApi from '@/helpers/api/datasource/datasourceApi'
 import CustomTable from '@/components/CustomTable.vue'
 
 const quasar = useQuasar()
@@ -165,18 +165,18 @@ onMounted(async () => {
   </q-breadcrumbs>
   <!-- table -->
   <CustomTable
+    title="Product"
     :columns="columns"
     :rows="rows"
     :loading="loading"
+    :pagination="pagination"
     :OnRequest="OnRequest"
     :onAdd="onAdd"
     :onView="onView"
     :onEdit="onEdit"
     :onDelete="onDelete"
-    :pagination="pagination"
     :dialog="dialog"
     :onSubmit="onSubmit"
-    title="Product"
   >
     <template #detailView>
       <q-form class="q-gutter-md" ref="formRef">

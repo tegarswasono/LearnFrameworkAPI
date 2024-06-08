@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, type Ref } from 'vue'
-import { useQuasar, QForm } from 'quasar'
+import { ref, watch } from 'vue'
 
 var props = defineProps({
+  title: {
+    type: String,
+    required: true
+  },
   columns: {
     type: Array<any>,
     required: true
@@ -16,6 +19,10 @@ var props = defineProps({
     type: Boolean,
     required: true,
     default: false
+  },
+  pagination: {
+    type: Object,
+    required: true
   },
   OnRequest: {
     type: Function,
@@ -37,10 +44,6 @@ var props = defineProps({
     type: Function,
     required: true
   },
-  pagination: {
-    type: Object,
-    required: true
-  },
   dialog: {
     type: Boolean,
     required: true,
@@ -48,10 +51,6 @@ var props = defineProps({
   },
   onSubmit: {
     type: Function,
-    required: true
-  },
-  title: {
-    type: String,
     required: true
   }
 })

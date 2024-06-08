@@ -3,7 +3,7 @@ import { onMounted, ref, type Ref } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 import type { IUserModelCreateOrUpdate } from '@/helpers/api/user/userModel'
-import { UserApi } from '@/helpers/api/user/userApi'
+import UserApi from '@/helpers/api/user/userApi'
 
 const quasar = useQuasar()
 const userApi = new UserApi()

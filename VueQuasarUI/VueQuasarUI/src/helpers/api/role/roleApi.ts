@@ -3,7 +3,7 @@ import ApiHelper from '../apiHelper'
 import type { IRoleModel, IRoleModelCreateOrUpdate, IRoleFunctionModel } from './roleModel'
 import type { IPagination, IGeneralSuccessResponse } from '../apiModel'
 
-export class RoleApi {
+export default class RoleApi {
   private apiHelper: ApiHelper
   private endpoint: string = '/Api/Configuration/Role'
 

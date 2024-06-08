@@ -5,7 +5,7 @@ import type { IUserModel, IUserModelCreateOrUpdate } from './userModel'
 import type { IGeneralDatasourceModel } from '../datasource/datasourceModel'
 import type { IRoleModel } from '../role/roleModel'
 
-export class UserApi {
+export default class UserApi {
   private apiHelper: ApiHelper
   private endpoint: string = '/Api/Configuration/User'
 

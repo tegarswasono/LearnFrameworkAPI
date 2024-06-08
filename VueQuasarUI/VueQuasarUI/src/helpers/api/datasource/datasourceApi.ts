@@ -2,7 +2,7 @@ import { inject } from 'vue'
 import ApiHelper from '../apiHelper'
 import type { IGeneralDatasourceModel } from './datasourceModel'
 
-export class DatasourceApi {
+export default class DatasourceApi {
   private apiHelper: ApiHelper
   private endpoint: string = '/Api/Common/Datasource'
 

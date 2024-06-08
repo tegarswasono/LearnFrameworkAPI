@@ -3,7 +3,7 @@ import ApiHelper from '../apiHelper'
 import type { IPagination, IGeneralSuccessResponse } from '../apiModel'
 import type { IProductModel, IProductModelCreateOrUpdate } from './productModel'
 
-export class ProductApi {
+export default class ProductApi {
   private apiHelper: ApiHelper
   private endpoint: string = '/Api/Master/Product'
 

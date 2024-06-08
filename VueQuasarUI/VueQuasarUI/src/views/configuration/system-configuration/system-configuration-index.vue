@@ -3,7 +3,7 @@ import { onMounted, ref, type Ref } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 import type { ISystemConfigurationModelCreateOrUpdate } from '@/helpers/api/systemConfiguration/systemConfigurationModel'
-import { SystemConfigurationApi } from '@/helpers/api/systemConfiguration/systemConfigurationApi'
+import SystemConfigurationApi from '@/helpers/api/systemConfiguration/systemConfigurationApi'
 
 const quasar = useQuasar()
 const scApi = new SystemConfigurationApi()

@@ -8,7 +8,7 @@ import type {
   IMyMenuModel
 } from './myProfileModel'
 
-export class MyProfileApi {
+export default class MyProfileApi {
   private apiHelper: ApiHelper
   private endpoint: string = '/Api/Configuration/MyProfile'
 

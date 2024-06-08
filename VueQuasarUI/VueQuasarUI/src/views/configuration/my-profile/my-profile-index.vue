@@ -6,7 +6,7 @@ import type {
   IMyProfileModelUpdate,
   IMyProfileChangePassword
 } from '@/helpers/api/myProfile/myProfileModel'
-import { MyProfileApi } from '@/helpers/api/myProfile/myProfileApi'
+import MyProfileApi from '@/helpers/api/myProfile/myProfileApi'
 import axios from 'axios'
 
 const $q = useQuasar()

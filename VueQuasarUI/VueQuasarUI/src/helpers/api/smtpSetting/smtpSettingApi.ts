@@ -3,7 +3,7 @@ import ApiHelper from '../apiHelper'
 import type { IGeneralSuccessResponse } from '../apiModel'
 import type { ISmtpSettingModel, ISmtpSettingModelCreateOrUpdate } from './smtpSettingModel'
 
-export class SmtpSettingApi {
+export default class SmtpSettingApi {
   private apiHelper: ApiHelper
   private endpoint: string = '/Api/Configuration/SmtpSetting'
 

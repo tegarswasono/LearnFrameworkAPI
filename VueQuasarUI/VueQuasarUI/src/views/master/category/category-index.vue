@@ -3,7 +3,7 @@ import { onMounted, ref, type Ref } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 import type { ICategoryModelCreateOrUpdate } from '@/helpers/api/category/categoryModel'
-import { CategoryApi } from '@/helpers/api/category/categoryApi'
+import CategoryApi from '@/helpers/api/category/categoryApi'
 
 const quasar = useQuasar()
 const categoryApi = new CategoryApi()

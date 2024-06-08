@@ -6,7 +6,7 @@ import type {
   ISystemConfigurationModelCreateOrUpdate
 } from './systemConfigurationModel'
 
-export class SystemConfigurationApi {
+export default class SystemConfigurationApi {
   private apiHelper: ApiHelper
   private endpoint: string = '/Api/Configuration/SystemConfiguration'
 
