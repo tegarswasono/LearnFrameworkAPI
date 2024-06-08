@@ -1,16 +1,52 @@
 <script setup lang="ts">
-import { onMounted, ref, type Ref } from 'vue'
+import { onMounted, ref, type Ref, computed, inject } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 import type { ICategoryModelCreateOrUpdate } from '@/helpers/api/category/categoryModel'
 import CategoryApi from '@/helpers/api/category/categoryApi'
+import type { IBreadCrumbsModel } from '@/models/BreadCrumbsModel'
+import {
+  stringRequired,
+  dropdownRequired,
+  numberShouldbeBiggerThanOrEqualsTo0,
+  numberShouldbeBiggerThan0
+} from '@/helpers/rulesHelper'
+import type { IMyPermissionModel } from '@/helpers/api/myProfile/myProfileModel'
+import { CategoryAdd, CategoryEdit, CategoryDelete } from '@/helpers/constantString'
+import CustomBreadCrumbs from '@/components/CustomBreadCrumbs.vue'
+import CustomTable from '@/components/CustomTable.vue'
 
 const quasar = useQuasar()
 const categoryApi = new CategoryApi()
 
-//listview
+const myPermission = inject<Ref<IMyPermissionModel[]>>('myPermission')
+const canAdd = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (myPermission.value.some(({ functionId }) => functionId == CategoryAdd)) {
+      return true
+    }
+  }
+  return false
+})
+const canEdit = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (myPermission.value.some(({ functionId }) => functionId == CategoryEdit)) {
+      return true
+    }
+  }
+  return false
+})
+const canDelete = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (myPermission.value.some(({ functionId }) => functionId == CategoryDelete)) {
+      return true
+    }
+  }
+  return false
+})
+
 const loading = ref(false)
-const categories = ref()
+const rows = ref()
 const pagination = ref({
   sortBy: 'name',
   descending: false,
@@ -31,14 +67,14 @@ const getData = async () => {
       pagination.value.page,
       pagination.value.rowsPerPage
     )
-    categories.value = response.result
+    rows.value = response.result
     pagination.value.rowsNumber = response.rowsNumber
   } catch (error) {
     /* empty */
   }
   loading.value = false
 }
-const OnRequest = async (props: any) => {
+const onRequest = async (props: any) => {
   const { page, rowsPerPage, sortBy, descending } = props.pagination
   pagination.value.sortBy = sortBy
   pagination.value.descending = descending
@@ -47,10 +83,7 @@ const OnRequest = async (props: any) => {
   await getData()
 }
 
-//Add, Edit, Delete
 const dialog = ref(false)
-const dialogTitle = ref('Add Category')
-const visibleSubmit = ref(true)
 const formReadonly = ref(false)
 const model: Ref<ICategoryModelCreateOrUpdate> = ref({
   id: '',
@@ -60,10 +93,7 @@ const model: Ref<ICategoryModelCreateOrUpdate> = ref({
 const formRef: Ref<QForm | null> = ref(null)
 const onAdd = () => {
   dialog.value = true
-  dialogTitle.value = 'Add Category'
-  visibleSubmit.value = true
   formReadonly.value = false
-
   model.value = {
     id: '',
     name: '',
@@ -72,18 +102,12 @@ const onAdd = () => {
 }
 const onView = async (row: any) => {
   dialog.value = true
-  dialogTitle.value = 'View Category'
-  visibleSubmit.value = false
   formReadonly.value = true
-
   model.value = row
 }
 const onEdit = async (row: any) => {
   dialog.value = true
-  dialogTitle.value = 'Edit Category'
-  visibleSubmit.value = true
   formReadonly.value = false
-
   model.value = JSON.parse(JSON.stringify(row))
 }
 const onDelete = async (id: string) => {
@@ -136,6 +160,13 @@ const onSubmit = async () => {
   }
 }
 
+//breadcrumbs
+const breadcrumbs = ref<IBreadCrumbsModel[]>([
+  { label: 'Home', icon: 'home' },
+  { label: 'Master', icon: 'assignment' },
+  { label: 'Category', icon: 'category' }
+])
+
 //onMounted
 onMounted(async () => {
   await getData()
@@ -144,92 +175,35 @@ onMounted(async () => {
 
 <template>
   <!-- breadcrumbs -->
-  <q-breadcrumbs style="margin-bottom: 30px">
-    <q-breadcrumbs-el label="Home" icon="home" />
-    <q-breadcrumbs-el label="Master" icon="assignment" />
-    <q-breadcrumbs-el label="Category" />
-  </q-breadcrumbs>
+  <CustomBreadCrumbs :breadcrumbs="breadcrumbs" />
   <!-- table -->
-  <div>
-    <q-table
-      title="Category"
-      :rows="categories"
-      :columns="columns"
-      row-key="name"
-      separator="cell"
-      v-model:pagination="pagination"
-      dense
-      :loading="loading"
-      @request="OnRequest"
-    >
-      <template v-slot:top>
-        <q-btn icon="add" size="sm" label="Add" color="secondary" @click="onAdd" />
-      </template>
-      <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            size="xs"
-            icon="visibility"
-            @click="onView(props.row)"
-          ></q-btn>
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            size="xs"
-            icon="edit"
-            @click="onEdit(props.row)"
-          ></q-btn>
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            size="xs"
-            icon="delete"
-            @click="onDelete(props.row.id)"
-          ></q-btn>
-        </q-td>
-      </template>
-    </q-table>
-  </div>
-  <!-- dialog -->
-  <q-dialog v-model="dialog" backdrop-filter="blur(4px) saturate(150%)">
-    <q-card style="width: 700px; max-width: 80vw">
-      <q-card-section>
-        <div class="text-h6">{{ dialogTitle }}</div>
-      </q-card-section>
-
+  <CustomTable
+    title="Category"
+    :columns="columns"
+    :rows="rows"
+    :loading="loading"
+    :pagination="pagination"
+    :onRequest="onRequest"
+    :onView="onView"
+    :onAdd="canAdd ? onAdd : undefined"
+    :onEdit="canEdit ? onEdit : undefined"
+    :onDelete="canDelete ? onDelete : undefined"
+    :dialog="dialog"
+    :onSubmit="onSubmit"
+  >
+    <template #detailView>
       <q-form ref="formRef" class="q-gutter-md">
-        <q-card-section class="q-pt-none">
-          <q-input
-            filled
-            v-model="model.name"
-            label="Name *"
-            lazy-rules
-            dense
-            maxlength="100"
-            :rules="[(val) => (val && val.length > 0) || 'Name is required']"
-            :readonly="formReadonly"
-          />
-        </q-card-section>
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn label="Close" color="negative" size="sm" icon="cancel" v-close-popup />
-          <q-btn
-            label="Save"
-            color="primary"
-            size="sm"
-            icon="save"
-            :onclick="onSubmit"
-            v-if="visibleSubmit"
-          />
-        </q-card-actions>
+        <q-input
+          filled
+          v-model="model.name"
+          label="Name *"
+          lazy-rules
+          dense
+          maxlength="100"
+          :rules="stringRequired('Name')"
+          :readonly="formReadonly"
+        />
       </q-form>
-    </q-card>
-  </q-dialog>
+    </template>
+  </CustomTable>
 </template>

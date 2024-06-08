@@ -63,7 +63,7 @@ const onAddLocal = () => {
   dialogTitle.value = 'Add ' + props.title
   visibleSubmit.value = true
   if (props.onAdd) {
-    props.onAdd
+    props.onAdd()
   }
 }
 const onViewLocal = (value: any) => {
@@ -118,7 +118,7 @@ watch(
 <template>
   <!-- Table -->
   <q-table
-    title="Product"
+    :title="title"
     :columns="columns"
     :rows="rows"
     row-key="name"
