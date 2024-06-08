@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, type Ref } from 'vue'
+import { onMounted, ref, type Ref, computed, inject } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 import type {
@@ -8,12 +8,49 @@ import type {
   IRoleFunctionModelItem
 } from '@/helpers/api/role/roleModel'
 import RoleApi from '@/helpers/api/role/roleApi'
+import type { IBreadCrumbsModel } from '@/models/BreadCrumbsModel'
+import {
+  stringRequired,
+  dropdownRequired,
+  numberShouldbeBiggerThanOrEqualsTo0,
+  numberShouldbeBiggerThan0
+} from '@/helpers/rulesHelper'
+import type { IMyPermissionModel } from '@/helpers/api/myProfile/myProfileModel'
+import { RolesAdd, RolesEdit, RolesDelete } from '@/helpers/constantString'
+import CustomBreadCrumbs from '@/components/CustomBreadCrumbs.vue'
+import CustomTable from '@/components/CustomTable.vue'
 
 const quasar = useQuasar()
 const roleApi = new RoleApi()
 
-const roles = ref()
-const loadingTable = ref(false)
+const myPermission = inject<Ref<IMyPermissionModel[]>>('myPermission')
+const canAdd = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (myPermission.value.some(({ functionId }) => functionId == RolesAdd)) {
+      return true
+    }
+  }
+  return false
+})
+const canEdit = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (myPermission.value.some(({ functionId }) => functionId == RolesEdit)) {
+      return true
+    }
+  }
+  return false
+})
+const canDelete = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (myPermission.value.some(({ functionId }) => functionId == RolesDelete)) {
+      return true
+    }
+  }
+  return false
+})
+
+const rows = ref()
+const loading = ref(false)
 const columns: any = [
   { name: 'actions', label: '', align: 'left', style: 'width:50px;' },
   { name: 'name', label: 'Name', field: 'name', sortable: true, align: 'left' }
@@ -26,8 +63,6 @@ const pagination = ref({
   rowsNumber: 0
 })
 const dialog = ref(false)
-const dialogTitle = ref('Add Role')
-const visibleSubmit = ref(true)
 const formReadonly = ref(false)
 const model: Ref<IRoleModelCreateOrUpdate> = ref({
   id: '',
@@ -48,7 +83,7 @@ const roleFunctionsPagination = ref({
 const checkbox1 = ref(false)
 
 const getData = async () => {
-  loadingTable.value = true
+  loading.value = true
   try {
     var response = await roleApi.getAll(
       pagination.value.sortBy,
@@ -56,14 +91,14 @@ const getData = async () => {
       pagination.value.page,
       pagination.value.rowsPerPage
     )
-    roles.value = response.result
+    rows.value = response.result
     pagination.value.rowsNumber = response.rowsNumber
   } catch (error) {
     /* empty */
   }
-  loadingTable.value = false
+  loading.value = false
 }
-const OnRequest = async (props: any) => {
+const onRequest = async (props: any) => {
   const { page, rowsPerPage, sortBy, descending } = props.pagination
   pagination.value.sortBy = sortBy
   pagination.value.descending = descending
@@ -73,10 +108,7 @@ const OnRequest = async (props: any) => {
 }
 const onAdd = async () => {
   dialog.value = true
-  dialogTitle.value = 'Add Role'
-  visibleSubmit.value = true
   formReadonly.value = false
-
   model.value = {
     id: '',
     name: '',
@@ -86,19 +118,13 @@ const onAdd = async () => {
 }
 const onView = async (row: any) => {
   dialog.value = true
-  dialogTitle.value = 'View Role'
-  visibleSubmit.value = false
   formReadonly.value = true
-
   model.value = row
   await refreshRoleFunction(row.id)
 }
 const onEdit = async (row: any) => {
   dialog.value = true
-  dialogTitle.value = 'Edit Role'
-  visibleSubmit.value = true
   formReadonly.value = false
-
   model.value = JSON.parse(JSON.stringify(row))
   await refreshRoleFunction(row.id)
 }
@@ -189,6 +215,13 @@ const onSubmit = async () => {
   //
 }
 
+//breadcrumbs
+const breadcrumbs = ref<IBreadCrumbsModel[]>([
+  { label: 'Home', icon: 'home' },
+  { label: 'Configuration', icon: 'settings' },
+  { label: 'Role', icon: 'key' }
+])
+
 onMounted(async () => {
   await getData()
 })
@@ -196,134 +229,77 @@ onMounted(async () => {
 
 <template>
   <!-- breadcrumbs -->
-  <q-breadcrumbs style="margin-bottom: 30px">
-    <q-breadcrumbs-el label="Home" icon="home" />
-    <q-breadcrumbs-el label="Configuration" icon="settings" />
-    <q-breadcrumbs-el label="Role" />
-  </q-breadcrumbs>
+  <CustomBreadCrumbs :breadcrumbs="breadcrumbs" />
   <!-- table -->
-  <div>
-    <q-table
-      title="Role"
-      :rows="roles"
-      :columns="columns"
-      row-key="email"
-      separator="cell"
-      v-model:pagination="pagination"
-      dense
-      :loading="loadingTable"
-      @request="OnRequest"
-    >
-      <template v-slot:top>
-        <q-btn icon="add" size="sm" label="Add" color="secondary" @click="onAdd" />
-      </template>
-      <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            size="xs"
-            icon="visibility"
-            @click="onView(props.row)"
-          ></q-btn>
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            size="xs"
-            icon="edit"
-            @click="onEdit(props.row)"
-          ></q-btn>
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            size="xs"
-            icon="delete"
-            @click="onDelete(props.row.id)"
-          ></q-btn>
-        </q-td>
-      </template>
-    </q-table>
-  </div>
-  <!-- dialog -->
-  <q-dialog v-model="dialog" backdrop-filter="blur(4px) saturate(150%)">
-    <q-card style="width: 700px; max-width: 80vw">
-      <q-card-section>
-        <div class="text-h6">{{ dialogTitle }}</div>
-      </q-card-section>
-
+  <CustomTable
+    title="Role"
+    :columns="columns"
+    :rows="rows"
+    :loading="loading"
+    :pagination="pagination"
+    :onRequest="onRequest"
+    :onView="onView"
+    :onAdd="canAdd ? onAdd : undefined"
+    :onEdit="canEdit ? onEdit : undefined"
+    :onDelete="canDelete ? onDelete : undefined"
+    :dialog="dialog"
+    :onSubmit="onSubmit"
+  >
+    <template #detailView>
       <q-form ref="formRef" class="q-gutter-md">
-        <q-card-section class="q-pt-none">
-          <q-input
-            filled
-            v-model="model.name"
-            label="Name *"
-            lazy-rules
-            dense
-            maxlength="512"
-            :rules="[(val) => (val && val.length > 0) || 'Name is required']"
-            :readonly="formReadonly"
-          />
-          <q-table
-            :columns="columnsRoleFunction"
-            :rows="model.RoleFunctions"
-            :pagination="roleFunctionsPagination"
-            dense
-            hide-bottom
-          >
-            <template v-slot:header-cell-actions="props">
-              <q-th :props="props">
+        <q-input
+          filled
+          v-model="model.name"
+          label="Name *"
+          lazy-rules
+          dense
+          maxlength="512"
+          :rules="stringRequired('Name')"
+          :readonly="formReadonly"
+        />
+        <q-table
+          :columns="columnsRoleFunction"
+          :rows="model.RoleFunctions"
+          :pagination="roleFunctionsPagination"
+          dense
+          hide-bottom
+        >
+          <template v-slot:header-cell-actions="props">
+            <q-th :props="props">
+              <q-checkbox
+                v-model="checkbox1"
+                size="xs"
+                :disable="formReadonly"
+                @update:model-value="onCheckbox1Change"
+              />
+            </q-th>
+          </template>
+          <template v-slot:body-cell-actions="props">
+            <q-td :props="props">
+              <q-checkbox
+                v-model="props.row.isChecked"
+                size="xs"
+                :disable="formReadonly"
+                @update:model-value="(val: boolean) => onCheckbox2Change(val, props.row)"
+              />
+            </q-td>
+          </template>
+          <template v-slot:body-cell-function1="props">
+            <q-td :props="props">
+              <template v-for="item in props.row.items" v-bind:key="item.id">
                 <q-checkbox
-                  v-model="checkbox1"
+                  v-model="item.isChecked"
                   size="xs"
+                  :label="item.name"
                   :disable="formReadonly"
-                  @update:model-value="onCheckbox1Change"
+                  @update:model-value="(val: boolean) => onCheckbox3Change(val, props.row)"
                 />
-              </q-th>
-            </template>
-            <template v-slot:body-cell-actions="props">
-              <q-td :props="props">
-                <q-checkbox
-                  v-model="props.row.isChecked"
-                  size="xs"
-                  :disable="formReadonly"
-                  @update:model-value="(val: boolean) => onCheckbox2Change(val, props.row)"
-                />
-              </q-td>
-            </template>
-            <template v-slot:body-cell-function1="props">
-              <q-td :props="props">
-                <template v-for="item in props.row.items" v-bind:key="item.id">
-                  <q-checkbox
-                    v-model="item.isChecked"
-                    size="xs"
-                    :label="item.name"
-                    :disable="formReadonly"
-                    @update:model-value="(val: boolean) => onCheckbox3Change(val, props.row)"
-                  />
-                  &nbsp;&nbsp;
-                </template>
-              </q-td>
-            </template>
-          </q-table>
-        </q-card-section>
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn label="Close" color="negative" size="sm" icon="cancel" v-close-popup />
-          <q-btn
-            label="Save"
-            color="primary"
-            size="sm"
-            icon="save"
-            :onclick="onSubmit"
-            v-if="visibleSubmit"
-          />
-        </q-card-actions>
+                &nbsp;&nbsp;
+              </template>
+            </q-td>
+          </template>
+        </q-table>
       </q-form>
-    </q-card>
-  </q-dialog>
+    </template>
+  </CustomTable>
 </template>
