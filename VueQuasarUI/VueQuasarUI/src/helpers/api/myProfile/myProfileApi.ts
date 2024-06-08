@@ -5,7 +5,8 @@ import type {
   IMyProfileModel,
   IMyProfileModelUpdate,
   IMyProfileChangePassword,
-  IMyMenuModel
+  IMyMenuModel,
+  IMyPermissionModel
 } from './myProfileModel'
 
 export default class MyProfileApi {
@@ -35,5 +36,9 @@ export default class MyProfileApi {
 
   public async myMenu(): Promise<IMyMenuModel> {
     return this.apiHelper.callApi(this.endpoint + '/MyMenu', 'GET')
+  }
+
+  public async myPermission(): Promise<IMyPermissionModel[]> {
+    return this.apiHelper.callApi(this.endpoint + '/MyPermission', 'GET')
   }
 }

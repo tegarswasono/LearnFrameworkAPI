@@ -25,7 +25,7 @@ const ProductDelete = 'Product.Delete'
 
 const BookingsView = 'Bookings.View'
 
-export default {
+export {
   SMTPSettingView,
   SMTPSettingCreateOrUpdate,
   SystemConfigurationView,

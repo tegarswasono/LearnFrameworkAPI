@@ -24,13 +24,13 @@ var props = defineProps({
     type: Object,
     required: true
   },
-  OnRequest: {
+  onRequest: {
     type: Function,
     required: true
   },
   onAdd: {
     type: Function,
-    required: true
+    required: false
   },
   onView: {
     type: Function,
@@ -38,11 +38,11 @@ var props = defineProps({
   },
   onEdit: {
     type: Function,
-    required: true
+    required: false
   },
   onDelete: {
     type: Function,
-    required: true
+    required: false
   },
   dialog: {
     type: Boolean,
@@ -57,12 +57,14 @@ var props = defineProps({
 
 const dialogTitle = ref('Add ' + props.title)
 const visibleSubmit = ref(true)
-// const formRef: Ref<QForm | null> = ref(null)
+
 const onAddLocal = () => {
   dialogLocal.value = true
   dialogTitle.value = 'Add ' + props.title
   visibleSubmit.value = true
-  props.onAdd()
+  if (props.onAdd) {
+    props.onAdd
+  }
 }
 const onViewLocal = (value: any) => {
   dialogLocal.value = true
@@ -74,7 +76,9 @@ const onEditLocal = (value: any) => {
   dialogLocal.value = true
   dialogTitle.value = 'Edit ' + props.title
   visibleSubmit.value = true
-  props.onEdit(value)
+  if (props.onEdit) {
+    props.onEdit(value)
+  }
 }
 
 // local
@@ -122,9 +126,9 @@ watch(
     v-model:pagination="paginationLocal"
     dense
     :loading="loading"
-    @request="(val) => OnRequest(val)"
+    @request="(val) => onRequest(val)"
   >
-    <template v-slot:top>
+    <template v-slot:top v-if="onAdd">
       <q-btn icon="add" size="sm" label="Add" color="secondary" @click="onAddLocal()" />
     </template>
     <template v-slot:body-cell-actions="props">
@@ -146,6 +150,7 @@ watch(
           size="xs"
           icon="edit"
           @click="onEditLocal(props.row)"
+          v-if="onEdit"
         ></q-btn>
         <q-btn
           dense
@@ -154,7 +159,8 @@ watch(
           color="grey"
           size="xs"
           icon="delete"
-          @click="onDelete(props.row.id)"
+          @click="onDelete ? onDelete(props.row.id) : false"
+          v-if="onDelete"
         ></q-btn>
       </q-td>
     </template>

@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref, type Ref } from 'vue'
+import { onMounted, ref, type Ref, inject, computed } from 'vue'
 import { useQuasar, QForm } from 'quasar'
 import formFieldValidationHelper from '@/helpers/formFieldValidationHelper'
 import type { IProductModel, IProductModelCreateOrUpdate } from '@/helpers/api/product/productModel'
 import ProductApi from '@/helpers/api/product/productApi'
-import type { IGeneralDatasourceModel } from '@/helpers/api/datasource/datasourceModel'
 import DatasourceApi from '@/helpers/api/datasource/datasourceApi'
 import CustomTable from '@/components/CustomTable.vue'
 import {
@@ -13,12 +12,39 @@ import {
   numberShouldbeBiggerThanOrEqualsTo0,
   numberShouldbeBiggerThan0
 } from '@/helpers/rulesHelper'
+import type { IMyPermissionModel } from '@/helpers/api/myProfile/myProfileModel'
 
-// import { ProductView, ProductAdd, ProductEdit, ProductDelete } from '@/helpers/constantString'
+import { ProductAdd, ProductEdit, ProductDelete } from '@/helpers/constantString'
 
 const quasar = useQuasar()
 const productApi = new ProductApi()
 const datasourceApi = new DatasourceApi()
+
+const myPermission = inject<Ref<IMyPermissionModel[]>>('myPermission')
+const canAdd = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (myPermission.value.some(({ functionId }) => functionId == ProductAdd)) {
+      return true
+    }
+  }
+  return false
+})
+const canEdit = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (myPermission.value.some(({ functionId }) => functionId == ProductEdit)) {
+      return true
+    }
+  }
+  return false
+})
+const canDelete = computed(() => {
+  if (myPermission && myPermission.value) {
+    if (myPermission.value.some(({ functionId }) => functionId == ProductDelete)) {
+      return true
+    }
+  }
+  return false
+})
 
 const loading = ref(false)
 const columns: any = [
@@ -71,7 +97,7 @@ const getData = async () => {
   loading.value = false
 }
 
-const OnRequest = async (props: any) => {
+const onRequest = async (props: any) => {
   const { page, rowsPerPage, sortBy, descending } = props.pagination
   pagination.value.sortBy = sortBy
   pagination.value.descending = descending
@@ -178,11 +204,11 @@ onMounted(async () => {
     :rows="rows"
     :loading="loading"
     :pagination="pagination"
-    :OnRequest="OnRequest"
-    :onAdd="onAdd"
+    :onRequest="onRequest"
     :onView="onView"
-    :onEdit="onEdit"
-    :onDelete="onDelete"
+    :onAdd="canAdd ? onAdd : undefined"
+    :onEdit="canEdit ? onEdit : undefined"
+    :onDelete="canDelete ? onDelete : undefined"
     :dialog="dialog"
     :onSubmit="onSubmit"
   >

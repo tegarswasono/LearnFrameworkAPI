@@ -28,11 +28,15 @@ interface IMyMenuModelItem {
   url: string
   child: IMyMenuModelItem
 }
+interface IMyPermissionModel {
+  functionId: string
+}
 
 export type {
   IMyProfileModel,
   IMyProfileModelUpdate,
   IMyProfileChangePassword,
   IMyMenuModel,
-  IMyMenuModelItem
+  IMyMenuModelItem,
+  IMyPermissionModel
 }

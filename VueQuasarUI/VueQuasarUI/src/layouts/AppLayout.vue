@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeMount } from 'vue'
+import { ref, onMounted, onBeforeMount, provide } from 'vue'
 import { useRouter } from 'vue-router'
 import { AppFullscreen, useQuasar } from 'quasar'
 import moment from 'moment'
@@ -8,6 +8,7 @@ import MyProfileApi from '@/helpers/api/myProfile/myProfileApi'
 import backgroundProfilePicture from '@/assets/material.png'
 import logo from '@/assets/New_Century_Tour_Logo.svg'
 import defaultProfilePicture from '@/assets/avatar.webp'
+import type { IMyPermissionModel } from '@/helpers/api/myProfile/myProfileModel'
 
 const $q = useQuasar()
 const router = useRouter()
@@ -20,6 +21,9 @@ const fullName = ref()
 const profilePicture = ref()
 
 const menus = ref()
+//const myPermission = ref<IMyPermissionModel[]>()
+const myPermission = ref<IMyPermissionModel[]>([])
+provide('myPermission', myPermission)
 
 const setCurrentTime = () => {
   currentTime.value = new Date()
@@ -73,11 +77,11 @@ onBeforeMount(async () => {
 
 onMounted(async () => {
   //myProfile
-  let myProfile = await myProfileApi.get()
-  fullName.value = myProfile.fullName
-  if (myProfile.profilePicture) {
+  let response = await myProfileApi.get()
+  fullName.value = response.fullName
+  if (response.profilePicture) {
     let baseUrl = (<any>window).appSettings.api.base_url
-    profilePicture.value = baseUrl + '/Upload/ProfilePicture/' + myProfile.profilePicture
+    profilePicture.value = baseUrl + '/Upload/ProfilePicture/' + response.profilePicture
   }
 
   //current time
@@ -85,8 +89,12 @@ onMounted(async () => {
   setCurrentTime()
 
   //myMenu
-  var menus1 = await myProfileApi.myMenu()
-  menus.value = menus1
+  var response1 = await myProfileApi.myMenu()
+  menus.value = response1
+
+  //myPermission
+  var response2 = await myProfileApi.myPermission()
+  myPermission.value = response2
 })
 </script>
 <template>
