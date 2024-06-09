@@ -151,7 +151,7 @@ static void SetupService(WebApplicationBuilder? builder)
     //UserManager Reset Token
     builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
     {
-        options.TokenLifespan = TimeSpan.FromMinutes(5);
+        options.TokenLifespan = TimeSpan.FromHours(1);
     });
 
 

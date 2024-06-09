@@ -7,6 +7,7 @@ import LoginIndexView from '../views/system/login/login-index.vue'
 import forgotPassword from '@/views/system/login/forgot-password.vue'
 import resetPassword from '@/views/system/login/reset-password.vue'
 import signUp from '@/views/system/login/sign-up.vue'
+import registrationForm from '@/views/system/login/registration-form.vue'
 
 import notFound from '@/views/system/not-found.vue'
 import forbidden from '@/views/system/forbidden.vue'
@@ -50,6 +51,11 @@ const router = createRouter({
       path: '/signUp',
       name: 'signUp',
       component: signUp
+    },
+    {
+      path: '/registrationForm',
+      name: 'registrationform',
+      component: registrationForm
     },
     {
       path: '/booking',

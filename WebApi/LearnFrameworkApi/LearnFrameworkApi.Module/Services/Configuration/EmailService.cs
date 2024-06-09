@@ -36,7 +36,7 @@ namespace LearnFrameworkApi.Module.Services.Configuration
                 <br/>
                 <a href='{1}' target='_blank'>Reset Password</a> <br/>
                 <br/>
-                This link will expire in 5 minutes for your security. If you encounter any issues or have any questions, feel free to contact our support team. <br/>
+                This link will expire in 60 minutes for your security. If you encounter any issues or have any questions, feel free to contact our support team. <br/>
                 Thank you for your attention. <br/>
                 Best regards, <br/>
                 <br/>
@@ -63,7 +63,7 @@ namespace LearnFrameworkApi.Module.Services.Configuration
                 <br/>
                 <a href='{1}' target='_blank'>Activate Account</a> <br/>
                 <br/>
-                This link will expire in 30 Minutes for your security. If you did not create an account, please ignore this email. If you encounter any issues or have any questions, feel free to contact our support team. <br/>
+                This link will expire in 60 Minutes for your security. If you did not create an account, please ignore this email. If you encounter any issues or have any questions, feel free to contact our support team. <br/>
                 <br/>
                 Thank you for choosing our service. <br/>
                 <br/>
