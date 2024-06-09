@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Validation.AspNetCore;
 using Serilog;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearnFrameworkApi.Api.Controllers.Configuration
 {
@@ -48,12 +49,18 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                 var systemConfiguration = SystemConfiguration.GetInstance(_context);
                 if (systemConfiguration == null)
                 {
-                    systemConfiguration = new SystemConfiguration();
-                    systemConfiguration.ExampleSetting = model.ExampleSetting;
+                    systemConfiguration = new SystemConfiguration
+                    {
+                        AppBaseUrl = model.AppBaseUrl,
+                        DefaultRoleId = model.DefaultRoleId,
+                        ExampleSetting = model.ExampleSetting
+                    };
                     _context.SystemConfigurations.Add(systemConfiguration);
                 }
                 else
                 {
+                    systemConfiguration.AppBaseUrl = model.AppBaseUrl;
+                    systemConfiguration.DefaultRoleId = model.DefaultRoleId;
                     systemConfiguration.ExampleSetting = model.ExampleSetting;
                     _context.SystemConfigurations.Update(systemConfiguration);
                 }
@@ -63,6 +70,25 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             catch (Exception ex)
             {
                 Log.Error($"SystemConfigurationController.CreateOrUpdate | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
+                return BadRequest(GeneralResponseMessage.Dto(ex.Message));
+            }
+        }
+
+        [HttpGet("Datasource/Roles")]
+        [AppAuthorize(AvailableModuleFunction.SystemConfigurationView)]
+        public async Task<ActionResult<GeneralDatasourceModel>> DatasourceRoles()
+        {
+            try
+            {
+                var result = await _context.Roles
+                    .OrderBy(x => x.Name)
+                    .Select(x => new GeneralDatasourceModel() { Value = x.Id, Label = x.Name! })
+                    .ToListAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"SystemConfigurationController.DatasourceRoles | Message: {ex.Message} | Inner Exception: {ex.InnerException}");
                 return BadRequest(GeneralResponseMessage.Dto(ex.Message));
             }
         }

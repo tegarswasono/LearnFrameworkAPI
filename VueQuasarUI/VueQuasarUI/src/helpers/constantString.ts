@@ -25,6 +25,8 @@ const ProductDelete = 'Product.Delete'
 
 const BookingsView = 'Bookings.View'
 
+const GuidEmpty = '00000000-0000-0000-0000-000000000000'
+
 export {
   SMTPSettingView,
   SMTPSettingCreateOrUpdate,
@@ -46,5 +48,6 @@ export {
   ProductAdd,
   ProductEdit,
   ProductDelete,
-  BookingsView
+  BookingsView,
+  GuidEmpty
 }

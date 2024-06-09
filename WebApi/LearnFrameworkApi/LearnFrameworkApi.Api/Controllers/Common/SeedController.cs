@@ -26,11 +26,11 @@ namespace LearnFrameworkApi.Api.Controllers.Common
         [HttpGet]
         public async Task<ActionResult<GeneralResponseMessage>> Index()
         {
+            await InitAppRole();
+            await InitAppUser();
             InitSMTPSystemConfiguration();
             RefreshModuleFunction();
             RefreshMenu();
-            await InitAppRole();
-            await InitAppUser();
 
             _context.SaveChanges();
             return Ok(GeneralResponseMessage.ProcessSuccessfully());
@@ -59,8 +59,11 @@ namespace LearnFrameworkApi.Api.Controllers.Common
             }
             if (!_context.SystemConfigurations.Any())
             {
+                var defaultRole = _context.Roles.FirstOrDefault(x => x.Name == "Buyer")!;
                 var systemConfiguration = new SystemConfiguration()
                 {
+                    AppBaseUrl = "http://localhost:5173",
+                    DefaultRoleId = defaultRole.Id,
                     ExampleSetting = "Example"
                 };
                 _context.SystemConfigurations.Add(systemConfiguration);

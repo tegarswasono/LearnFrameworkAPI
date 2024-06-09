@@ -13,8 +13,8 @@ namespace LearnFrameworkApi.Module.Datas.Entities.Configuration
         [MaxLength(50)]
         public string AppBaseUrl { get; set; } = string.Empty;
         [MaxLength(50)]
-        public Guid? DefaultRoleId {  get; set; }
-        public AppRole? DefaultRole { get; set; }
+        public Guid DefaultRoleId {  get; set; }
+        public AppRole DefaultRole { get; set; } = null!;
 
         [MaxLength(100)]
         public string ExampleSetting { get; set; } = string.Empty;

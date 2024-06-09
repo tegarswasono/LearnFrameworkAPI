@@ -32,6 +32,8 @@ const canCreateOrUpdate = computed(() => {
 
 const model: Ref<ISystemConfigurationModelCreateOrUpdate> = ref({
   id: '',
+  appBaseUrl: '',
+  defaultRoleId: '',
   exampleSetting: ''
 })
 const formRef: Ref<QForm | null> = ref(null)
@@ -60,8 +62,14 @@ const breadcrumbs = ref<IBreadCrumbsModel[]>([
   { label: 'System Configuration', icon: 'manufacturing' }
 ])
 
+//dropdown
+const roles = ref()
+const getRoles = async () => {
+  roles.value = await scApi.datasourceRoles()
+}
 onMounted(async () => {
   await getData()
+  await getRoles()
 })
 </script>
 <template>
@@ -72,13 +80,37 @@ onMounted(async () => {
   <div class="q-pa-md" style="border: 1px solid #eeeeee">
     <q-form class="q-gutter-md" ref="formRef">
       <q-input
+        type="text"
+        v-model="model.appBaseUrl"
+        label="App Base Url"
+        filled
+        dense
+        maxlength="50"
+        lazy-rules
+        :rules="stringRequired('App Base Url')"
+        :readonly="!canCreateOrUpdate"
+      />
+      <q-select
+        v-model="model.defaultRoleId"
+        :options="roles"
+        label="Default Role"
+        filled
+        dense
+        clearable
+        emit-value
+        map-options
+        lazy-rules
+        :rules="dropdownRequired('Default Role')"
+      />
+      <q-input
+        type="text"
         filled
         v-model="model.exampleSetting"
         label="Example Setting"
         lazy-rules
         :rules="stringRequired('Example Setting')"
         dense
-        maxlength="100"
+        maxlength="50"
         :readonly="!canCreateOrUpdate"
       />
       <div class="row q-ml-auto">
