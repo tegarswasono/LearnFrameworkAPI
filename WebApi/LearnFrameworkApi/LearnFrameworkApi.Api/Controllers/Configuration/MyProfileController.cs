@@ -186,7 +186,11 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                 user.FullName = model.FullName;
                 user.PhoneNumber = model.PhoneNumber;
 
-                await _userManager.UpdateAsync(user);
+                var response = await _userManager.UpdateAsync(user);
+                if (!response.Succeeded)
+                {
+                    throw new InvalidOperationException(response.Errors.FirstOrDefault()!.Description);
+                }
                 return Ok(GeneralResponseMessage.ProcessSuccessfully());
             }
             catch (Exception ex)
@@ -238,7 +242,11 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                         }
                     }
                     user.ProfilePicture = "";
-                    await _userManager.UpdateAsync(user);
+                    var response = await _userManager.UpdateAsync(user);
+                    if (!response.Succeeded)
+                    {
+                        throw new InvalidOperationException(response.Errors.FirstOrDefault()!.Description);
+                    }
                 }
                 else
                 {
@@ -267,7 +275,11 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                         await file.CopyToAsync(stream);
 
                     user.ProfilePicture = fileName;
-                    await _userManager.UpdateAsync(user);
+                    var response = await _userManager.UpdateAsync(user);
+                    if (!response.Succeeded)
+                    {
+                        throw new InvalidOperationException(response.Errors.FirstOrDefault()!.Description);
+                    }
                 }
                 return Ok(GeneralResponseMessage.Dto("Process Successfully, Please hard refresh your page"));
             }

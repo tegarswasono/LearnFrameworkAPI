@@ -3,7 +3,6 @@ using LearnFrameworkApi.Module.Datas;
 using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Models.Common;
 using LearnFrameworkApi.Module.Models.Configuration;
-using LearnFrameworkApi.Module;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -91,7 +90,11 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                     NormalizedName = model.Name.ToUpper()
                 };
 
-                await _roleManager.CreateAsync(role);
+                var response = await _roleManager.CreateAsync(role);
+                if (!response.Succeeded)
+                {
+                    throw new InvalidOperationException(response.Errors.FirstOrDefault()!.Description);
+                }
                 foreach (var roleFunction in model.RoleFunctions)
                 {
                     foreach (var item in roleFunction.Items.Where(x => x.IsChecked))
@@ -129,7 +132,11 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
 
                 role.Name = model.Name;
                 role.NormalizedName = model.Name.ToUpper();
-                await _roleManager.UpdateAsync(role);
+                var response = await _roleManager.UpdateAsync(role);
+                if (!response.Succeeded)
+                {
+                    throw new InvalidOperationException(response.Errors.FirstOrDefault()!.Description);
+                }
 
                 _context.RoleFunctions.Where(x => x.RoleId == role.Id).ExecuteDelete();
                 foreach (var roleFunction in model.RoleFunctions)
@@ -161,10 +168,17 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             try
             {
                 var role = await _roleManager.FindByIdAsync(id.ToString()) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "Role"));
-
+                if(_context.SystemConfigurations.Any(x => x.DefaultRoleId == role.Id))
+                {
+                    throw new InvalidOperationException(ConstantString.ThisDataIsUsedInOtherTransaction);
+                }
                 _context.RoleFunctions.Where(x => x.RoleId == id).ExecuteDelete();
                 _context.SaveChanges();
-                await _roleManager.DeleteAsync(role);
+                var response = await _roleManager.DeleteAsync(role);
+                if (!response.Succeeded)
+                {
+                    throw new InvalidOperationException(response.Errors.FirstOrDefault()!.Description);
+                }
                 return Ok(GeneralResponseMessage.DeleteSuccessfully());
             }
             catch (Exception ex)

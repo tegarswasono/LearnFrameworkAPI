@@ -3,7 +3,6 @@ using LearnFrameworkApi.Module.Datas;
 using LearnFrameworkApi.Module.Datas.Entities.Configuration;
 using LearnFrameworkApi.Module.Models.Common;
 using LearnFrameworkApi.Module.Models.Configuration;
-using LearnFrameworkApi.Module;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -23,12 +22,10 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
     {
         private readonly AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<AppRole> _roleManager;
-        public UserController(AppDbContext context, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+        public UserController(AppDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
             _userManager = userManager;
-            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -158,11 +155,20 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
                     PhoneNumber = model.PhoneNumber,
                     Active = model.Active,
                 };
-                await _userManager.CreateAsync(user, model.Password);
+                var response = await _userManager.CreateAsync(user, model.Password);
+                if (!response.Succeeded)
+                {
+                    throw new InvalidOperationException(response.Errors.FirstOrDefault()!.Description);
+                }
+
                 model.Roles ??= [];
                 foreach (var role in model.Roles)
                 {
-                    await _userManager.AddToRoleAsync(user, role.Name!);
+                    var response1 = await _userManager.AddToRoleAsync(user, role.Name!);
+                    if (!response1.Succeeded) 
+                    {
+                        throw new InvalidOperationException(response1.Errors.FirstOrDefault()!.Description);
+                    }
                 }
                 await _context.SaveChangesAsync();
 
@@ -242,7 +248,11 @@ namespace LearnFrameworkApi.Api.Controllers.Configuration
             try
             {
                 var user = await _userManager.FindByIdAsync(id.ToString()) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
-                await _userManager.DeleteAsync(user);
+                var response = await _userManager.DeleteAsync(user);
+                if (!response.Succeeded)
+                {
+                    throw new InvalidOperationException(response.Errors.FirstOrDefault()!.Description);
+                }
                 return Ok(GeneralResponseMessage.DeleteSuccessfully());
             }
             catch (Exception ex)
