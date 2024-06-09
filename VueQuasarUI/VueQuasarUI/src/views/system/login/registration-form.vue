@@ -9,19 +9,23 @@ import { stringRequired, emailRequired, passwordRequired } from '@/helpers/rules
 const router = useRouter()
 const route = useRoute()
 const $q = useQuasar()
-const isLoadingBtnResetPassword = ref(false)
 
-const newPassword = ref()
+const loading = ref(false)
+const registrationToken = route.query.registrationToken
+const email = ref()
+const fullName = ref()
+const phoneNumber = ref()
+const password = ref()
 const confirmPassword = ref()
-const newPasswordIsPwd = ref(false)
+const passwordIsPwd = ref(false)
 const confirmPasswordIsPwd = ref(false)
+
 const formRef: Ref<QForm | null> = ref(null)
 const baseUrlApi = (<any>window).appSettings.api.base_url
-const resetToken = route.query.resetToken
 
 const checkIsValidToken = async () => {
   var model = {
-    resetToken: resetToken
+    registrationToken: registrationToken
   }
   let headers = {
     headers: {
@@ -29,8 +33,10 @@ const checkIsValidToken = async () => {
     }
   }
   await axios
-    .post(`${baseUrlApi}/Api/Common/Guest/IsValidResetToken`, model, headers)
-    .then((res) => {})
+    .post(`${baseUrlApi}/Api/Common/Guest/IsValidRegistrationForm`, model, headers)
+    .then((res) => {
+      email.value = res.data.email
+    })
     .catch((err) => {
       $q.notify({
         type: 'negative',
@@ -43,13 +49,15 @@ const checkIsValidToken = async () => {
     })
 }
 
-const onResetPasswordClicked = async () => {
-  isLoadingBtnResetPassword.value = true
+const onSubmitClicked = async () => {
+  loading.value = true
   let isValid = await formFieldValidationHelper(formRef)
   if (isValid) {
     let model = {
-      resetToken: resetToken,
-      newPassword: newPassword.value,
+      registrationToken: registrationToken,
+      fullName: fullName.value,
+      phoneNumber: phoneNumber.value,
+      password: password.value,
       confirmPassword: confirmPassword.value
     }
     let headers = {
@@ -59,7 +67,7 @@ const onResetPasswordClicked = async () => {
     }
     let baseUrlApi = (<any>window).appSettings.api.base_url
     await axios
-      .post(`${baseUrlApi}/Api/Common/Guest/ResetPassword`, model, headers)
+      .post(`${baseUrlApi}/Api/Common/Guest/SubmitRegistrationForm`, model, headers)
       .then((res) => {
         $q.notify({
           type: 'positive',
@@ -78,7 +86,7 @@ const onResetPasswordClicked = async () => {
         })
       })
   }
-  isLoadingBtnResetPassword.value = false
+  loading.value = false
 }
 
 onBeforeMount(async () => {
@@ -88,7 +96,7 @@ onBeforeMount(async () => {
       name: 'bookingindex'
     })
   }
-  //await checkIsValidToken()
+  await checkIsValidToken()
 })
 </script>
 <template>
@@ -106,23 +114,50 @@ onBeforeMount(async () => {
             </div>
           </q-card-section>
           <q-card-section>
-            <q-form ref="formRef">
+            <q-form ref="formRef" class="q-gutter-md">
               <q-input
-                v-model="newPassword"
-                :type="newPasswordIsPwd ? 'password' : 'text'"
-                label="New Password"
-                maxlength="100"
-                lazy-rules
-                :rules="passwordRequired('New Password')"
+                type="email"
+                v-model="email"
+                label="Email"
+                readonly
                 filled
                 dense
-                class="q-mb-lg"
+                style="padding-bottom: 10px"
+              />
+              <q-input
+                type="text"
+                v-model="fullName"
+                label="FullName"
+                filled
+                dense
+                maxlength="100"
+                lazy-rules
+                :rules="stringRequired('FullName')"
+              />
+              <q-input
+                type="text"
+                v-model="phoneNumber"
+                label="PhoneNumber"
+                filled
+                dense
+                maxlength="100"
+                style="padding-bottom: 10px"
+              />
+              <q-input
+                v-model="password"
+                :type="passwordIsPwd ? 'password' : 'text'"
+                label="Password"
+                maxlength="100"
+                lazy-rules
+                :rules="passwordRequired('Password')"
+                filled
+                dense
               >
                 <template v-slot:append>
                   <q-icon
-                    :name="newPasswordIsPwd ? 'visibility_off' : 'visibility'"
+                    :name="passwordIsPwd ? 'visibility_off' : 'visibility'"
                     class="cursor-pointer"
-                    @click="newPasswordIsPwd = !newPasswordIsPwd"
+                    @click="passwordIsPwd = !passwordIsPwd"
                   />
                 </template>
               </q-input>
@@ -134,7 +169,7 @@ onBeforeMount(async () => {
                 lazy-rules
                 :rules="[
                   ...passwordRequired('Confirm Password'),
-                  (val) => val == newPassword || 'Confirm Password and New Password Should be same'
+                  (val) => val == password || 'Confirm Password and New Password Should be same'
                 ]"
                 filled
                 dense
@@ -155,11 +190,11 @@ onBeforeMount(async () => {
               color="primary"
               rounded
               size="md"
-              label="Reset Password"
+              label="Submit"
               no-caps
               class="full-width"
-              @click="onResetPasswordClicked"
-              :loading="isLoadingBtnResetPassword"
+              @click="onSubmitClicked"
+              :loading="loading"
             ></q-btn>
           </q-card-section>
           <q-card-section class="q-py-none">

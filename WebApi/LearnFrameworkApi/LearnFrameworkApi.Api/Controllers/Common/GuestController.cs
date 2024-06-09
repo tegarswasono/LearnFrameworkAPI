@@ -52,12 +52,12 @@ namespace LearnFrameworkApi.Api.Controllers.Common
         {
             try
             {
-                var userId = _memoryCache.Get(model.ResetToken) ?? throw new InvalidOperationException("Token is Expired");
+                var userId = _memoryCache.Get(model.ResetToken) ?? throw new InvalidOperationException("Token already Expired");
                 var user = await _userManager.FindByIdAsync(userId.ToString()!) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
                 bool isTokenValid = await _userManager.VerifyUserTokenAsync(user!, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", model.ResetToken);
                 if (!isTokenValid)
                 {
-                    throw new InvalidOperationException("Token is Expired");
+                    throw new InvalidOperationException("Token already Expired");
                 }
 
                 return Ok(GeneralResponseMessage.Dto("Token is valid"));
@@ -74,12 +74,12 @@ namespace LearnFrameworkApi.Api.Controllers.Common
         {
             try
             {
-                var userId = _memoryCache.Get(model.ResetToken) ?? throw new InvalidOperationException("Token is Expired");
+                var userId = _memoryCache.Get(model.ResetToken) ?? throw new InvalidOperationException("Token already Expired");
                 var user = await _userManager.FindByIdAsync(userId.ToString()!) ?? throw new InvalidOperationException(string.Format(ConstantString.DataNotFound, "User"));
                 bool isTokenValid = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", model.ResetToken);
                 if (!isTokenValid)
                 {
-                    throw new InvalidOperationException("Token is Expired");
+                    throw new InvalidOperationException("Token already Expired");
                 }
                 var response = await _userManager.ResetPasswordAsync(user, model.ResetToken, model.NewPassword);
                 if (response.Errors.Any())
@@ -141,15 +141,22 @@ namespace LearnFrameworkApi.Api.Controllers.Common
         }
 
         [HttpPost("IsValidRegistrationForm")]
-        public ActionResult<IsValidRegistrationFormModelResponse> IsValidRegistrationForm(IsValidRegistrationFormModel model)
+        public async Task<ActionResult<IsValidRegistrationFormModelResponse>> IsValidRegistrationForm(IsValidRegistrationFormModel model)
         {
             try
             {
                 var response = _memoryCache.Get(model.RegistrationToken) ?? throw new InvalidOperationException("Registration Token Already Expired");
+                string email = response!.ToString()!;
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user != null)
+                {
+                    throw new InvalidOperationException("registration already successfully");
+                }
+
                 var result = new IsValidRegistrationFormModelResponse()
                 {
                     RegistrationToken = model.RegistrationToken,
-                    Email = response!.ToString()!
+                    Email = email
                 };
                 return Ok(result);
             }

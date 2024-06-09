@@ -8,13 +8,13 @@ import { emailRequired } from '@/helpers/rulesHelper'
 
 const router = useRouter()
 const $q = useQuasar()
-const isLoadingBtnResetPassword = ref(false)
+const loading = ref(false)
 
 const email = ref()
 const formRef: Ref<QForm | null> = ref(null)
 
 const onResetPasswordClicked = async () => {
-  isLoadingBtnResetPassword.value = true
+  loading.value = true
   let isValid = await formFieldValidationHelper(formRef)
   if (isValid) {
     let model = {
@@ -28,7 +28,7 @@ const onResetPasswordClicked = async () => {
 
     let baseUrlApi = (<any>window).appSettings.api.base_url
     await axios
-      .post(`${baseUrlApi}/Api/Common/Guest/SendLinkResetPassword`, model, headers)
+      .post(`${baseUrlApi}/Api/Common/Guest/SendLinkSignUp`, model, headers)
       .then((res) => {
         $q.notify({
           type: 'positive',
@@ -47,7 +47,7 @@ const onResetPasswordClicked = async () => {
         })
       })
   }
-  isLoadingBtnResetPassword.value = false
+  loading.value = false
 }
 
 onBeforeMount(async () => {
@@ -91,7 +91,7 @@ onBeforeMount(async () => {
                 no-caps
                 class="full-width"
                 @click="onResetPasswordClicked"
-                :loading="isLoadingBtnResetPassword"
+                :loading="loading"
               ></q-btn>
             </q-card-section>
             <q-card-section class="q-py-none">
