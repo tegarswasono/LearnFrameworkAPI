@@ -145,7 +145,7 @@ const select2 = ref()
         emit-value
         map-options
         lazy-rules
-        :rules="selectRequired('Food')"
+        :rules="dropdownRequired('Food')"
         clearable
       />
       Food: {{ food }}

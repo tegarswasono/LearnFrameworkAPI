@@ -38,9 +38,9 @@ export default class AuthService {
     return (<any>window).appSettings.socketUrl
   }
 
-  public getUser(): Promise<User> {
-    return this.userManager.getUser()
-  }
+  // public getUser(): Promise<User> {
+  //   return this.userManager.getUser()
+  // }
 
   public async renewToken(): Promise<boolean> {
     try {

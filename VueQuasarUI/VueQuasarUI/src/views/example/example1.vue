@@ -151,7 +151,7 @@ const date3 = ref()
         emit-value
         map-options
         lazy-rules
-        :rules="selectRequired('Food')"
+        :rules="dropdownRequired('Food')"
         clearable
       />
       <div class="q-pl-xs">Food: {{ food }}</div>
